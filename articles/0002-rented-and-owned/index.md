@@ -8,7 +8,7 @@ canonical:
 
 # Rented access and owned access
 
-*Draft. Pinned to `spec-v0.3`; requirement IDs refer to that release.*
+_Draft. Pinned to `spec-v0.3`; requirement IDs refer to that release._
 
 ## Premises
 

@@ -8,7 +8,7 @@ canonical:
 
 # The fragmentation tax
 
-*Draft. Pinned to `spec-v0.3`; requirement IDs refer to that release.*
+_Draft. Pinned to `spec-v0.3`; requirement IDs refer to that release._
 
 ## Premises
 
@@ -99,8 +99,8 @@ What is standardised here is discovery, framing, sessions and completion
 semantics. What is not: authentication, versioning of a business's own data,
 idempotency of a side effect, and the meaning of the words inside a reply.
 
-So the tax does not go to zero. It moves: from *finding* the business and
-*guessing* the shape of the exchange, to *understanding* what this particular
+So the tax does not go to zero. It moves: from _finding_ the business and
+_guessing_ the shape of the exchange, to _understanding_ what this particular
 business means. That is a real improvement, because understanding is work that a
 caller can do once per question, while finding-and-guessing is work it repeats for
 every business it ever meets.

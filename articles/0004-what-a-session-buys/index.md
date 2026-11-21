@@ -2,13 +2,25 @@
 title: What a session buys you
 published: 2026-11-21
 spec: spec-v0.3
-requirements: [PROTO-19, PROTO-20, PROTO-23, PROTO-24, PROTO-26, PROTO-27, PROTO-28, PROTO-30, PROTO-31, PROTO-36]
+requirements:
+  [
+    PROTO-19,
+    PROTO-20,
+    PROTO-23,
+    PROTO-24,
+    PROTO-26,
+    PROTO-27,
+    PROTO-28,
+    PROTO-30,
+    PROTO-31,
+    PROTO-36,
+  ]
 canonical:
 ---
 
 # What a session buys you
 
-*Draft. Pinned to `spec-v0.3`; requirement IDs refer to that release.*
+_Draft. Pinned to `spec-v0.3`; requirement IDs refer to that release._
 
 ## Premises
 
@@ -40,7 +52,10 @@ A turn is one message in, and at most one answer out, closed by one explicit
 terminator (`PROTO-19`, `PROTO-20`):
 
 ```json
-{ "ok": true, "session": { "turns": 3, "summary": "answered coverage question" } }
+{
+  "ok": true,
+  "session": { "turns": 3, "summary": "answered coverage question" }
+}
 ```
 
 `end` is the last frame on that stream and the only frame that completes a turn.
