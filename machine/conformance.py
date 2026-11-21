@@ -67,15 +67,26 @@ def record(requirement: str, ok: bool | None, detail: str) -> None:
 class Wire:
     """One connection: framing, plus the two primitives a probe needs."""
 
-    def __init__(self, host: str, port: int, insecure: bool, timeout: float = 10.0):
-        ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+    def __init__(
+        self,
+        host: str,
+        port: int,
+        insecure: bool,
+        server_name: str | None = None,
+        timeout: float = 10.0,
+    ):
+        # create_default_context loads the system trust store. SSLContext built
+        # by hand does not, which makes every valid certificate look untrusted.
+        ctx = ssl.create_default_context()
         ctx.minimum_version = ssl.TLSVersion.TLSv1_3
         ctx.set_alpn_protocols(["vireo/1"])
         if insecure:
             ctx.check_hostname = False
             ctx.verify_mode = ssl.CERT_NONE
         raw = socket.create_connection((host, port), timeout=timeout)
-        self.sock = ctx.wrap_socket(raw, server_hostname=host)
+        # The reference identity is the name the caller asked for, which is not
+        # necessarily the host being dialled: SRV is routing only (PROTO-47).
+        self.sock = ctx.wrap_socket(raw, server_hostname=server_name or host)
         self.sock.settimeout(timeout)
 
     def close(self) -> None:
@@ -161,9 +172,9 @@ def load_schema() -> dict:
 # --------------------------------------------------------------------------
 
 
-def check_transport(host: str, port: int, insecure: bool) -> Wire | None:
+def check_transport(host: str, port: int, insecure: bool, server_name: str | None) -> Wire | None:
     try:
-        wire = Wire(host, port, insecure)
+        wire = Wire(host, port, insecure, server_name)
     except ssl.SSLError as exc:
         record("PROTO-1", False, f"TLS handshake failed: {exc}")
         return None
@@ -178,7 +189,7 @@ def check_transport(host: str, port: int, insecure: bool) -> Wire | None:
     return wire
 
 
-def check_refusals(host: str, port: int, insecure: bool) -> None:
+def check_refusals(host: str, port: int, insecure: bool, server_name: str | None) -> None:
     """PROTO-8, PROTO-11, PROTO-12 — each on its own connection."""
     cases = [
         (
@@ -202,7 +213,7 @@ def check_refusals(host: str, port: int, insecure: bool) -> None:
     ]
     for requirement, want_code, action, _ in cases:
         try:
-            wire = Wire(host, port, insecure)
+            wire = Wire(host, port, insecure, server_name)
         except OSError as exc:
             record(requirement, False, f"connect: {exc}")
             continue
@@ -414,6 +425,12 @@ def main() -> int:
         action="store_true",
         help="skip certificate verification (development only)",
     )
+    parser.add_argument(
+        "--server-name",
+        default=None,
+        help="name the certificate must cover, when it differs from the address "
+        "(e.g. connect to the SRV target but verify the business domain)",
+    )
     args = parser.parse_args()
 
     host, _, port_text = args.endpoint.rpartition(":")
@@ -422,12 +439,12 @@ def main() -> int:
         return 2
     host, port = host.strip("[]"), int(port_text)
 
-    wire = check_transport(host, port, args.insecure)
+    wire = check_transport(host, port, args.insecure, args.server_name)
     if wire is None:
         return report(args.endpoint)
 
     try:
-        check_refusals(host, port, args.insecure)
+        check_refusals(host, port, args.insecure, args.server_name)
         manifest = check_handshake(wire)
         if manifest is not None:
             check_manifest(manifest)
