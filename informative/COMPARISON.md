@@ -47,7 +47,7 @@ It is excellent at that, and it is not a discovery mechanism. It has no notion o
 business naming itself, of a conversation across turns, of progress inside a turn,
 or of who is allowed to call.
 
-A useful pairing: a manifest's `actions` say what an agent claims to do, and a
+A useful pairing: a manifest's `links` say where the published material is, and a
 `link` with `rel: "openapi"` says where the machine-readable description of a
 specific integration lives.
 

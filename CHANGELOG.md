@@ -3,6 +3,36 @@
 Spec releases are tagged `spec-vX.Y` and never move. This file records what
 changed and which requirement IDs are affected.
 
+## spec-v0.2 — draft
+
+**Removed `actions`.** `manifest_version` goes to **1.2**.
+
+`actions` was an array of named things an agent claimed it could do. It is gone
+because nothing consumed it:
+
+- no client routed on it — both reference clients only printed it;
+- there is no `invoke` frame, so an action name could not select anything;
+- `MAN-26` said it was not a whitelist and `MAN-25` said its fields were hints,
+  which makes it non-binding by its own definition;
+- two independent readers read it as quick replies and as an exclusive list of
+  capabilities, neither of which it meant. A field whose name reliably misleads
+  is a defect (PROPOSAL.md, "explicit over inferred").
+
+`MAN-24` – `MAN-27` are retired, not reused (MANIFEST.md §18). A client built
+against 1.1 that reads `actions` simply finds it absent, which `MAN-49` already
+requires it to tolerate. A publisher MUST NOT emit it; a client MUST ignore one it
+receives.
+
+Considered and rejected: replacing `actions` with `tags: []string`. Tags would
+cover the only real use (deterministic filtering) in one line, but adding a field
+with no consumer repeats the same mistake in a better costume. The option is
+recorded in `DECISIONS.md` D-8 so a future proposal can pick it up when a host
+actually needs it.
+
+Also in this release: `machine/check.py` validates inline JSON in fenced blocks,
+so a formatter cannot leave a broken example behind; `manifests.json` fixtures are
+split by obligation (client-rejectable, publisher-only, client-acceptable).
+
 ## spec-v0.1 — draft
 
 First published draft. Establishes:

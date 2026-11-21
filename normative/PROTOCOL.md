@@ -118,9 +118,8 @@ A `message` frame carries one turn:
   session id; omitting it MUST fail with `session_required`.
 - **PROTO-17.** A stateless agent (`sessions: false`) MUST be addressed without one;
   supplying it MUST fail with `invalid_frame`.
-- **PROTO-18.** `message` MAY be empty only if the agent's `actions` or
-  `start_message` makes an empty turn meaningful. Otherwise a server SHOULD
-  reject it as `invalid_frame`.
+- **PROTO-18.** `message` MAY be empty only if the agent's `start_message` makes an
+  empty turn meaningful. Otherwise a server SHOULD reject it as `invalid_frame`.
 
 The server answers with a `data` frame, then an `end` frame:
 

@@ -8,6 +8,38 @@ Newest first.
 
 ---
 
+## D-8 — Removed `actions` before anyone implemented it
+
+**Decision.** `manifest_version` 1.2 has no `actions`. `MAN-24` – `MAN-27` are
+retired in place; the numbers are never reused.
+
+**Why.** It was added in 1.1 as the machine-actionable half of an agent, and it
+failed every test a field should pass:
+
+- *Nothing breaks if it is deleted.* Deleting `sessions`, `capabilities` or
+  `links` changes behaviour; deleting `actions` changed nothing. Both reference
+  clients only printed it.
+- *It cannot be acted on.* There is no `invoke` frame, so a name could not select
+  anything. A selector that cannot select is a label.
+- *It was specified to be non-binding.* `MAN-26` forbade reading it as a
+  whitelist and `MAN-25` called its inputs hints, so it carried no obligation.
+- *Two readers misread it.* It was read as quick replies, then as an exhaustive
+  list of what the agent can do. Neither is what it said. A field that reliably
+  misleads its readers is a defect, not a documentation problem.
+
+**Considered and rejected:** replacing it with `tags: []string`, which would cover
+the only real use — deterministic filtering without parsing prose — in one line.
+Rejected because a field with no consumer is the same mistake in a better
+costume. If a host ever needs deterministic selection, `tags` is the smallest
+thing that solves it, and it should arrive with a proposal and a host that uses
+it.
+
+**Cost.** One published tag (`spec-v0.1`) describes a manifest shape that no
+longer exists. The changelog and §18 exist so that is legible rather than
+mysterious.
+
+---
+
 ## D-7 — Clients verify certificates by default
 
 **Decision.** `SEC-6` requires verification on by default. A development mode that

@@ -3,8 +3,8 @@
 **Normative.** Requirement identifiers (`MAN-n`) are stable; cite them in issues
 and proposals. `MUST`, `MUST NOT`, `SHOULD`, `MAY` are used as in RFC 2119.
 
-- Spec release: `spec-v0.1`
-- Document version described here: `manifest_version` `1.1`
+- Spec release: `spec-v0.2`
+- Document version described here: `manifest_version` `1.2`
 - See also: [`PROTOCOL.md`](PROTOCOL.md) (how the manifest is delivered),
   [`CONFORMANCE.md`](CONFORMANCE.md) (what a valid implementation must do).
 
@@ -64,14 +64,21 @@ that something is required; it MUST NOT be the mechanism that grants it.
   and MUST NOT rely on a client inferring it.
 
 `manifest_version` is independent of the wire protocol identifier and of the
-spec release tag. A single `vireo/1` connection may carry a `1.0` or a `1.1`
-manifest; a spec-v0.2 release may describe `manifest_version` `1.1` unchanged.
+spec release tag. A single `vireo/1` connection may carry a `1.0`, `1.1` or `1.2`
+manifest.
+
+While the specification itself is a `0.x` draft, `manifest_version` MAY change in
+ways that MAN-5 would forbid after a stable release. Each such change MUST be
+recorded in `CHANGELOG.md` with its reason, and MUST NOT be made once an
+independent implementation depends on the affected behaviour. From `spec-v1.0`
+the rules above apply without exception. `1.2` removes `actions`, which `1.1`
+introduced and no implementation consumed (§18).
 
 ## 5. Top-level object
 
 ```json
 {
-  "manifest_version": "1.1",
+  "manifest_version": "1.2",
   "protocol": "vireo/1",
   "endpoint": {},
   "agents": [],
@@ -146,7 +153,6 @@ An array of agent objects. Order is not significant.
   "description": "Take food orders: pizzas, sides, drinks, pickup or delivery",
   "sessions": true,
   "start_message": "Hello! Ask me anything about the restaurant.",
-  "actions": [],
   "links": [],
   "limits": {},
   "session": {}
@@ -160,7 +166,6 @@ An array of agent objects. Order is not significant.
 | `description`   | string  | SHOULD     | 1.0   | What this agent handles, one sentence             |
 | `sessions`      | boolean | MUST       | 1.0   | Whether a conversation is required (§11)          |
 | `start_message` | string  | MAY        | 1.0   | Greeting the agent says when a conversation opens |
-| `actions`       | array   | MAY        | 1.1   | What the agent claims to do (§8.2)                |
 | `links`         | array   | MAY        | 1.1   | References specific to this agent (§8)            |
 | `limits`        | object  | MAY        | 1.1   | Per-agent overrides of §10                        |
 | `session`       | object  | MAY        | 1.1   | Per-agent overrides of §11                        |
@@ -217,34 +222,15 @@ with different `rel` values are meaningful.
 - **MAN-23.** A link is a promise that the URI existed when the manifest was
   generated. Clients MUST NOT treat an unreachable link as a manifest error.
 
-### 8.2 `actions`
+### 8.2 Reserved
 
-`actions` is the machine-actionable half of an agent: what it claims it can do.
+`manifest_version` 1.1 described an `actions` array here: a list of named things
+an agent claimed it could do. It was removed in 1.2 before any implementation
+consumed it, because it implied callable operations the protocol cannot provide
+and a client could not act on it. See §18 and `DECISIONS.md` D-8.
 
-```json
-"actions": [
-  { "name": "place_order", "summary": "Place a pickup or delivery order" },
-  { "name": "check_order", "summary": "Report the state of an existing order" }
-]
-```
-
-| Field     | Type   | Req. | Meaning                                         |
-| --------- | ------ | ---- | ----------------------------------------------- |
-| `name`    | string | MUST | Stable identifier                               |
-| `summary` | string | MUST | One sentence, plain text                        |
-| `input`   | string | MAY  | Free-form hint at what a request should contain |
-| `output`  | string | MAY  | Free-form hint at what an answer contains       |
-
-- **MAN-24.** `action.name` MUST match `^[a-z][a-z0-9_]{0,63}$` and MUST be unique
-  within its agent.
-- **MAN-25.** `input` and `output` are **provisional hints**, not schemas. A client
-  MUST NOT reject a reply because it does not match `output`. A future manifest
-  revision may replace them with a structured description.
-- **MAN-26.** `actions` describes what an agent claims; it does not constrain what
-  a conversation may discuss. An agent without `actions` is fully usable — the
-  field is a hint for routing, not a whitelist.
-- **MAN-27.** A publisher MUST NOT list an action it cannot honour. Listing is an
-  assertion that a well-formed request naming that action is meaningful.
+A client MUST ignore an `actions` member if it receives one (MAN-3). A publisher
+MUST NOT emit it.
 
 ## 9. `capabilities`
 
@@ -397,8 +383,8 @@ implementation that also emits their replacement, for one minor release.
 
 - **MAN-48.** On a document that fails MAN-47, a client MUST report a manifest
   error and MUST NOT proceed as if it had received a smaller valid manifest.
-- **MAN-49.** A client MUST NOT require any optional field, any particular `rel`,
-  or any particular `action.name`.
+- **MAN-49.** A client MUST NOT require any optional field, or any particular
+  `rel` value in `links`.
 - **MAN-50.** A client MUST NOT present `endpoint.description` or agent
   `description` as if it were an answer from the business.
 
@@ -417,11 +403,11 @@ implementation that also emits their replacement, for one minor release.
 
 ## 16. Examples
 
-A minimal valid manifest (`manifest_version` `1.1`, one stateless agent):
+A minimal valid manifest (`manifest_version` `1.2`, one stateless agent):
 
 ```json
 {
-  "manifest_version": "1.1",
+  "manifest_version": "1.2",
   "protocol": "vireo/1",
   "endpoint": { "name": "acme-plumbing" },
   "agents": [
@@ -438,7 +424,7 @@ A full manifest:
 
 ```json
 {
-  "manifest_version": "1.1",
+  "manifest_version": "1.2",
   "protocol": "vireo/1",
   "endpoint": {
     "id": "restaurant-prod",
@@ -473,13 +459,6 @@ A full manifest:
       "description": "Take food orders: pizzas, sides, drinks, pickup or delivery",
       "sessions": true,
       "start_message": "Hello! Ask me anything about the restaurant.",
-      "actions": [
-        {
-          "name": "place_order",
-          "summary": "Place a pickup or delivery order",
-          "input": "items, and either pickup or a delivery address"
-        }
-      ],
       "links": [
         {
           "rel": "menu",
@@ -529,10 +508,6 @@ A full manifest:
 | MAN-21 | 8       | conventional `rel` values              |
 | MAN-22 | 8       | agent + endpoint links are additive    |
 | MAN-23 | 8       | links may rot                          |
-| MAN-24 | 8.2     | `action.name` charset                  |
-| MAN-25 | 8.2     | `input`/`output` are hints             |
-| MAN-26 | 8.2     | `actions` is not a whitelist           |
-| MAN-27 | 8.2     | no unhonourable action                 |
 | MAN-28 | 9       | advertised capability is honoured      |
 | MAN-29 | 9       | `session.new` whenever sessions exist  |
 | MAN-30 | 9       | client honours missing capability      |
@@ -560,3 +535,19 @@ A full manifest:
 | MAN-52 | 15      | capabilities truthful                  |
 | MAN-53 | 15      | absent `manifest_version` = 1.0        |
 | MAN-54 | 15      | stable output for stable state         |
+
+## 18. Retired requirements
+
+Identifiers are never reused: a citation in an article or an issue keeps naming
+the rule it named when it was written. These were removed, and the numbers stay
+retired.
+
+| ID     | Retired in | Was | Why |
+| ------ | ---------- | --- | --- |
+| MAN-24 | 1.2        | `action.name` charset and uniqueness | `actions` removed (§8.2) |
+| MAN-25 | 1.2        | `input`/`output` are hints | `actions` removed (§8.2) |
+| MAN-26 | 1.2        | `actions` is not a whitelist | `actions` removed (§8.2) |
+| MAN-27 | 1.2        | no unhonourable action | `actions` removed (§8.2) |
+
+A client built against `manifest_version` 1.1 that reads `actions` will simply
+find it absent, which MAN-49 already requires it to tolerate.

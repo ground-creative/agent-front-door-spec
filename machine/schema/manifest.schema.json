@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://agent-front-door.org/schema/manifest-1.1.json",
+  "$id": "https://agent-front-door.org/schema/manifest-1.2.json",
   "title": "Agent Front Door manifest",
-  "description": "The manifest object described by normative/MANIFEST.md at manifest_version 1.1.",
+  "description": "The manifest object described by normative/MANIFEST.md at manifest_version 1.2. The `actions` member of 1.1 is not part of this schema; a client ignores it if present (MAN-3).",
   "type": "object",
   "required": ["manifest_version", "protocol", "endpoint", "agents"],
   "additionalProperties": true,
@@ -77,10 +77,6 @@
         "description": { "type": "string", "description": "MAN-17" },
         "sessions": { "type": "boolean", "description": "MAN-15" },
         "start_message": { "type": "string", "description": "MAN-16" },
-        "actions": {
-          "type": "array",
-          "items": { "$ref": "#/$defs/action" }
-        },
         "links": { "$ref": "#/$defs/links" },
         "limits": { "$ref": "#/$defs/limits" },
         "session": { "$ref": "#/$defs/session" },
@@ -114,21 +110,6 @@
         "label": { "type": "string" },
         "type": { "type": "string", "description": "Media type, if known" },
         "description": { "type": "string" }
-      }
-    },
-    "action": {
-      "type": "object",
-      "required": ["name", "summary"],
-      "additionalProperties": true,
-      "properties": {
-        "name": {
-          "type": "string",
-          "pattern": "^[a-z][a-z0-9_]{0,63}$",
-          "description": "MAN-24"
-        },
-        "summary": { "type": "string", "minLength": 1 },
-        "input": { "type": "string", "description": "MAN-25: provisional hint" },
-        "output": { "type": "string", "description": "MAN-25: provisional hint" }
       }
     },
     "capabilities": {

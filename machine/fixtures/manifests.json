@@ -7,7 +7,9 @@
       "document": {
         "manifest_version": "1",
         "protocol": "vireo/1",
-        "endpoint": { "name": "x" },
+        "endpoint": {
+          "name": "x"
+        },
         "agents": []
       }
     },
@@ -26,7 +28,9 @@
       "document": {
         "manifest_version": "1.1",
         "protocol": "vireo/1",
-        "endpoint": { "id": "x" },
+        "endpoint": {
+          "id": "x"
+        },
         "agents": []
       }
     },
@@ -36,7 +40,9 @@
       "document": {
         "manifest_version": "1.1",
         "protocol": "vireo/1",
-        "endpoint": { "name": "x" }
+        "endpoint": {
+          "name": "x"
+        }
       }
     },
     {
@@ -45,8 +51,15 @@
       "document": {
         "manifest_version": "1.1",
         "protocol": "vireo/1",
-        "endpoint": { "name": "x" },
-        "agents": [{ "description": "nameless", "sessions": true }]
+        "endpoint": {
+          "name": "x"
+        },
+        "agents": [
+          {
+            "description": "nameless",
+            "sessions": true
+          }
+        ]
       }
     },
     {
@@ -55,8 +68,15 @@
       "document": {
         "manifest_version": "1.1",
         "protocol": "vireo/1",
-        "endpoint": { "name": "x" },
-        "agents": [{ "name": "order desk", "sessions": true }]
+        "endpoint": {
+          "name": "x"
+        },
+        "agents": [
+          {
+            "name": "order desk",
+            "sessions": true
+          }
+        ]
       }
     },
     {
@@ -66,29 +86,17 @@
       "document": {
         "manifest_version": "1.1",
         "protocol": "vireo/1",
-        "endpoint": { "name": "x" },
-        "agents": [
-          { "name": "a", "sessions": true },
-          { "name": "a", "sessions": false }
-        ]
-      }
-    },
-    {
-      "name": "duplicate-action-name",
-      "requirement": "MAN-24",
-      "note": "Semantic: JSON Schema cannot express uniqueness within one agent's actions, but a decoder can.",
-      "document": {
-        "manifest_version": "1.1",
-        "protocol": "vireo/1",
-        "endpoint": { "name": "x" },
+        "endpoint": {
+          "name": "x"
+        },
         "agents": [
           {
             "name": "a",
-            "sessions": false,
-            "actions": [
-              { "name": "place_order", "summary": "one" },
-              { "name": "place_order", "summary": "two" }
-            ]
+            "sessions": true
+          },
+          {
+            "name": "a",
+            "sessions": false
           }
         ]
       }
@@ -99,9 +107,16 @@
       "document": {
         "manifest_version": "1.1",
         "protocol": "vireo/1",
-        "endpoint": { "name": "x" },
+        "endpoint": {
+          "name": "x"
+        },
         "agents": [],
-        "links": [{ "rel": "docs", "href": "/docs" }]
+        "links": [
+          {
+            "rel": "docs",
+            "href": "/docs"
+          }
+        ]
       }
     },
     {
@@ -110,23 +125,14 @@
       "document": {
         "manifest_version": "1.1",
         "protocol": "vireo/1",
-        "endpoint": { "name": "x" },
+        "endpoint": {
+          "name": "x"
+        },
         "agents": [],
-        "links": [{ "rel": "Docs", "href": "https://example.com/docs" }]
-      }
-    },
-    {
-      "name": "action-name-uppercase",
-      "requirement": "MAN-24",
-      "document": {
-        "manifest_version": "1.1",
-        "protocol": "vireo/1",
-        "endpoint": { "name": "x" },
-        "agents": [
+        "links": [
           {
-            "name": "a",
-            "sessions": false,
-            "actions": [{ "name": "PlaceOrder", "summary": "x" }]
+            "rel": "Docs",
+            "href": "https://example.com/docs"
           }
         ]
       }
@@ -138,11 +144,22 @@
       "document": {
         "manifest_version": "1.1",
         "protocol": "vireo/1",
-        "endpoint": { "name": "x" },
-        "capabilities": {
-          "session": { "new": false, "get": false, "close": false }
+        "endpoint": {
+          "name": "x"
         },
-        "agents": [{ "name": "a", "sessions": true }]
+        "capabilities": {
+          "session": {
+            "new": false,
+            "get": false,
+            "close": false
+          }
+        },
+        "agents": [
+          {
+            "name": "a",
+            "sessions": true
+          }
+        ]
       }
     },
     {
@@ -151,7 +168,9 @@
       "document": {
         "manifest_version": "1.1",
         "protocol": "vireo/1",
-        "endpoint": { "name": "x" },
+        "endpoint": {
+          "name": "x"
+        },
         "agents": [],
         "digest": "6b1e9c1e8a6d4b2f5e7a0c3d9b8f6a4e2d1c0b9a8f7e6d5c4b3a2918f7e6d5c4"
       }
@@ -164,7 +183,9 @@
       "note": "A publisher MUST carry manifest_version. A client cannot reject its absence, because MAN-53 defines absence as manifest_version 1.0 and requires accepting it. Checkable by schema only.",
       "document": {
         "protocol": "vireo/1",
-        "endpoint": { "name": "x" },
+        "endpoint": {
+          "name": "x"
+        },
         "agents": []
       }
     },
@@ -175,8 +196,15 @@
       "document": {
         "manifest_version": "1.1",
         "protocol": "vireo/1",
-        "endpoint": { "name": "x" },
-        "agents": [{ "name": "a", "description": "no sessions flag" }]
+        "endpoint": {
+          "name": "x"
+        },
+        "agents": [
+          {
+            "name": "a",
+            "description": "no sessions flag"
+          }
+        ]
       }
     },
     {
@@ -186,9 +214,13 @@
       "document": {
         "manifest_version": "1.1",
         "protocol": "vireo/1",
-        "endpoint": { "name": "x" },
+        "endpoint": {
+          "name": "x"
+        },
         "agents": [],
-        "session": { "ttl_seconds": 0 }
+        "session": {
+          "ttl_seconds": 0
+        }
       }
     }
   ],
@@ -200,11 +232,29 @@
       "note": "Absence of manifest_version MUST be read as 1.0, not rejected. Validate this one against the 1.0 schema, not the 1.1 schema.",
       "document": {
         "protocol": "vireo/1",
-        "endpoint": { "name": "x" },
-        "commands": ["session.new", "session.close"],
-        "agents": [{ "name": "a", "sessions": true, "refs": { "docs": "https://example.com/docs" } }],
-        "refs": { "site": "https://example.com" },
-        "session": { "ttl_seconds": 3600, "list_enabled": true }
+        "endpoint": {
+          "name": "x"
+        },
+        "commands": [
+          "session.new",
+          "session.close"
+        ],
+        "agents": [
+          {
+            "name": "a",
+            "sessions": true,
+            "refs": {
+              "docs": "https://example.com/docs"
+            }
+          }
+        ],
+        "refs": {
+          "site": "https://example.com"
+        },
+        "session": {
+          "ttl_seconds": 3600,
+          "list_enabled": true
+        }
       }
     },
     {
@@ -213,7 +263,9 @@
       "document": {
         "manifest_version": "1.1",
         "protocol": "vireo/1",
-        "endpoint": { "name": "x" },
+        "endpoint": {
+          "name": "x"
+        },
         "agents": []
       }
     },
@@ -223,9 +275,23 @@
       "document": {
         "manifest_version": "1.1",
         "protocol": "vireo/1",
-        "endpoint": { "name": "x", "future_field": { "nested": true } },
-        "agents": [{ "name": "a", "sessions": false, "unknown_thing": 1 }],
-        "something_new": ["a", "b"]
+        "endpoint": {
+          "name": "x",
+          "future_field": {
+            "nested": true
+          }
+        },
+        "agents": [
+          {
+            "name": "a",
+            "sessions": false,
+            "unknown_thing": 1
+          }
+        ],
+        "something_new": [
+          "a",
+          "b"
+        ]
       }
     },
     {
@@ -234,9 +300,14 @@
       "document": {
         "manifest_version": "1.1",
         "protocol": "vireo/1",
-        "endpoint": { "name": "x" },
+        "endpoint": {
+          "name": "x"
+        },
         "agents": [],
-        "refs": { "menu": "https://example.com/menu", "docs": "https://example.com/docs" }
+        "refs": {
+          "menu": "https://example.com/menu",
+          "docs": "https://example.com/docs"
+        }
       }
     }
   ]

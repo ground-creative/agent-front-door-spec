@@ -1,5 +1,5 @@
 {
-  "manifest_version": "1.1",
+  "manifest_version": "1.2",
   "protocol": "vireo/1",
   "endpoint": {
     "id": "restaurant-prod",
@@ -29,18 +29,6 @@
       "description": "Take food orders: pizzas, sides, drinks, pickup or delivery",
       "sessions": true,
       "start_message": "Hello! Ask me anything about the restaurant.",
-      "actions": [
-        {
-          "name": "place_order",
-          "summary": "Place a pickup or delivery order",
-          "input": "items, and either pickup or a delivery address"
-        },
-        {
-          "name": "check_order",
-          "summary": "Report the state of an existing order",
-          "input": "an order reference"
-        }
-      ],
       "links": [
         { "rel": "menu", "href": "https://restaurant.example/menu", "label": "Menu", "type": "text/html" }
       ],
@@ -50,10 +38,6 @@
       "name": "reservations",
       "description": "Check availability, book a table and cancel a booking",
       "sessions": true,
-      "actions": [
-        { "name": "book_table", "summary": "Reserve a table for a date and party size" },
-        { "name": "cancel_booking", "summary": "Cancel an existing reservation" }
-      ],
       "limits": { "requests_per_minute": 20, "burst": 3 }
     },
     {
