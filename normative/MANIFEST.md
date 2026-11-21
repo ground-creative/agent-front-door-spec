@@ -3,8 +3,8 @@
 **Normative.** Requirement identifiers (`MAN-n`) are stable; cite them in issues
 and proposals. `MUST`, `MUST NOT`, `SHOULD`, `MAY` are used as in RFC 2119.
 
-- Spec release: `spec-v0.2`
-- Document version described here: `manifest_version` `1.2`
+- Spec release: `spec-v0.3`
+- Document version described here: `manifest_version` `1.3`
 - See also: [`PROTOCOL.md`](PROTOCOL.md) (how the manifest is delivered),
   [`CONFORMANCE.md`](CONFORMANCE.md) (what a valid implementation must do).
 
@@ -71,14 +71,15 @@ While the specification itself is a `0.x` draft, `manifest_version` MAY change i
 ways that MAN-5 would forbid after a stable release. Each such change MUST be
 recorded in `CHANGELOG.md` with its reason, and MUST NOT be made once an
 independent implementation depends on the affected behaviour. From `spec-v1.0`
-the rules above apply without exception. `1.2` removes `actions`, which `1.1`
-introduced and no implementation consumed (§18).
+the rules above apply without exception. `1.2` removed `actions`, which `1.1`
+introduced and no implementation consumed (§18). `1.3` adds `tags`, the cheaper
+shape for the one job `actions` was reaching for (§7.1).
 
 ## 5. Top-level object
 
 ```json
 {
-  "manifest_version": "1.2",
+  "manifest_version": "1.3",
   "protocol": "vireo/1",
   "endpoint": {},
   "agents": [],
@@ -151,6 +152,7 @@ An array of agent objects. Order is not significant.
   "id": "orders",
   "name": "orders",
   "description": "Take food orders: pizzas, sides, drinks, pickup or delivery",
+  "tags": ["orders", "delivery"],
   "sessions": true,
   "start_message": "Hello! Ask me anything about the restaurant.",
   "links": [],
@@ -164,6 +166,7 @@ An array of agent objects. Order is not significant.
 | `name`          | string  | MUST       | 1.0   | The name a caller addresses this agent by         |
 | `id`            | string  | MAY        | 1.1   | Stable identity, default `name`                   |
 | `description`   | string  | SHOULD     | 1.0   | What this agent handles, one sentence             |
+| `tags`          | array   | MAY        | 1.3   | Free-form labels for selection (§7.1)             |
 | `sessions`      | boolean | MUST       | 1.0   | Whether a conversation is required (§11)          |
 | `start_message` | string  | MAY        | 1.0   | Greeting the agent says when a conversation opens |
 | `links`         | array   | MAY        | 1.1   | References specific to this agent (§8)            |
@@ -189,6 +192,25 @@ An array of agent objects. Order is not significant.
   describe capability, not marketing. A client MAY show it verbatim.
 - **MAN-18.** A publisher SHOULD NOT expose two agents whose descriptions are
   indistinguishable; a caller choosing between them has no basis to choose.
+
+### 7.1 `tags`
+
+Free-form labels a caller can filter on without parsing prose.
+
+```json
+"tags": ["sales", "consultation", "services"]
+```
+
+- **MAN-55.** Each tag MUST match `^[a-z][a-z0-9._-]{0,63}$` and MUST be unique
+  within its agent.
+- **MAN-56.** A tag is a label about topic, not a promise about behaviour and not
+  a whitelist. A client MUST tolerate an unknown tag, and MUST NOT infer from an
+  absent tag that the agent cannot help.
+- **MAN-57.** A publisher SHOULD keep tags few and stable. Renaming a tag breaks
+  any caller that filters on it, which is the one cost this field has.
+- **MAN-58.** `tags` and `description` are not alternatives. A description is read
+  by a person or a model; tags are compared by a program. Publishing both is
+  normal.
 
 ## 8. `links`
 
@@ -403,11 +425,11 @@ implementation that also emits their replacement, for one minor release.
 
 ## 16. Examples
 
-A minimal valid manifest (`manifest_version` `1.2`, one stateless agent):
+A minimal valid manifest (`manifest_version` `1.3`, one stateless agent):
 
 ```json
 {
-  "manifest_version": "1.2",
+  "manifest_version": "1.3",
   "protocol": "vireo/1",
   "endpoint": { "name": "acme-plumbing" },
   "agents": [
@@ -424,7 +446,7 @@ A full manifest:
 
 ```json
 {
-  "manifest_version": "1.2",
+  "manifest_version": "1.3",
   "protocol": "vireo/1",
   "endpoint": {
     "id": "restaurant-prod",
@@ -457,6 +479,7 @@ A full manifest:
       "id": "orders",
       "name": "orders",
       "description": "Take food orders: pizzas, sides, drinks, pickup or delivery",
+      "tags": ["orders", "delivery", "pickup"],
       "sessions": true,
       "start_message": "Hello! Ask me anything about the restaurant.",
       "links": [
@@ -535,6 +558,10 @@ A full manifest:
 | MAN-52 | 15      | capabilities truthful                  |
 | MAN-53 | 15      | absent `manifest_version` = 1.0        |
 | MAN-54 | 15      | stable output for stable state         |
+| MAN-55 | 7.1     | tag charset and uniqueness             |
+| MAN-56 | 7.1     | tags are labels, not promises         |
+| MAN-57 | 7.1     | keep tags few and stable              |
+| MAN-58 | 7.1     | tags and description are not either/or |
 
 ## 18. Retired requirements
 

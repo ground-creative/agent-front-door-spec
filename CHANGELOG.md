@@ -3,6 +3,23 @@
 Spec releases are tagged `spec-vX.Y` and never move. This file records what
 changed and which requirement IDs are affected.
 
+## spec-v0.3 — draft
+
+**Added `tags`.** `manifest_version` goes to **1.3**.
+
+`tags` is an array of lowercase labels on each agent, for a caller that wants to
+filter agents without parsing prose:
+
+```json
+{ "name": "sales-representative", "tags": ["sales", "consultation", "services"] }
+```
+
+It is the answer to the question `actions` was trying to answer. One array of
+strings, no implied callable operation, no unspecified input hints, no ambiguity
+about whether it is a whitelist — because a tag never claims to be one (MAN-56).
+
+Additive: `MAN-55` – `MAN-58`; a 1.2 client ignores the member (MAN-3).
+
 ## spec-v0.2 — draft
 
 **Removed `actions`.** `manifest_version` goes to **1.2**.

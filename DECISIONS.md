@@ -8,6 +8,27 @@ Newest first.
 
 ---
 
+## D-9 — Added `tags`, the shape D-8 said to reach for
+
+**Decision.** `manifest_version` 1.3 adds `agents[].tags`: an array of lowercase
+labels, unique within an agent, advisory only.
+
+**Why.** D-8 rejected replacing `actions` with `tags` on process grounds — a field
+with no consumer is the same mistake in a better costume — and recorded that
+`tags` was the smallest thing that would solve selection if a host needed it.
+That need showed up immediately: the first person to read the manifest asked where
+the tags were. That is a consumer, and it is the kind this field is for: a program
+that wants to pick an agent without asking a model to read twenty paragraphs.
+
+**What it is not.** Not a capability claim, not a whitelist, not a promise. The
+requirements say so explicitly (MAN-56) because `actions` failed precisely by
+letting readers assume otherwise.
+
+**Cost.** Tag names are now part of the contract: renaming one breaks a caller
+that filters on it (MAN-57). That is why the guidance is few and stable.
+
+---
+
 ## D-8 — Removed `actions` before anyone implemented it
 
 **Decision.** `manifest_version` 1.2 has no `actions`. `MAN-24` – `MAN-27` are

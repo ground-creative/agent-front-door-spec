@@ -31,6 +31,7 @@ import argparse
 import hashlib
 import json
 import pathlib
+import re
 import socket
 import ssl
 import struct
@@ -44,7 +45,7 @@ except ImportError:  # pragma: no cover - documented requirement
     raise SystemExit(2)
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-SPEC_VERSION = "spec-v0.2"
+SPEC_VERSION = "spec-v0.3"
 HEADER = struct.Struct(">IBI")
 MAX_PAYLOAD = 8 << 20
 
@@ -243,6 +244,24 @@ def check_manifest(manifest: dict) -> None:
 
     agents = manifest.get("agents") or []
     record("MAN-51", True, f"{len(agents)} agent(s) advertised")
+
+    # MAN-55: a tag a caller might filter on must be well formed, or the filter
+    # silently misses an agent.
+    tag_pattern = re.compile(r"^[a-z][a-z0-9._-]{0,63}$")
+    bad: list[str] = []
+    for agent in agents:
+        seen: set[str] = set()
+        for tag in agent.get("tags") or []:
+            if not isinstance(tag, str) or not tag_pattern.match(tag):
+                bad.append(f"{agent.get('name')}: {tag!r} is not a valid tag")
+            elif tag in seen:
+                bad.append(f"{agent.get('name')}: duplicate tag {tag!r}")
+            else:
+                seen.add(tag)
+    if not any(agent.get("tags") for agent in agents):
+        record("MAN-55", None, "no agent publishes tags")
+    else:
+        record("MAN-55", not bad, "; ".join(bad) if bad else "tags well formed")
 
 
 def check_sessions(wire: Wire, manifest: dict) -> None:
