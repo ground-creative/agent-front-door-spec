@@ -16,14 +16,14 @@ retired in place; the numbers are never reused.
 **Why.** It was added in 1.1 as the machine-actionable half of an agent, and it
 failed every test a field should pass:
 
-- *Nothing breaks if it is deleted.* Deleting `sessions`, `capabilities` or
+- _Nothing breaks if it is deleted._ Deleting `sessions`, `capabilities` or
   `links` changes behaviour; deleting `actions` changed nothing. Both reference
   clients only printed it.
-- *It cannot be acted on.* There is no `invoke` frame, so a name could not select
+- _It cannot be acted on._ There is no `invoke` frame, so a name could not select
   anything. A selector that cannot select is a label.
-- *It was specified to be non-binding.* `MAN-26` forbade reading it as a
+- _It was specified to be non-binding._ `MAN-26` forbade reading it as a
   whitelist and `MAN-25` called its inputs hints, so it carried no obligation.
-- *Two readers misread it.* It was read as quick replies, then as an exhaustive
+- _Two readers misread it._ It was read as quick replies, then as an exhaustive
   list of what the agent can do. Neither is what it said. A field that reliably
   misleads its readers is a defect, not a documentation problem.
 

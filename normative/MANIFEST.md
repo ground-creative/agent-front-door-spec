@@ -542,12 +542,12 @@ Identifiers are never reused: a citation in an article or an issue keeps naming
 the rule it named when it was written. These were removed, and the numbers stay
 retired.
 
-| ID     | Retired in | Was | Why |
-| ------ | ---------- | --- | --- |
+| ID     | Retired in | Was                                  | Why                      |
+| ------ | ---------- | ------------------------------------ | ------------------------ |
 | MAN-24 | 1.2        | `action.name` charset and uniqueness | `actions` removed (§8.2) |
-| MAN-25 | 1.2        | `input`/`output` are hints | `actions` removed (§8.2) |
-| MAN-26 | 1.2        | `actions` is not a whitelist | `actions` removed (§8.2) |
-| MAN-27 | 1.2        | no unhonourable action | `actions` removed (§8.2) |
+| MAN-25 | 1.2        | `input`/`output` are hints           | `actions` removed (§8.2) |
+| MAN-26 | 1.2        | `actions` is not a whitelist         | `actions` removed (§8.2) |
+| MAN-27 | 1.2        | no unhonourable action               | `actions` removed (§8.2) |
 
 A client built against `manifest_version` 1.1 that reads `actions` will simply
 find it absent, which MAN-49 already requires it to tolerate.

@@ -9,7 +9,7 @@ legitimate; a silent gap is not.
 | Project                                           | Language | Role            | Level          | Against             | Notes                                                                                                                                                                                               |
 | ------------------------------------------------- | -------- | --------------- | -------------- | ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [vireo](https://github.com/ground-creative/vireo) | Go       | daemon (server) | L3, partial L4 | `spec-v0.1` (draft) | Reference implementation. Emits `manifest_version` 1.1. Passes the frame and manifest fixtures. Does not yet advertise/verify every L4 item (restart semantics documented, retention configurable). |
-| ziwa.ai                                           | —        | deployment      | L2             | pre-`spec-v0.1`     | Live endpoint used for testing. Runs an older build: no `manifest_version`, no `links`, verification not enforced.                                                                                                  |
+| ziwa.ai                                           | —        | deployment      | L2             | pre-`spec-v0.1`     | Live endpoint used for testing. Runs an older build: no `manifest_version`, no `links`, verification not enforced.                                                                                  |
 
 ## Client side
 

@@ -168,8 +168,9 @@ def check_inline_json() -> None:
             try:
                 json.loads("{" + stripped + "}")
             except json.JSONDecodeError as exc:
-                fail(f"{path.relative_to(ROOT)}: json block {index} does not parse: {exc}")
-
+                fail(
+                    f"{path.relative_to(ROOT)}: json block {index} does not parse: {exc}"
+                )
 
 
 def main() -> int:
