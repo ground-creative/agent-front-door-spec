@@ -202,7 +202,9 @@ def check_spec_version_consistency() -> None:
     probe = (ROOT / "machine" / "conformance.py").read_text()
     for version in re.findall(r'SPEC_VERSION = "(spec-v[0-9]+\.[0-9]+)"', probe):
         if version != newest:
-            fail(f"machine/conformance.py: says {version}, but the newest release is {newest}")
+            fail(
+                f"machine/conformance.py: says {version}, but the newest release is {newest}"
+            )
 
 
 def check_inline_json() -> None:
