@@ -1,0 +1,177 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-front-door.org/schema/manifest-1.1.json",
+  "title": "Agent Front Door manifest",
+  "description": "The manifest object described by normative/MANIFEST.md at manifest_version 1.1.",
+  "type": "object",
+  "required": ["manifest_version", "protocol", "endpoint", "agents"],
+  "additionalProperties": true,
+  "properties": {
+    "manifest_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+$",
+      "description": "MAN-1"
+    },
+    "protocol": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Wire protocol identifier, e.g. vireo/1"
+    },
+    "endpoint": { "$ref": "#/$defs/endpoint" },
+    "agents": {
+      "type": "array",
+      "description": "MAN-7: may be empty",
+      "items": { "$ref": "#/$defs/agent" }
+    },
+    "links": { "$ref": "#/$defs/links" },
+    "capabilities": { "$ref": "#/$defs/capabilities" },
+    "limits": { "$ref": "#/$defs/limits" },
+    "session": { "$ref": "#/$defs/session" },
+    "generated_at": { "type": "string", "format": "date-time", "description": "MAN-39" },
+    "expires_at": { "type": "string", "format": "date-time", "description": "MAN-39" },
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "description": "MAN-40"
+    },
+    "signature": {
+      "description": "MAN-41: reserved; MUST be null in manifest_version 1.1",
+      "type": ["object", "null"]
+    },
+    "refs": {
+      "type": "object",
+      "description": "MAN-44: deprecated, superseded by links",
+      "additionalProperties": { "type": "string" }
+    },
+    "commands": {
+      "type": "array",
+      "description": "MAN-45: deprecated, superseded by capabilities.session",
+      "items": {
+        "type": "string",
+        "enum": ["session.new", "session.get", "session.list", "session.close", "session.prune"]
+      }
+    }
+  },
+  "$defs": {
+    "endpoint": {
+      "type": "object",
+      "required": ["name"],
+      "additionalProperties": true,
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "description": "MAN-9: opaque, stable" },
+        "name": { "type": "string", "minLength": 1, "description": "MAN-10: display only" },
+        "description": { "type": "string", "description": "MAN-11: plain text" }
+      }
+    },
+    "agent": {
+      "type": "object",
+      "required": ["name", "sessions"],
+      "additionalProperties": true,
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+          "description": "MAN-12"
+        },
+        "id": { "type": "string", "minLength": 1, "description": "MAN-14" },
+        "description": { "type": "string", "description": "MAN-17" },
+        "sessions": { "type": "boolean", "description": "MAN-15" },
+        "start_message": { "type": "string", "description": "MAN-16" },
+        "actions": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/action" }
+        },
+        "links": { "$ref": "#/$defs/links" },
+        "limits": { "$ref": "#/$defs/limits" },
+        "session": { "$ref": "#/$defs/session" },
+        "refs": {
+          "type": "object",
+          "description": "MAN-44: deprecated, superseded by links",
+          "additionalProperties": { "type": "string" }
+        }
+      }
+    },
+    "links": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/link" }
+    },
+    "link": {
+      "type": "object",
+      "required": ["rel", "href"],
+      "additionalProperties": true,
+      "properties": {
+        "rel": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9._-]{0,63}$",
+          "description": "MAN-20"
+        },
+        "href": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:",
+          "description": "MAN-19: absolute URI"
+        },
+        "label": { "type": "string" },
+        "type": { "type": "string", "description": "Media type, if known" },
+        "description": { "type": "string" }
+      }
+    },
+    "action": {
+      "type": "object",
+      "required": ["name", "summary"],
+      "additionalProperties": true,
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{0,63}$",
+          "description": "MAN-24"
+        },
+        "summary": { "type": "string", "minLength": 1 },
+        "input": { "type": "string", "description": "MAN-25: provisional hint" },
+        "output": { "type": "string", "description": "MAN-25: provisional hint" }
+      }
+    },
+    "capabilities": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "session": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "new": { "type": "boolean", "description": "MAN-29" },
+            "get": { "type": "boolean" },
+            "list": { "type": "boolean" },
+            "close": { "type": "boolean" },
+            "prune": { "type": "boolean" }
+          }
+        },
+        "progress": { "type": "boolean" },
+        "cancel": { "type": "boolean" },
+        "max_turn_seconds": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "limits": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "max_message_bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8388608,
+          "description": "MAN-31: bounded by the protocol frame cap"
+        },
+        "requests_per_minute": { "type": "integer", "minimum": 1 },
+        "burst": { "type": "integer", "minimum": 1 },
+        "max_turns": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "session": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "ttl_seconds": { "type": "integer", "minimum": 1, "description": "MAN-37" }
+      }
+    }
+  }
+}

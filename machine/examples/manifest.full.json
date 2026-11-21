@@ -1,0 +1,74 @@
+{
+  "manifest_version": "1.1",
+  "protocol": "vireo/1",
+  "endpoint": {
+    "id": "restaurant-prod",
+    "name": "restaurant",
+    "description": "Fresh pizza and table bookings"
+  },
+  "links": [
+    { "rel": "site", "href": "https://restaurant.example/", "label": "Website", "type": "text/html" },
+    { "rel": "status", "href": "https://status.restaurant.example/", "type": "text/html" }
+  ],
+  "capabilities": {
+    "session": { "new": true, "get": true, "list": true, "close": true, "prune": true },
+    "progress": true,
+    "cancel": true,
+    "max_turn_seconds": 300
+  },
+  "limits": {
+    "max_message_bytes": 8388608,
+    "requests_per_minute": 60,
+    "burst": 10
+  },
+  "session": { "ttl_seconds": 3600 },
+  "agents": [
+    {
+      "id": "orders",
+      "name": "orders",
+      "description": "Take food orders: pizzas, sides, drinks, pickup or delivery",
+      "sessions": true,
+      "start_message": "Hello! Ask me anything about the restaurant.",
+      "actions": [
+        {
+          "name": "place_order",
+          "summary": "Place a pickup or delivery order",
+          "input": "items, and either pickup or a delivery address"
+        },
+        {
+          "name": "check_order",
+          "summary": "Report the state of an existing order",
+          "input": "an order reference"
+        }
+      ],
+      "links": [
+        { "rel": "menu", "href": "https://restaurant.example/menu", "label": "Menu", "type": "text/html" }
+      ],
+      "session": { "ttl_seconds": 86400 }
+    },
+    {
+      "name": "reservations",
+      "description": "Check availability, book a table and cancel a booking",
+      "sessions": true,
+      "actions": [
+        { "name": "book_table", "summary": "Reserve a table for a date and party size" },
+        { "name": "cancel_booking", "summary": "Cancel an existing reservation" }
+      ],
+      "limits": { "requests_per_minute": 20, "burst": 3 }
+    },
+    {
+      "name": "status",
+      "description": "Opening hours and current waiting time",
+      "sessions": false
+    }
+  ],
+  "refs": {
+    "menu": "https://restaurant.example/menu",
+    "docs": "https://restaurant.example/docs"
+  },
+  "commands": ["session.new", "session.get", "session.list", "session.close", "session.prune"],
+  "generated_at": "2026-11-21T09:14:00Z",
+  "expires_at": "2026-11-22T09:14:00Z",
+  "digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "signature": null
+}

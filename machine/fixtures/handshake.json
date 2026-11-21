@@ -1,0 +1,83 @@
+{
+  "protocol": "vireo/1",
+  "note": "A complete first exchange. Frames are listed in the order they appear on the wire, both directions interleaved.",
+  "client_id": "vireo_4f1c8a2e9b7d4c0fa1e2d3b4c5a6f7e8",
+  "frames": [
+    {
+      "direction": "client->server",
+      "stream_id": 0,
+      "type": "negotiate",
+      "payload": {
+        "protocol": "vireo/1",
+        "client": {
+          "id": "vireo_4f1c8a2e9b7d4c0fa1e2d3b4c5a6f7e8",
+          "name": "conformance",
+          "version": "0.1"
+        }
+      },
+      "requirement": "PROTO-8"
+    },
+    {
+      "direction": "server->client",
+      "stream_id": 0,
+      "type": "manifest",
+      "payload": {
+        "manifest_version": "1.1",
+        "protocol": "vireo/1",
+        "endpoint": { "id": "fixture", "name": "fixture endpoint" },
+        "agents": [
+          { "name": "echo", "description": "Repeats what it is told", "sessions": false }
+        ]
+      },
+      "requirement": "PROTO-13"
+    }
+  ],
+  "rejections": [
+    {
+      "name": "first-frame-not-negotiate",
+      "first_frame": {
+        "stream_id": 0,
+        "type": "message",
+        "payload": { "agent": "echo", "message": "hi" }
+      },
+      "expect_error": { "code": "invalid_frame" },
+      "requirement": "PROTO-12"
+    },
+    {
+      "name": "client-id-uppercase-hex",
+      "first_frame": {
+        "stream_id": 0,
+        "type": "negotiate",
+        "payload": {
+          "protocol": "vireo/1",
+          "client": { "id": "vireo_4F1C8A2E9B7D4C0FA1E2D3B4C5A6F7E8" }
+        }
+      },
+      "expect_error": { "code": "bad_client_id" },
+      "requirement": "PROTO-8"
+    },
+    {
+      "name": "client-id-missing",
+      "first_frame": {
+        "stream_id": 0,
+        "type": "negotiate",
+        "payload": { "protocol": "vireo/1" }
+      },
+      "expect_error": { "code": "bad_client_id" },
+      "requirement": "PROTO-8"
+    },
+    {
+      "name": "unsupported-protocol",
+      "first_frame": {
+        "stream_id": 0,
+        "type": "negotiate",
+        "payload": {
+          "protocol": "vireo/2",
+          "client": { "id": "vireo_4f1c8a2e9b7d4c0fa1e2d3b4c5a6f7e8" }
+        }
+      },
+      "expect_error": { "code": "bad_protocol" },
+      "requirement": "PROTO-11"
+    }
+  ]
+}

@@ -1,0 +1,153 @@
+{
+  "note": "Backend contract vectors (WH-1..WH-13). Headers are shown only where they carry meaning.",
+  "cases": [
+    {
+      "name": "plain-json-answer",
+      "requirement": "WH-4",
+      "request": {
+        "method": "POST",
+        "path": "/vireo/message",
+        "headers": {
+          "Content-Type": "application/json",
+          "X-Vireo-Protocol": "vireo/1",
+          "X-Vireo-Agent": "orders",
+          "X-Vireo-Session": "y113YjxvfPQzaE6ZWhmabl-wnxthBAFJ"
+        },
+        "body": {
+          "agent": "orders",
+          "session_id": "y113YjxvfPQzaE6ZWhmabl-wnxthBAFJ",
+          "message": "I'd like 2 margherita pizzas for pickup"
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": { "Content-Type": "application/json" },
+        "body": {
+          "reply": "Two margherita for pickup, ready in twenty minutes.",
+          "session": { "summary": "ordered 2 margherita", "status": "open" }
+        }
+      },
+      "expect_frames": [
+        { "type": "data", "payload": { "reply": "Two margherita for pickup, ready in twenty minutes.", "session": { "summary": "ordered 2 margherita", "status": "open" } } },
+        { "type": "end", "payload": { "ok": true } }
+      ]
+    },
+    {
+      "name": "bare-string-is-the-reply",
+      "requirement": "WH-4",
+      "request": {
+        "method": "POST",
+        "path": "/vireo/message",
+        "body": { "agent": "orders", "message": "hi" }
+      },
+      "response": {
+        "status": 200,
+        "headers": { "Content-Type": "application/json" },
+        "body": "\"hello\""
+      },
+      "expect_frames": [
+        { "type": "data", "payload": { "reply": "hello" } },
+        { "type": "end", "payload": { "ok": true } }
+      ]
+    },
+    {
+      "name": "backend-error-is-upstream-error",
+      "requirement": "WH-5",
+      "request": {
+        "method": "POST",
+        "path": "/vireo/message",
+        "body": { "agent": "orders", "message": "hi" }
+      },
+      "response": { "status": 503, "body": "unavailable" },
+      "expect_frames": [
+        { "type": "error", "payload": { "code": "upstream_error" } }
+      ]
+    },
+    {
+      "name": "ndjson-progress-then-answer",
+      "requirement": "WH-9",
+      "request": {
+        "method": "POST",
+        "path": "/vireo/message",
+        "headers": { "Accept": "application/x-ndjson" },
+        "body": { "agent": "creator", "message": "build me an agent from my site" }
+      },
+      "response": {
+        "status": 200,
+        "headers": { "Content-Type": "application/x-ndjson" },
+        "body": [
+          "{\"partial\":\"fetching your site…\"}",
+          "{\"partial\":\"building the assistant…\"}",
+          "{\"reply\":\"Done — your assistant is live.\",\"session\":{\"summary\":\"created an agent\"}}"
+        ]
+      },
+      "expect_frames": [
+        { "type": "partial", "payload": { "kind": "status", "seq": 1, "text": "fetching your site…" } },
+        { "type": "partial", "payload": { "kind": "status", "seq": 2, "text": "building the assistant…" } },
+        { "type": "data", "payload": { "reply": "Done — your assistant is live.", "session": { "summary": "created an agent" } } },
+        { "type": "end", "payload": { "ok": true } }
+      ]
+    },
+    {
+      "name": "first-turn-carries-the-greeting",
+      "requirement": "WH-12",
+      "request": {
+        "method": "POST",
+        "path": "/vireo/message",
+        "body": {
+          "agent": "concierge",
+          "session_id": "s1",
+          "message": "do you deliver?",
+          "initial_assistant_message": "Hello! Ask me anything about the restaurant."
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": { "reply": "Yes, within 5 km." }
+      },
+      "expect_frames": [
+        { "type": "data", "payload": { "reply": "Yes, within 5 km." } },
+        { "type": "end", "payload": { "ok": true } }
+      ]
+    },
+    {
+      "name": "second-turn-omits-the-greeting",
+      "requirement": "WH-13",
+      "request": {
+        "method": "POST",
+        "path": "/vireo/message",
+        "body": {
+          "agent": "concierge",
+          "session_id": "s1",
+          "message": "and on sundays?"
+        }
+      },
+      "note": "initial_assistant_message MUST be absent.",
+      "response": {
+        "status": 200,
+        "body": { "reply": "Noon to nine." }
+      },
+      "expect_frames": [
+        { "type": "data", "payload": { "reply": "Noon to nine." } },
+        { "type": "end", "payload": { "ok": true } }
+      ]
+    },
+    {
+      "name": "cancelled-turn-produces-no-data",
+      "requirement": "PROTO-27",
+      "request": {
+        "method": "POST",
+        "path": "/vireo/message",
+        "body": { "agent": "creator", "message": "build me an agent" }
+      },
+      "cancel": { "stream_id": 3 },
+      "expect_frames": [
+        { "type": "end", "payload": { "ok": false, "cancelled": true } }
+      ],
+      "expect_side_effects": {
+        "session_turns": "unchanged",
+        "session_summary": "unchanged"
+      }
+    }
+  ]
+}

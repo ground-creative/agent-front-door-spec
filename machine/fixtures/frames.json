@@ -1,0 +1,89 @@
+{
+  "protocol": "vireo/1",
+  "note": "Frame type codes from normative/PROTOCOL.md section 2. Hex is authoritative.",
+  "cases": [
+    {
+      "name": "negotiate-on-stream-0",
+      "requirement": "PROTO-8",
+      "stream_id": 0,
+      "type": "negotiate",
+      "type_code": 16,
+      "payload": "{\"protocol\":\"vireo/1\"}",
+      "hex": "0000000010000000167b2270726f746f636f6c223a22766972656f2f31227d",
+      "expect": "accept"
+    },
+    {
+      "name": "cancel-on-stream-3",
+      "requirement": "PROTO-27",
+      "stream_id": 3,
+      "type": "cancel",
+      "type_code": 19,
+      "payload": "",
+      "hex": "000000031300000000",
+      "expect": "accept"
+    },
+    {
+      "name": "error-invalid-frame",
+      "requirement": "PROTO-40",
+      "stream_id": 1,
+      "type": "error",
+      "type_code": 5,
+      "payload": "{\"code\":\"invalid_frame\",\"message\":\"x\"}",
+      "hex": "0000000105000000267b22636f6465223a22696e76616c69645f6672616d65222c226d657373616765223a2278227d",
+      "expect": "accept"
+    },
+    {
+      "name": "empty-data-payload",
+      "requirement": "PROTO-19",
+      "stream_id": 7,
+      "type": "data",
+      "type_code": 2,
+      "payload": "",
+      "hex": "000000070200000000",
+      "expect": "accept"
+    },
+    {
+      "name": "unknown-frame-type-ignored",
+      "requirement": "PROTO-6",
+      "stream_id": 9,
+      "type": "unknown",
+      "type_code": 106,
+      "payload": "{\"future\":true}",
+      "hex": "000000096a0000000f7b22667574757265223a747275657d",
+      "expect": "accept"
+    },
+    {
+      "name": "oversize-length-rejected-before-buffering",
+      "requirement": "PROTO-4",
+      "stream_id": 2,
+      "type": "message",
+      "type_code": 1,
+      "payload": null,
+      "hex": "000000020100800001",
+      "expect": "reject",
+      "error": "payload length exceeds 8388608"
+    },
+    {
+      "name": "max-length-boundary",
+      "requirement": "PROTO-4",
+      "stream_id": 5,
+      "type": "data",
+      "type_code": 2,
+      "payload": null,
+      "hex": "000000050200800000",
+      "expect": "accept",
+      "note": "Header only: length exactly 8388608 is legal; the payload is not included in the fixture."
+    },
+    {
+      "name": "truncated-payload",
+      "requirement": "PROTO-5",
+      "stream_id": 4,
+      "type": "message",
+      "type_code": 1,
+      "payload": "{}",
+      "hex": "00000004010000000a7b227d",
+      "expect": "reject",
+      "error": "unexpected end of frame payload"
+    }
+  ]
+}

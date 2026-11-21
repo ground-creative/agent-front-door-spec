@@ -1,0 +1,218 @@
+{
+  "note": "Documents a conforming client MUST reject (MAN-47, MAN-48). Each entry names the requirement it violates.",
+  "cases": [
+    {
+      "name": "missing-manifest-version",
+      "requirement": "MAN-1",
+      "document": {
+        "protocol": "vireo/1",
+        "endpoint": { "name": "x" },
+        "agents": []
+      }
+    },
+    {
+      "name": "manifest-version-not-major-minor",
+      "requirement": "MAN-1",
+      "document": {
+        "manifest_version": "1",
+        "protocol": "vireo/1",
+        "endpoint": { "name": "x" },
+        "agents": []
+      }
+    },
+    {
+      "name": "missing-endpoint",
+      "requirement": "MAN-47",
+      "document": {
+        "manifest_version": "1.1",
+        "protocol": "vireo/1",
+        "agents": []
+      }
+    },
+    {
+      "name": "endpoint-without-name",
+      "requirement": "MAN-47",
+      "document": {
+        "manifest_version": "1.1",
+        "protocol": "vireo/1",
+        "endpoint": { "id": "x" },
+        "agents": []
+      }
+    },
+    {
+      "name": "missing-agents",
+      "requirement": "MAN-47",
+      "document": {
+        "manifest_version": "1.1",
+        "protocol": "vireo/1",
+        "endpoint": { "name": "x" }
+      }
+    },
+    {
+      "name": "agent-without-name",
+      "requirement": "MAN-47",
+      "document": {
+        "manifest_version": "1.1",
+        "protocol": "vireo/1",
+        "endpoint": { "name": "x" },
+        "agents": [{ "description": "nameless", "sessions": true }]
+      }
+    },
+    {
+      "name": "agent-without-sessions",
+      "requirement": "MAN-47",
+      "document": {
+        "manifest_version": "1.1",
+        "protocol": "vireo/1",
+        "endpoint": { "name": "x" },
+        "agents": [{ "name": "a", "description": "no sessions flag" }]
+      }
+    },
+    {
+      "name": "agent-name-with-space",
+      "requirement": "MAN-12",
+      "document": {
+        "manifest_version": "1.1",
+        "protocol": "vireo/1",
+        "endpoint": { "name": "x" },
+        "agents": [{ "name": "order desk", "sessions": true }]
+      }
+    },
+    {
+      "name": "duplicate-agent-name",
+      "requirement": "MAN-12",
+      "note": "Semantic: JSON Schema cannot express cross-item uniqueness, so only a validating implementation catches this.",
+      "document": {
+        "manifest_version": "1.1",
+        "protocol": "vireo/1",
+        "endpoint": { "name": "x" },
+        "agents": [
+          { "name": "a", "sessions": true },
+          { "name": "a", "sessions": false }
+        ]
+      }
+    },
+    {
+      "name": "link-href-relative",
+      "requirement": "MAN-19",
+      "document": {
+        "manifest_version": "1.1",
+        "protocol": "vireo/1",
+        "endpoint": { "name": "x" },
+        "agents": [],
+        "links": [{ "rel": "docs", "href": "/docs" }]
+      }
+    },
+    {
+      "name": "link-rel-uppercase",
+      "requirement": "MAN-20",
+      "document": {
+        "manifest_version": "1.1",
+        "protocol": "vireo/1",
+        "endpoint": { "name": "x" },
+        "agents": [],
+        "links": [{ "rel": "Docs", "href": "https://example.com/docs" }]
+      }
+    },
+    {
+      "name": "action-name-uppercase",
+      "requirement": "MAN-24",
+      "document": {
+        "manifest_version": "1.1",
+        "protocol": "vireo/1",
+        "endpoint": { "name": "x" },
+        "agents": [
+          {
+            "name": "a",
+            "sessions": false,
+            "actions": [{ "name": "PlaceOrder", "summary": "x" }]
+          }
+        ]
+      }
+    },
+    {
+      "name": "capabilities-contradict-agents",
+      "requirement": "MAN-29",
+      "note": "Semantic, not structural: the schema accepts it, conformance does not.",
+      "document": {
+        "manifest_version": "1.1",
+        "protocol": "vireo/1",
+        "endpoint": { "name": "x" },
+        "capabilities": {
+          "session": { "new": false, "get": false, "close": false }
+        },
+        "agents": [{ "name": "a", "sessions": true }]
+      }
+    },
+    {
+      "name": "digest-not-sha256-prefixed",
+      "requirement": "MAN-40",
+      "document": {
+        "manifest_version": "1.1",
+        "protocol": "vireo/1",
+        "endpoint": { "name": "x" },
+        "agents": [],
+        "digest": "6b1e9c1e8a6d4b2f5e7a0c3d9b8f6a4e2d1c0b9a8f7e6d5c4b3a2918f7e6d5c4"
+      }
+    },
+    {
+      "name": "session-ttl-not-positive",
+      "requirement": "MAN-37",
+      "document": {
+        "manifest_version": "1.1",
+        "protocol": "vireo/1",
+        "endpoint": { "name": "x" },
+        "agents": [],
+        "session": { "ttl_seconds": 0 }
+      }
+    }
+  ],
+  "accepted": [
+    {
+      "name": "legacy-1.0-manifest-without-manifest-version",
+      "requirement": "MAN-53",
+      "schema": "manifest-1.0.schema.json",
+      "note": "Absence of manifest_version MUST be read as 1.0, not rejected. Validate this one against the 1.0 schema, not the 1.1 schema.",
+      "document": {
+        "protocol": "vireo/1",
+        "endpoint": { "name": "x" },
+        "commands": ["session.new", "session.close"],
+        "agents": [{ "name": "a", "sessions": true, "refs": { "docs": "https://example.com/docs" } }],
+        "refs": { "site": "https://example.com" },
+        "session": { "ttl_seconds": 3600, "list_enabled": true }
+      }
+    },
+    {
+      "name": "empty-agents-is-valid",
+      "requirement": "MAN-7",
+      "document": {
+        "manifest_version": "1.1",
+        "protocol": "vireo/1",
+        "endpoint": { "name": "x" },
+        "agents": []
+      }
+    },
+    {
+      "name": "unknown-members-are-ignored",
+      "requirement": "MAN-3",
+      "document": {
+        "manifest_version": "1.1",
+        "protocol": "vireo/1",
+        "endpoint": { "name": "x", "future_field": { "nested": true } },
+        "agents": [{ "name": "a", "sessions": false, "unknown_thing": 1 }],
+        "something_new": ["a", "b"]
+      }
+    },
+    {
+      "name": "refs-alias-to-links",
+      "requirement": "MAN-44",
+      "document": {
+        "manifest_version": "1.1",
+        "protocol": "vireo/1",
+        "endpoint": { "name": "x" },
+        "agents": [],
+        "refs": { "menu": "https://example.com/menu", "docs": "https://example.com/docs" }
+      }
+    }
+  ]
+}
