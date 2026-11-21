@@ -6,17 +6,17 @@ legitimate; a silent gap is not.
 
 ## Server side
 
-| Project | Language | Role | Level | Against | Notes |
-| --- | --- | --- | --- | --- | --- |
-| [vireo](https://github.com/ground-creative/vireo) | Go | daemon (server) | L3, partial L4 | `spec-v0.1` (draft) | Reference implementation. Emits `manifest_version` 1.1. Passes the frame and manifest fixtures. Does not yet advertise/verify every L4 item (restart semantics documented, retention configurable). |
-| ziwa.ai | — | deployment | L2 | pre-`spec-v0.1` | Live endpoint used for testing. Runs an older build: no `manifest_version`, no `links`/`actions`, verification not enforced. |
+| Project                                           | Language | Role            | Level          | Against             | Notes                                                                                                                                                                                               |
+| ------------------------------------------------- | -------- | --------------- | -------------- | ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [vireo](https://github.com/ground-creative/vireo) | Go       | daemon (server) | L3, partial L4 | `spec-v0.1` (draft) | Reference implementation. Emits `manifest_version` 1.1. Passes the frame and manifest fixtures. Does not yet advertise/verify every L4 item (restart semantics documented, retention configurable). |
+| ziwa.ai                                           | —        | deployment      | L2             | pre-`spec-v0.1`     | Live endpoint used for testing. Runs an older build: no `manifest_version`, no `links`/`actions`, verification not enforced.                                                                        |
 
 ## Client side
 
-| Project | Language | Role | Level | Against | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `vireo-chat` (in vireo) | Go | client | L3 | `spec-v0.1` (draft) | Verifies certificates by default (SEC-6). Validates the manifest on receipt (MAN-47). Passes the frame and manifest fixtures. |
-| [vireo-mcp](https://github.com/ground-creative/vireo-mcp) | Go | host adapter | L3 | `spec-v0.1` (draft) | Same protocol vocabulary, same fixtures, same verification default. Mirrored structs must stay identical. |
+| Project                                                   | Language | Role         | Level | Against             | Notes                                                                                                                         |
+| --------------------------------------------------------- | -------- | ------------ | ----- | ------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `vireo-chat` (in vireo)                                   | Go       | client       | L3    | `spec-v0.1` (draft) | Verifies certificates by default (SEC-6). Validates the manifest on receipt (MAN-47). Passes the frame and manifest fixtures. |
+| [vireo-mcp](https://github.com/ground-creative/vireo-mcp) | Go       | host adapter | L3    | `spec-v0.1` (draft) | Same protocol vocabulary, same fixtures, same verification default. Mirrored structs must stay identical.                     |
 
 ## How these were checked
 
@@ -32,9 +32,9 @@ is why the claim is partial.
 
 ## Manifest publishers (L0)
 
-| Publisher | Manifest | Notes |
-| --- | --- | --- |
-| — | — | Be the first. One file, no daemon. See [`machine/examples/manifest.minimal.json`](machine/examples/manifest.minimal.json). |
+| Publisher | Manifest | Notes                                                                                                                      |
+| --------- | -------- | -------------------------------------------------------------------------------------------------------------------------- |
+| —         | —        | Be the first. One file, no daemon. See [`machine/examples/manifest.minimal.json`](machine/examples/manifest.minimal.json). |
 
 ## Adding yourself
 

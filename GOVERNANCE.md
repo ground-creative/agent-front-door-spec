@@ -1,6 +1,6 @@
 # Governance
 
-*Informative, but binding on this repository's process.*
+_Informative, but binding on this repository's process._
 
 ## Who decides
 

@@ -27,26 +27,26 @@ One port serves both transports:
 
 ## 2. Frames
 
-| Byte | Field | Meaning |
-| --- | --- | --- |
-| 0–3 | `stream_id` (uint32) | correlates request/response stream |
-| 4 | `type` (uint8) | frame type |
-| 5–8 | `length` (uint32) | payload length |
-| 9– | payload | UTF-8 JSON |
+| Byte | Field                | Meaning                            |
+| ---- | -------------------- | ---------------------------------- |
+| 0–3  | `stream_id` (uint32) | correlates request/response stream |
+| 4    | `type` (uint8)       | frame type                         |
+| 5–8  | `length` (uint32)    | payload length                     |
+| 9–   | payload              | UTF-8 JSON                         |
 
 All integers are big-endian.
 
-| Type | Code | Payload | Since |
-| --- | --- | --- | --- |
-| `message` | `0x01` | `MessageRequest` | 1.0 |
-| `data` | `0x02` | `MessageResponse` | 1.0 |
-| `end` | `0x03` | `EndPayload` | 1.0 |
-| `partial` | `0x04` | `PartialPayload` | 1.1 |
-| `error` | `0x05` | `ErrorPayload` | 1.0 |
-| `negotiate` | `0x10` | `NegotiateRequest` | 1.0 |
-| `manifest` | `0x11` | manifest | 1.0 |
-| `session` | `0x12` | `SessionRequest` | 1.0 |
-| `cancel` | `0x13` | empty | 1.1 |
+| Type        | Code   | Payload            | Since |
+| ----------- | ------ | ------------------ | ----- |
+| `message`   | `0x01` | `MessageRequest`   | 1.0   |
+| `data`      | `0x02` | `MessageResponse`  | 1.0   |
+| `end`       | `0x03` | `EndPayload`       | 1.0   |
+| `partial`   | `0x04` | `PartialPayload`   | 1.1   |
+| `error`     | `0x05` | `ErrorPayload`     | 1.0   |
+| `negotiate` | `0x10` | `NegotiateRequest` | 1.0   |
+| `manifest`  | `0x11` | manifest           | 1.0   |
+| `session`   | `0x12` | `SessionRequest`   | 1.0   |
+| `cancel`    | `0x13` | empty              | 1.1   |
 
 - **PROTO-4.** A payload MUST NOT exceed 8 388 608 bytes (8 MiB). A reader MUST
   reject a larger advertised length without buffering it.
@@ -91,7 +91,7 @@ The first frame on a connection MUST be `negotiate`:
 - **PROTO-14.** A `negotiate` frame arriving later on an established connection
   MUST be answered with the manifest again. It MUST NOT close the connection.
 
-The manifest is the *first* thing a caller learns. Everything after it is
+The manifest is the _first_ thing a caller learns. Everything after it is
 conversation.
 
 ## 4. Messages
@@ -106,11 +106,11 @@ A `message` frame carries one turn:
 }
 ```
 
-| Field | Type | Req. | Meaning |
-| --- | --- | --- | --- |
-| `agent` | string | MUST | An agent `name` from the manifest |
+| Field        | Type   | Req.        | Meaning                                     |
+| ------------ | ------ | ----------- | ------------------------------------------- |
+| `agent`      | string | MUST        | An agent `name` from the manifest           |
 | `session_id` | string | conditional | Present when the agent has `sessions: true` |
-| `message` | string | MUST | The turn's text |
+| `message`    | string | MUST        | The turn's text                             |
 
 - **PROTO-15.** `agent` MUST name an agent present in the manifest the client
   received. An unknown name MUST fail with `agent_not_found`.
@@ -125,14 +125,23 @@ A `message` frame carries one turn:
 The server answers with a `data` frame, then an `end` frame:
 
 ```json
-{ "reply": "Sure — margherita, marinara and tiramisu are on the menu today.",
-  "session": { "summary": "took an order request" } }
+{
+  "reply": "Sure — margherita, marinara and tiramisu are on the menu today.",
+  "session": { "summary": "took an order request" }
+}
 ```
 
 ```json
-{ "ok": true,
-  "session": { "id": "y113Y...", "agent": "orders", "turns": 1,
-               "summary": "took an order request", "status": "open" } }
+{
+  "ok": true,
+  "session": {
+    "id": "y113Y...",
+    "agent": "orders",
+    "turns": 1,
+    "summary": "took an order request",
+    "status": "open"
+  }
+}
 ```
 
 - **PROTO-19.** Exactly one `data` frame MAY precede `end` for a turn. A turn that
@@ -207,13 +216,13 @@ A session is an **envelope**: identity and metadata, never conversation content.
 
 Session operations ride the `session` frame:
 
-| Op | Fields | Answer |
-| --- | --- | --- |
-| `session.new` | `agent`, `summary?` | `{session, start_message?}` |
-| `session.list` | `agent`, `limit?`, `cursor?` | `{sessions, next_cursor}` |
-| `session.get` | `agent`, `id` | the envelope |
-| `session.close` | `agent`, `id`, `reason?` | the closed envelope |
-| `session.prune` | `retention?` | `{retention, removed, before, after}` |
+| Op              | Fields                       | Answer                                |
+| --------------- | ---------------------------- | ------------------------------------- |
+| `session.new`   | `agent`, `summary?`          | `{session, start_message?}`           |
+| `session.list`  | `agent`, `limit?`, `cursor?` | `{sessions, next_cursor}`             |
+| `session.get`   | `agent`, `id`                | the envelope                          |
+| `session.close` | `agent`, `id`, `reason?`     | the closed envelope                   |
+| `session.prune` | `retention?`                 | `{retention, removed, before, after}` |
 
 - **PROTO-37.** A server MUST accept only operations advertised as `true` in
   `capabilities.session`, and MUST reject the rest with `invalid_frame`.
@@ -225,20 +234,23 @@ Session operations ride the `session` frame:
 ## 8. Errors
 
 ```json
-{ "code": "session_required", "message": "agent \"orders\" holds conversations: start one first" }
+{
+  "code": "session_required",
+  "message": "agent \"orders\" holds conversations: start one first"
+}
 ```
 
-| Code | When |
-| --- | --- |
-| `bad_client_id` | the client id is missing or malformed |
-| `bad_protocol` | the negotiated protocol is not implemented |
-| `agent_not_found` | no agent with that name |
-| `session_required` | a conversational agent was addressed without a session |
-| `unknown_session` | the id is unknown, closed, expired, or another client's |
-| `upstream_error` | the backend failed, timed out, or returned non-2xx |
-| `rate_limited` | the caller exceeded an advertised or enforced limit |
-| `invalid_frame` | malformed frame, payload, or a disabled operation |
-| `internal` | anything unexpected |
+| Code               | When                                                    |
+| ------------------ | ------------------------------------------------------- |
+| `bad_client_id`    | the client id is missing or malformed                   |
+| `bad_protocol`     | the negotiated protocol is not implemented              |
+| `agent_not_found`  | no agent with that name                                 |
+| `session_required` | a conversational agent was addressed without a session  |
+| `unknown_session`  | the id is unknown, closed, expired, or another client's |
+| `upstream_error`   | the backend failed, timed out, or returned non-2xx      |
+| `rate_limited`     | the caller exceeded an advertised or enforced limit     |
+| `invalid_frame`    | malformed frame, payload, or a disabled operation       |
+| `internal`         | anything unexpected                                     |
 
 - **PROTO-40.** An error MUST arrive as an `error` frame on the caller's stream.
 - **PROTO-41.** `code` MUST be one of the values above. A client MUST treat an
@@ -303,8 +315,12 @@ When an agent declares `start_message`, the server returns it at
 turn:
 
 ```json
-{ "agent": "orders", "session_id": "…", "message": "…",
-  "initial_assistant_message": "Welcome to the orders desk." }
+{
+  "agent": "orders",
+  "session_id": "…",
+  "message": "…",
+  "initial_assistant_message": "Welcome to the orders desk."
+}
 ```
 
 - **WH-12.** `initial_assistant_message` MUST be present only on the first turn of
@@ -335,65 +351,65 @@ MUST tolerate their absence.
 
 ## 11. Requirement index
 
-| ID | Section | Subject |
-| --- | --- | --- |
-| PROTO-1 | 1 | TLS 1.3 minimum, ALPN |
-| PROTO-2 | 1 | both transports on one port |
-| PROTO-3 | 1 | one frame per read |
-| PROTO-4 | 2 | 8 MiB cap, reject before buffering |
-| PROTO-5 | 2 | truncated payload is an error |
-| PROTO-6 | 2 | ignore unknown frame types |
-| PROTO-7 | 2 | do not send unsupported frames |
-| PROTO-8 | 3 | client id shape |
-| PROTO-9 | 3 | client id reused |
-| PROTO-10 | 3 | name/version are informational |
-| PROTO-11 | 3 | unknown protocol refused |
-| PROTO-12 | 3 | first frame must be negotiate |
-| PROTO-13 | 3 | manifest answers negotiate |
-| PROTO-14 | 3 | re-negotiate returns manifest |
-| PROTO-15 | 4 | agent must exist |
-| PROTO-16 | 4 | session required for conversational agents |
-| PROTO-17 | 4 | no session for stateless agents |
-| PROTO-18 | 4 | empty message |
-| PROTO-19 | 4 | one data frame per turn |
-| PROTO-20 | 4 | end terminates a turn |
-| PROTO-21 | 4 | reply summary replaces envelope |
-| PROTO-22 | 4 | closed status ends the conversation |
-| PROTO-23 | 5 | partial never ends a turn |
-| PROTO-24 | 5 | partial seq ordering |
-| PROTO-25 | 5 | unknown partial kind ignored |
-| PROTO-26 | 5 | no partial without capability |
-| PROTO-27 | 6 | cancel behaviour |
-| PROTO-28 | 6 | cancelled turn does not touch the envelope |
-| PROTO-29 | 6 | late cancel ignored |
-| PROTO-30 | 6 | no rollback claims |
-| PROTO-31 | 6 | concurrent turns |
-| PROTO-32 | 7 | session status values |
-| PROTO-33 | 7 | session scoping |
-| PROTO-34 | 7 | only open sessions resume |
-| PROTO-35 | 7 | server mints ids |
-| PROTO-36 | 7 | envelope holds no content |
-| PROTO-37 | 7 | only advertised ops accepted |
-| PROTO-38 | 7 | session.new always for conversational agents |
-| PROTO-39 | 7 | session.new on stateless agent fails |
-| PROTO-40 | 8 | errors arrive as error frames |
-| PROTO-41 | 8 | known error codes |
-| PROTO-42 | 8 | message is diagnostic |
-| PROTO-43 | 8 | rate limit states retry delay |
-| PROTO-44 | 10 | SRV target and port are the address |
-| PROTO-45 | 10 | no SRV means no resolution |
-| PROTO-46 | 10 | priority and weight honoured |
-| PROTO-47 | 10 | ServerName and certificate |
-| WH-1 | 9 | one backend per turn |
-| WH-2 | 9 | request body fields |
-| WH-3 | 9 | headers match body |
-| WH-4 | 9 | 2xx semantics |
-| WH-5 | 9 | non-2xx is upstream_error |
-| WH-6 | 9 | 8 MiB body cap |
-| WH-7 | 9 | turn timeout |
-| WH-8 | 9 | cancellation reaches the backend |
-| WH-9 | 9.1 | partial lines forwarded |
-| WH-10 | 9.1 | last NDJSON line is the answer |
-| WH-11 | 9.1 | non-NDJSON is a single body |
-| WH-12 | 9.2 | first-turn greeting field |
-| WH-13 | 9.2 | later turns omit it |
+| ID       | Section | Subject                                      |
+| -------- | ------- | -------------------------------------------- |
+| PROTO-1  | 1       | TLS 1.3 minimum, ALPN                        |
+| PROTO-2  | 1       | both transports on one port                  |
+| PROTO-3  | 1       | one frame per read                           |
+| PROTO-4  | 2       | 8 MiB cap, reject before buffering           |
+| PROTO-5  | 2       | truncated payload is an error                |
+| PROTO-6  | 2       | ignore unknown frame types                   |
+| PROTO-7  | 2       | do not send unsupported frames               |
+| PROTO-8  | 3       | client id shape                              |
+| PROTO-9  | 3       | client id reused                             |
+| PROTO-10 | 3       | name/version are informational               |
+| PROTO-11 | 3       | unknown protocol refused                     |
+| PROTO-12 | 3       | first frame must be negotiate                |
+| PROTO-13 | 3       | manifest answers negotiate                   |
+| PROTO-14 | 3       | re-negotiate returns manifest                |
+| PROTO-15 | 4       | agent must exist                             |
+| PROTO-16 | 4       | session required for conversational agents   |
+| PROTO-17 | 4       | no session for stateless agents              |
+| PROTO-18 | 4       | empty message                                |
+| PROTO-19 | 4       | one data frame per turn                      |
+| PROTO-20 | 4       | end terminates a turn                        |
+| PROTO-21 | 4       | reply summary replaces envelope              |
+| PROTO-22 | 4       | closed status ends the conversation          |
+| PROTO-23 | 5       | partial never ends a turn                    |
+| PROTO-24 | 5       | partial seq ordering                         |
+| PROTO-25 | 5       | unknown partial kind ignored                 |
+| PROTO-26 | 5       | no partial without capability                |
+| PROTO-27 | 6       | cancel behaviour                             |
+| PROTO-28 | 6       | cancelled turn does not touch the envelope   |
+| PROTO-29 | 6       | late cancel ignored                          |
+| PROTO-30 | 6       | no rollback claims                           |
+| PROTO-31 | 6       | concurrent turns                             |
+| PROTO-32 | 7       | session status values                        |
+| PROTO-33 | 7       | session scoping                              |
+| PROTO-34 | 7       | only open sessions resume                    |
+| PROTO-35 | 7       | server mints ids                             |
+| PROTO-36 | 7       | envelope holds no content                    |
+| PROTO-37 | 7       | only advertised ops accepted                 |
+| PROTO-38 | 7       | session.new always for conversational agents |
+| PROTO-39 | 7       | session.new on stateless agent fails         |
+| PROTO-40 | 8       | errors arrive as error frames                |
+| PROTO-41 | 8       | known error codes                            |
+| PROTO-42 | 8       | message is diagnostic                        |
+| PROTO-43 | 8       | rate limit states retry delay                |
+| PROTO-44 | 10      | SRV target and port are the address          |
+| PROTO-45 | 10      | no SRV means no resolution                   |
+| PROTO-46 | 10      | priority and weight honoured                 |
+| PROTO-47 | 10      | ServerName and certificate                   |
+| WH-1     | 9       | one backend per turn                         |
+| WH-2     | 9       | request body fields                          |
+| WH-3     | 9       | headers match body                           |
+| WH-4     | 9       | 2xx semantics                                |
+| WH-5     | 9       | non-2xx is upstream_error                    |
+| WH-6     | 9       | 8 MiB body cap                               |
+| WH-7     | 9       | turn timeout                                 |
+| WH-8     | 9       | cancellation reaches the backend             |
+| WH-9     | 9.1     | partial lines forwarded                      |
+| WH-10    | 9.1     | last NDJSON line is the answer               |
+| WH-11    | 9.1     | non-NDJSON is a single body                  |
+| WH-12    | 9.2     | first-turn greeting field                    |
+| WH-13    | 9.2     | later turns omit it                          |

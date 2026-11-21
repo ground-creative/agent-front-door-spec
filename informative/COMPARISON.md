@@ -1,16 +1,16 @@
 # Comparison
 
-*Informative.* One page, because it is the first question every reviewer asks.
+_Informative._ One page, because it is the first question every reviewer asks.
 
-| | What it solves | What it does not | Relationship to this spec |
-| --- | --- | --- | --- |
-| **Scraping a website** | nothing structural — it reads what is already public | token cost, bot walls, silent breakage, no business control | the thing this replaces |
-| **Custom API per integration** | one service, one caller | carries over to nobody; every integration is new work | compatible: the backend behind a webhook can be any API |
-| **OpenAPI** | describing an HTTP API's operations and schemas | discovery of the business, sessions, progress, cancellation, who may call | a `link` with `rel: "openapi"` may point at one |
-| **MCP** | exposing tools to a host over stdio or HTTP | a business naming itself, discovery by domain, a conversation with turns | `vireo-mcp` is an adapter; a host that speaks this protocol natively needs none |
-| **A2A Agent Cards** | a well-known document describing an agent's interfaces | routing to a non-HTTP endpoint; sessions with explicit turn semantics | overlapping intent; different discovery and session model (see below) |
-| **`llms.txt`** | a curated list of pages for a model to read | anything enforceable; no conversation, no state, no identity | a link could point at one |
-| **A registry / directory** | a place to be listed | independence from the operator of the registry | explicitly rejected (`D-3`) |
+|                                | What it solves                                         | What it does not                                                          | Relationship to this spec                                                       |
+| ------------------------------ | ------------------------------------------------------ | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| **Scraping a website**         | nothing structural — it reads what is already public   | token cost, bot walls, silent breakage, no business control               | the thing this replaces                                                         |
+| **Custom API per integration** | one service, one caller                                | carries over to nobody; every integration is new work                     | compatible: the backend behind a webhook can be any API                         |
+| **OpenAPI**                    | describing an HTTP API's operations and schemas        | discovery of the business, sessions, progress, cancellation, who may call | a `link` with `rel: "openapi"` may point at one                                 |
+| **MCP**                        | exposing tools to a host over stdio or HTTP            | a business naming itself, discovery by domain, a conversation with turns  | `vireo-mcp` is an adapter; a host that speaks this protocol natively needs none |
+| **A2A Agent Cards**            | a well-known document describing an agent's interfaces | routing to a non-HTTP endpoint; sessions with explicit turn semantics     | overlapping intent; different discovery and session model (see below)           |
+| **`llms.txt`**                 | a curated list of pages for a model to read            | anything enforceable; no conversation, no state, no identity              | a link could point at one                                                       |
+| **A registry / directory**     | a place to be listed                                   | independence from the operator of the registry                            | explicitly rejected (`D-3`)                                                     |
 
 ## Versus MCP
 

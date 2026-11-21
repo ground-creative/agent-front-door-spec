@@ -25,12 +25,12 @@ This repository is that second door, written down.
 
 ## What is here
 
-| Layer | Artifact | Who adopts it |
-| --- | --- | --- |
-| L0 | DNS SRV record naming the endpoint | a business with DNS access |
+| Layer  | Artifact                                                            | Who adopts it              |
+| ------ | ------------------------------------------------------------------- | -------------------------- |
+| L0     | DNS SRV record naming the endpoint                                  | a business with DNS access |
 | **L1** | **the manifest** — a declarative description of endpoint and agents | anyone, no daemon required |
-| L2 | session protocol — framing, handshake, messages, progress, cancel | daemon authors |
-| L3 | backend contract — the webhook a business answers on | backend authors |
+| L2     | session protocol — framing, handshake, messages, progress, cancel   | daemon authors             |
+| L3     | backend contract — the webhook a business answers on                | backend authors            |
 
 The manifest is the adoption hook. A business can publish one before it owns a
 daemon, before it has TLS, before it writes a line of protocol code. The
@@ -40,13 +40,13 @@ conversation channel is what the manifest describes.
 
 Implementations claim a level; they do not have to implement everything.
 
-| Level | Name | Requires | Typical implementer |
-| --- | --- | --- | --- |
-| **L0** | Manifest publisher | publishes a valid manifest document | a business, a marketing site |
-| **L1** | Discovery | L0 + DNS SRV + TLS 1.3 + ALPN + `negotiate` → `manifest` | a read-only client or a minimal daemon |
-| **L2** | Conversations | L1 + sessions + `message`/`data`/`end` + webhook | a business daemon |
-| **L3** | Live | L2 + `partial` progress + `cancel` | a production daemon |
-| **L4** | Operational | L3 + advertised limits + persistence + retention | a hosted deployment |
+| Level  | Name               | Requires                                                 | Typical implementer                    |
+| ------ | ------------------ | -------------------------------------------------------- | -------------------------------------- |
+| **L0** | Manifest publisher | publishes a valid manifest document                      | a business, a marketing site           |
+| **L1** | Discovery          | L0 + DNS SRV + TLS 1.3 + ALPN + `negotiate` → `manifest` | a read-only client or a minimal daemon |
+| **L2** | Conversations      | L1 + sessions + `message`/`data`/`end` + webhook         | a business daemon                      |
+| **L3** | Live               | L2 + `partial` progress + `cancel`                       | a production daemon                    |
+| **L4** | Operational        | L3 + advertised limits + persistence + retention         | a hosted deployment                    |
 
 Conformance is claimed against a **spec tag**, not against a branch:
 `vireo 1.x — L3, spec-v0.1`. See [`normative/CONFORMANCE.md`](normative/CONFORMANCE.md).

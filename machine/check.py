@@ -51,7 +51,9 @@ def load_schemas() -> None:
         SCHEMAS[name] = json.loads(path.read_text())
 
 
-def schema_accepts(document: dict, name: str = "manifest.schema.json") -> tuple[bool, str]:
+def schema_accepts(
+    document: dict, name: str = "manifest.schema.json"
+) -> tuple[bool, str]:
     try:
         jsonschema.validate(document, SCHEMAS[name])
         return True, ""
@@ -82,13 +84,17 @@ def check_fixtures() -> None:
     for entry in doc.get("publisher", []):
         ok, _ = schema_accepts(entry["document"])
         if ok:
-            fail(f"fixtures/manifests.json: {entry['name']} is listed as publisher-only but the schema accepts it")
+            fail(
+                f"fixtures/manifests.json: {entry['name']} is listed as publisher-only but the schema accepts it"
+            )
 
     for entry in doc.get("accepted", []):
         schema = entry.get("schema", "manifest.schema.json")
         ok, message = schema_accepts(entry["document"], schema)
         if not ok:
-            fail(f"fixtures/manifests.json: {entry['name']} should be accepted by {schema}: {message}")
+            fail(
+                f"fixtures/manifests.json: {entry['name']} should be accepted by {schema}: {message}"
+            )
 
 
 def normative_requirement_ids() -> set[str]:
@@ -114,7 +120,9 @@ def check_fixture_requirements() -> None:
         for match in REQUIREMENT.finditer(text):
             req = match.group(0)
             if req not in known:
-                fail(f"{path.relative_to(ROOT)} cites {req}, which is not in any normative index")
+                fail(
+                    f"{path.relative_to(ROOT)} cites {req}, which is not in any normative index"
+                )
 
 
 def check_links() -> None:
@@ -130,12 +138,47 @@ def check_links() -> None:
                 fail(f"{path.relative_to(ROOT)}: link {target} does not resolve")
 
 
+JSON_FENCE = re.compile(r"```json\n(.*?)```", re.DOTALL)
+
+
+def check_inline_json() -> None:
+    """Examples inside normative text must still parse.
+
+    A formatter that reflows a fenced block can leave valid prose behind and
+    invalid JSON inside it; that is worse than a typo, because a reader copies it.
+
+    Two forms are legal: a complete document, and a single object member shown on
+    its own (this document is field-by-field, so `"links": [ ... ]` is a normal
+    block). An empty block is a template placeholder.
+    """
+    for path in sorted(ROOT.rglob("*.md")):
+        if ".git" in path.parts:
+            continue
+        text = path.read_text()
+        for index, block in enumerate(JSON_FENCE.findall(text), start=1):
+            stripped = block.strip()
+            if not stripped:
+                continue
+            try:
+                json.loads(stripped)
+                continue
+            except json.JSONDecodeError:
+                pass
+            # A member fragment: "{ <block> }" is a document with one member.
+            try:
+                json.loads("{" + stripped + "}")
+            except json.JSONDecodeError as exc:
+                fail(f"{path.relative_to(ROOT)}: json block {index} does not parse: {exc}")
+
+
+
 def main() -> int:
     load_schemas()
     check_examples()
     check_fixtures()
     check_fixture_requirements()
     check_links()
+    check_inline_json()
 
     for message in failures:
         print(f"FAIL {message}", file=sys.stderr)

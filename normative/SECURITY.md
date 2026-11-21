@@ -11,11 +11,11 @@
 Most security mistakes in a design like this come from asking one layer to answer
 a question that belongs to another.
 
-| Layer | Answers | Does not answer |
-| --- | --- | --- |
-| DNS | *where* — the host and port serving this domain | who is there, or what they offer |
-| TLS | *how* — a private, integrity-protected channel | that you reached the business, unless verified |
-| Manifest | *what* — the agents and their claims | that the claims are true |
+| Layer    | Answers                                         | Does not answer                                |
+| -------- | ----------------------------------------------- | ---------------------------------------------- |
+| DNS      | _where_ — the host and port serving this domain | who is there, or what they offer               |
+| TLS      | _how_ — a private, integrity-protected channel  | that you reached the business, unless verified |
+| Manifest | _what_ — the agents and their claims            | that the claims are true                       |
 
 - **SEC-1.** A protocol implementation MUST NOT treat a DNS answer as evidence of
   endpoint identity. SRV records can be stale, wrong, or manipulated on the
@@ -140,35 +140,35 @@ Deliberately unresolved, and listed so implementations can be honest about them:
 
 ## 9. Requirement index
 
-| ID | Section | Subject |
-| --- | --- | --- |
-| SEC-1 | 1 | DNS is routing, not identity |
-| SEC-2 | 1 | manifest is not identity |
-| SEC-3 | 1 | certificate verification is identity |
-| SEC-4 | 2 | TLS 1.3, no plaintext |
-| SEC-5 | 2 | ALPN enforced |
-| SEC-6 | 2 | verify by default, send ServerName |
-| SEC-7 | 2 | development mode rules |
-| SEC-8 | 2 | exceptions are custom verification |
-| SEC-9 | 2 | SRV target name coverage |
-| SEC-10 | 2 | SNI matching |
-| SEC-11 | 3 | client id is not a credential |
-| SEC-12 | 3 | no authorization from name/version |
-| SEC-13 | 3 | no personal identifiers |
-| SEC-14 | 3 | authentication lives above the protocol |
-| SEC-15 | 4 | no secrets in a manifest |
-| SEC-16 | 4 | manifest does not grant access |
-| SEC-17 | 4 | descriptions are untrusted text |
-| SEC-18 | 4 | links are not auto-dereferenced |
-| SEC-19 | 5 | size bounds |
-| SEC-20 | 5 | no message content in logs |
-| SEC-21 | 5 | enforce advertised limits |
-| SEC-22 | 5 | replies are untrusted text |
-| SEC-23 | 6 | cap concurrent turns |
-| SEC-24 | 6 | per-turn deadline, release after cancel |
-| SEC-25 | 6 | no lock across a backend call |
-| SEC-26 | 6 | rate limit per client and agent |
-| SEC-27 | 7 | verify digest |
-| SEC-28 | 7 | digest is not authentication |
-| SEC-29 | 7 | signature reserved |
-| SEC-30 | 7 | cached manifests expire |
+| ID     | Section | Subject                                 |
+| ------ | ------- | --------------------------------------- |
+| SEC-1  | 1       | DNS is routing, not identity            |
+| SEC-2  | 1       | manifest is not identity                |
+| SEC-3  | 1       | certificate verification is identity    |
+| SEC-4  | 2       | TLS 1.3, no plaintext                   |
+| SEC-5  | 2       | ALPN enforced                           |
+| SEC-6  | 2       | verify by default, send ServerName      |
+| SEC-7  | 2       | development mode rules                  |
+| SEC-8  | 2       | exceptions are custom verification      |
+| SEC-9  | 2       | SRV target name coverage                |
+| SEC-10 | 2       | SNI matching                            |
+| SEC-11 | 3       | client id is not a credential           |
+| SEC-12 | 3       | no authorization from name/version      |
+| SEC-13 | 3       | no personal identifiers                 |
+| SEC-14 | 3       | authentication lives above the protocol |
+| SEC-15 | 4       | no secrets in a manifest                |
+| SEC-16 | 4       | manifest does not grant access          |
+| SEC-17 | 4       | descriptions are untrusted text         |
+| SEC-18 | 4       | links are not auto-dereferenced         |
+| SEC-19 | 5       | size bounds                             |
+| SEC-20 | 5       | no message content in logs              |
+| SEC-21 | 5       | enforce advertised limits               |
+| SEC-22 | 5       | replies are untrusted text              |
+| SEC-23 | 6       | cap concurrent turns                    |
+| SEC-24 | 6       | per-turn deadline, release after cancel |
+| SEC-25 | 6       | no lock across a backend call           |
+| SEC-26 | 6       | rate limit per client and agent         |
+| SEC-27 | 7       | verify digest                           |
+| SEC-28 | 7       | digest is not authentication            |
+| SEC-29 | 7       | signature reserved                      |
+| SEC-30 | 7       | cached manifests expire                 |

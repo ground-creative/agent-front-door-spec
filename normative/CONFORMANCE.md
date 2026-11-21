@@ -13,13 +13,13 @@ A claim names a level and a spec release, for example:
 
 > `vireo 1.4` — daemon — **L3**, `spec-v0.1`
 
-| Level | Name | Requirements |
-| --- | --- | --- |
-| L0 | Manifest publisher | CONF-1 – CONF-5 |
-| L1 | Discovery | L0 + CONF-6 – CONF-10 |
-| L2 | Conversations | L1 + CONF-11 – CONF-15 |
-| L3 | Live | L2 + CONF-16 – CONF-18 |
-| L4 | Operational | L3 + CONF-19 – CONF-21 |
+| Level | Name               | Requirements           |
+| ----- | ------------------ | ---------------------- |
+| L0    | Manifest publisher | CONF-1 – CONF-5        |
+| L1    | Discovery          | L0 + CONF-6 – CONF-10  |
+| L2    | Conversations      | L1 + CONF-11 – CONF-15 |
+| L3    | Live               | L2 + CONF-16 – CONF-18 |
+| L4    | Operational        | L3 + CONF-19 – CONF-21 |
 
 Levels are cumulative. A client and a server claim the same ladder, with the
 role-specific rows below.
@@ -113,30 +113,30 @@ implementations passing the same fixtures is stronger evidence than either.
 
 ## 8. Requirement index
 
-| ID | Section | Subject |
-| --- | --- | --- |
-| CONF-1 | 1 | state the role |
-| CONF-2 | 1 | name the spec release |
-| CONF-3 | 1 | list unmet requirements |
-| CONF-4 | 1 | reproducible check |
-| CONF-5 | 1 | stale claims marked |
-| CONF-6 | 2 | schema-valid document |
-| CONF-7 | 2 | publishing MUSTs |
-| CONF-8 | 2 | documented location |
-| CONF-9 | 2 | truthful capabilities |
-| CONF-10 | 2 | declared manifest_version |
-| CONF-11 | 3 | L1 protocol requirements |
-| CONF-12 | 3 | discovery, both roles |
-| CONF-13 | 3 | reject malformed manifest |
-| CONF-14 | 3 | verify by default |
-| CONF-15 | 3 | unknown frame tolerated |
-| CONF-16 | 4 | L2 protocol requirements |
-| CONF-17 | 4 | sessions and routing, both roles |
-| CONF-18 | 4 | content-free envelopes |
-| CONF-19 | 5 | L3 protocol requirements |
-| CONF-20 | 5 | partial and cancel, both roles |
-| CONF-21 | 5 | advertises only implemented capabilities |
-| CONF-22 | 6 | advertises enforced limits |
-| CONF-23 | 6 | rate limit error |
-| CONF-24 | 6 | bounded sessions and retention |
-| CONF-25 | 6 | restart semantics documented |
+| ID      | Section | Subject                                  |
+| ------- | ------- | ---------------------------------------- |
+| CONF-1  | 1       | state the role                           |
+| CONF-2  | 1       | name the spec release                    |
+| CONF-3  | 1       | list unmet requirements                  |
+| CONF-4  | 1       | reproducible check                       |
+| CONF-5  | 1       | stale claims marked                      |
+| CONF-6  | 2       | schema-valid document                    |
+| CONF-7  | 2       | publishing MUSTs                         |
+| CONF-8  | 2       | documented location                      |
+| CONF-9  | 2       | truthful capabilities                    |
+| CONF-10 | 2       | declared manifest_version                |
+| CONF-11 | 3       | L1 protocol requirements                 |
+| CONF-12 | 3       | discovery, both roles                    |
+| CONF-13 | 3       | reject malformed manifest                |
+| CONF-14 | 3       | verify by default                        |
+| CONF-15 | 3       | unknown frame tolerated                  |
+| CONF-16 | 4       | L2 protocol requirements                 |
+| CONF-17 | 4       | sessions and routing, both roles         |
+| CONF-18 | 4       | content-free envelopes                   |
+| CONF-19 | 5       | L3 protocol requirements                 |
+| CONF-20 | 5       | partial and cancel, both roles           |
+| CONF-21 | 5       | advertises only implemented capabilities |
+| CONF-22 | 6       | advertises enforced limits               |
+| CONF-23 | 6       | rate limit error                         |
+| CONF-24 | 6       | bounded sessions and retention           |
+| CONF-25 | 6       | restart semantics documented             |

@@ -102,7 +102,7 @@ So the honest split is:
 
 - No model, prompt, embedding or provider. The protocol does not know what answers.
 - No payment, pricing or fulfillment semantics.
-- No authentication scheme. Identity of a *client* is a random id used for scoping;
+- No authentication scheme. Identity of a _client_ is a random id used for scoping;
   anything stronger belongs above this layer and is the deployment's choice.
 - No registry, directory or marketplace. Discovery is DNS; a manifest is served per
   endpoint.

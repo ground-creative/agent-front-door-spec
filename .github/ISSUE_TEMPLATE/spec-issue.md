@@ -22,6 +22,7 @@ Ambiguity in the text is a defect, even if you found a workaround.
 ## Smallest example that shows it
 
 ```json
+
 ```
 
 ## Implementation

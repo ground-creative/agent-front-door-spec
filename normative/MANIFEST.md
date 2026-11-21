@@ -73,12 +73,12 @@ manifest; a spec-v0.2 release may describe `manifest_version` `1.1` unchanged.
 {
   "manifest_version": "1.1",
   "protocol": "vireo/1",
-  "endpoint": { },
-  "agents": [ ],
-  "links": [ ],
-  "capabilities": { },
-  "limits": { },
-  "session": { },
+  "endpoint": {},
+  "agents": [],
+  "links": [],
+  "capabilities": {},
+  "limits": {},
+  "session": {},
   "generated_at": "2026-11-21T09:14:00Z",
   "expires_at": "2026-11-22T09:14:00Z",
   "digest": "sha256:0f1c...",
@@ -86,22 +86,22 @@ manifest; a spec-v0.2 release may describe `manifest_version` `1.1` unchanged.
 }
 ```
 
-| Field | Type | Req. | Since | Meaning |
-| --- | --- | --- | --- | --- |
-| `manifest_version` | string | MUST | 1.1 | Document compatibility level (MAN-1) |
-| `protocol` | string | MUST | 1.0 | Wire protocol identifier, e.g. `vireo/1` |
-| `endpoint` | object | MUST | 1.0 | The service itself (§6) |
-| `agents` | array | MUST | 1.0 | The agents exposed; MAY be empty (§7) |
-| `links` | array | MAY | 1.1 | Endpoint-level published references (§8) |
-| `capabilities` | object | MAY | 1.1 | Protocol features the endpoint supports (§9) |
-| `limits` | object | MAY | 1.1 | Operational limits, advisory (§10) |
-| `session` | object | MAY | 1.0 | Endpoint session defaults (§11) |
-| `generated_at` | string (RFC 3339) | MAY | 1.1 | When this document was produced (§12) |
-| `expires_at` | string (RFC 3339) | MAY | 1.1 | When a cached copy should be re-read (§12) |
-| `digest` | string | MAY | 1.1 | `sha256:<hex>` over the canonical body (§12) |
-| `signature` | object \| null | MAY | 1.1 | Reserved; signing is not specified (§12) |
-| `refs` | object | deprecated | 1.0 | Superseded by `links` (§13) |
-| `commands` | array | deprecated | 1.0 | Superseded by `capabilities.session` (§13) |
+| Field              | Type              | Req.       | Since | Meaning                                      |
+| ------------------ | ----------------- | ---------- | ----- | -------------------------------------------- |
+| `manifest_version` | string            | MUST       | 1.1   | Document compatibility level (MAN-1)         |
+| `protocol`         | string            | MUST       | 1.0   | Wire protocol identifier, e.g. `vireo/1`     |
+| `endpoint`         | object            | MUST       | 1.0   | The service itself (§6)                      |
+| `agents`           | array             | MUST       | 1.0   | The agents exposed; MAY be empty (§7)        |
+| `links`            | array             | MAY        | 1.1   | Endpoint-level published references (§8)     |
+| `capabilities`     | object            | MAY        | 1.1   | Protocol features the endpoint supports (§9) |
+| `limits`           | object            | MAY        | 1.1   | Operational limits, advisory (§10)           |
+| `session`          | object            | MAY        | 1.0   | Endpoint session defaults (§11)              |
+| `generated_at`     | string (RFC 3339) | MAY        | 1.1   | When this document was produced (§12)        |
+| `expires_at`       | string (RFC 3339) | MAY        | 1.1   | When a cached copy should be re-read (§12)   |
+| `digest`           | string            | MAY        | 1.1   | `sha256:<hex>` over the canonical body (§12) |
+| `signature`        | object \| null    | MAY        | 1.1   | Reserved; signing is not specified (§12)     |
+| `refs`             | object            | deprecated | 1.0   | Superseded by `links` (§13)                  |
+| `commands`         | array             | deprecated | 1.0   | Superseded by `capabilities.session` (§13)   |
 
 - **MAN-7.** A manifest for an endpoint with no exposed agent MUST still be valid:
   `agents` MUST be present and MAY be empty. A client MUST treat that as "this
@@ -119,11 +119,11 @@ manifest; a spec-v0.2 release may describe `manifest_version` `1.1` unchanged.
 }
 ```
 
-| Field | Type | Req. | Meaning |
-| --- | --- | --- | --- |
-| `id` | string | MAY | Stable identifier of this endpoint; opaque to clients |
-| `name` | string | MUST | Display name of the business |
-| `description` | string | MAY | One sentence, plain text |
+| Field         | Type   | Req. | Meaning                                               |
+| ------------- | ------ | ---- | ----------------------------------------------------- |
+| `id`          | string | MAY  | Stable identifier of this endpoint; opaque to clients |
+| `name`        | string | MUST | Display name of the business                          |
+| `description` | string | MAY  | One sentence, plain text                              |
 
 - **MAN-9.** `endpoint.id`, when present, MUST be stable across restarts and MUST
   be treated as opaque. It is not a hostname and carries no structure.
@@ -146,25 +146,25 @@ An array of agent objects. Order is not significant.
   "description": "Take food orders: pizzas, sides, drinks, pickup or delivery",
   "sessions": true,
   "start_message": "Hello! Ask me anything about the restaurant.",
-  "actions": [ ],
-  "links": [ ],
-  "limits": { },
-  "session": { }
+  "actions": [],
+  "links": [],
+  "limits": {},
+  "session": {}
 }
 ```
 
-| Field | Type | Req. | Since | Meaning |
-| --- | --- | --- | --- | --- |
-| `name` | string | MUST | 1.0 | The name a caller addresses this agent by |
-| `id` | string | MAY | 1.1 | Stable identity, default `name` |
-| `description` | string | SHOULD | 1.0 | What this agent handles, one sentence |
-| `sessions` | boolean | MUST | 1.0 | Whether a conversation is required (§11) |
-| `start_message` | string | MAY | 1.0 | Greeting the agent says when a conversation opens |
-| `actions` | array | MAY | 1.1 | What the agent claims to do (§8.2) |
-| `links` | array | MAY | 1.1 | References specific to this agent (§8) |
-| `limits` | object | MAY | 1.1 | Per-agent overrides of §10 |
-| `session` | object | MAY | 1.1 | Per-agent overrides of §11 |
-| `refs` | object | deprecated | 1.0 | Superseded by `links` (§13) |
+| Field           | Type    | Req.       | Since | Meaning                                           |
+| --------------- | ------- | ---------- | ----- | ------------------------------------------------- |
+| `name`          | string  | MUST       | 1.0   | The name a caller addresses this agent by         |
+| `id`            | string  | MAY        | 1.1   | Stable identity, default `name`                   |
+| `description`   | string  | SHOULD     | 1.0   | What this agent handles, one sentence             |
+| `sessions`      | boolean | MUST       | 1.0   | Whether a conversation is required (§11)          |
+| `start_message` | string  | MAY        | 1.0   | Greeting the agent says when a conversation opens |
+| `actions`       | array   | MAY        | 1.1   | What the agent claims to do (§8.2)                |
+| `links`         | array   | MAY        | 1.1   | References specific to this agent (§8)            |
+| `limits`        | object  | MAY        | 1.1   | Per-agent overrides of §10                        |
+| `session`       | object  | MAY        | 1.1   | Per-agent overrides of §11                        |
+| `refs`          | object  | deprecated | 1.0   | Superseded by `links` (§13)                       |
 
 - **MAN-12.** Agent `name` values MUST be unique within a manifest, MUST be
   non-empty, and MUST match `^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$`.
@@ -198,13 +198,13 @@ with different `rel` values are meaningful.
 ]
 ```
 
-| Field | Type | Req. | Meaning |
-| --- | --- | --- | --- |
-| `rel` | string | MUST | Machine-readable key for what this is |
-| `href` | string | MUST | Absolute URI |
-| `label` | string | MAY | Human-readable name |
-| `type` | string | MAY | Media type, if known |
-| `description` | string | MAY | One sentence |
+| Field         | Type   | Req. | Meaning                               |
+| ------------- | ------ | ---- | ------------------------------------- |
+| `rel`         | string | MUST | Machine-readable key for what this is |
+| `href`        | string | MUST | Absolute URI                          |
+| `label`       | string | MAY  | Human-readable name                   |
+| `type`        | string | MAY  | Media type, if known                  |
+| `description` | string | MAY  | One sentence                          |
 
 - **MAN-19.** `href` MUST be an absolute URI with a scheme.
 - **MAN-20.** `rel` MUST be a lowercase token matching `^[a-z][a-z0-9._-]{0,63}$`.
@@ -228,12 +228,12 @@ with different `rel` values are meaningful.
 ]
 ```
 
-| Field | Type | Req. | Meaning |
-| --- | --- | --- | --- |
-| `name` | string | MUST | Stable identifier |
-| `summary` | string | MUST | One sentence, plain text |
-| `input` | string | MAY | Free-form hint at what a request should contain |
-| `output` | string | MAY | Free-form hint at what an answer contains |
+| Field     | Type   | Req. | Meaning                                         |
+| --------- | ------ | ---- | ----------------------------------------------- |
+| `name`    | string | MUST | Stable identifier                               |
+| `summary` | string | MUST | One sentence, plain text                        |
+| `input`   | string | MAY  | Free-form hint at what a request should contain |
+| `output`  | string | MAY  | Free-form hint at what an answer contains       |
 
 - **MAN-24.** `action.name` MUST match `^[a-z][a-z0-9_]{0,63}$` and MUST be unique
   within its agent.
@@ -259,16 +259,16 @@ minimum in `PROTO`".
 }
 ```
 
-| Field | Type | Req. | Meaning |
-| --- | --- | --- | --- |
-| `session.new` | boolean | MAY | Callers may create sessions |
-| `session.get` | boolean | MAY | Callers may read a session envelope |
-| `session.list` | boolean | MAY | Callers may browse previous sessions |
-| `session.close` | boolean | MAY | Callers may close a session |
-| `session.prune` | boolean | MAY | Callers may request retention pruning |
-| `progress` | boolean | MAY | The endpoint emits `partial` frames |
-| `cancel` | boolean | MAY | The endpoint accepts `cancel` |
-| `max_turn_seconds` | integer | MAY | Advisory ceiling for one turn |
+| Field              | Type    | Req. | Meaning                               |
+| ------------------ | ------- | ---- | ------------------------------------- |
+| `session.new`      | boolean | MAY  | Callers may create sessions           |
+| `session.get`      | boolean | MAY  | Callers may read a session envelope   |
+| `session.list`     | boolean | MAY  | Callers may browse previous sessions  |
+| `session.close`    | boolean | MAY  | Callers may close a session           |
+| `session.prune`    | boolean | MAY  | Callers may request retention pruning |
+| `progress`         | boolean | MAY  | The endpoint emits `partial` frames   |
+| `cancel`           | boolean | MAY  | The endpoint accepts `cancel`         |
+| `max_turn_seconds` | integer | MAY  | Advisory ceiling for one turn         |
 
 - **MAN-28.** A capability advertised as `true` MUST be accepted by the endpoint.
   A capability advertised as `false` or omitted MUST be rejected with the
@@ -292,12 +292,12 @@ guarantee.
 }
 ```
 
-| Field | Type | Req. | Meaning |
-| --- | --- | --- | --- |
-| `max_message_bytes` | integer | MAY | Largest accepted message payload |
-| `requests_per_minute` | integer | MAY | Sustained request rate per caller per agent |
-| `burst` | integer | MAY | Token-bucket depth |
-| `max_turns` | integer | MAY | Turns after which a session ends |
+| Field                 | Type    | Req. | Meaning                                     |
+| --------------------- | ------- | ---- | ------------------------------------------- |
+| `max_message_bytes`   | integer | MAY  | Largest accepted message payload            |
+| `requests_per_minute` | integer | MAY  | Sustained request rate per caller per agent |
+| `burst`               | integer | MAY  | Token-bucket depth                          |
+| `max_turns`           | integer | MAY  | Turns after which a session ends            |
 
 - **MAN-31.** `max_message_bytes` MUST NOT exceed the protocol's own frame limit.
   A publisher MAY advertise a smaller ceiling.
@@ -316,9 +316,9 @@ Session defaults for agents with `sessions: true`.
 "session": { "ttl_seconds": 3600 }
 ```
 
-| Field | Type | Req. | Meaning |
-| --- | --- | --- | --- |
-| `ttl_seconds` | integer | MAY | Lifetime of an idle session before it expires |
+| Field         | Type    | Req. | Meaning                                       |
+| ------------- | ------- | ---- | --------------------------------------------- |
+| `ttl_seconds` | integer | MAY  | Lifetime of an idle session before it expires |
 
 - **MAN-35.** `session` at endpoint level is a default. An agent-level `session`
   block overrides it field by field.
@@ -334,18 +334,18 @@ Session defaults for agents with `sessions: true`.
 ```json
 {
   "generated_at": "2026-11-21T09:14:00Z",
-  "expires_at":   "2026-11-22T09:14:00Z",
-  "digest":       "sha256:6b1e...",
-  "signature":    null
+  "expires_at": "2026-11-22T09:14:00Z",
+  "digest": "sha256:6b1e...",
+  "signature": null
 }
 ```
 
-| Field | Type | Req. | Meaning |
-| --- | --- | --- | --- |
-| `generated_at` | string | MAY | RFC 3339 timestamp of production |
-| `expires_at` | string | MAY | RFC 3339 timestamp after which to re-read |
-| `digest` | string | MAY | `sha256:` + lowercase hex over the canonical body |
-| `signature` | object \| null | MAY | Reserved; MUST be `null` in 1.1 |
+| Field          | Type           | Req. | Meaning                                           |
+| -------------- | -------------- | ---- | ------------------------------------------------- |
+| `generated_at` | string         | MAY  | RFC 3339 timestamp of production                  |
+| `expires_at`   | string         | MAY  | RFC 3339 timestamp after which to re-read         |
+| `digest`       | string         | MAY  | `sha256:` + lowercase hex over the canonical body |
+| `signature`    | object \| null | MAY  | Reserved; MUST be `null` in 1.1                   |
 
 - **MAN-39.** Timestamps MUST be RFC 3339 with an explicit offset or `Z`.
 - **MAN-40.** When `digest` is present, it MUST be computed over the manifest
@@ -366,9 +366,9 @@ Session defaults for agents with `sessions: true`.
 Both remain legal and MUST be accepted; both MUST be emitted by an
 implementation that also emits their replacement, for one minor release.
 
-| Deprecated | Replacement | Rule |
-| --- | --- | --- |
-| `refs` (`map[string]string`) | `links` (array) | MAN-44 |
+| Deprecated                    | Replacement            | Rule   |
+| ----------------------------- | ---------------------- | ------ |
+| `refs` (`map[string]string`)  | `links` (array)        | MAN-44 |
 | `commands` (array of strings) | `capabilities.session` | MAN-45 |
 
 - **MAN-44.** When `refs` is present, a client MUST read it as if each key/value
@@ -388,12 +388,13 @@ implementation that also emits their replacement, for one minor release.
   `manifest_version`, `protocol`, `endpoint` and `agents` are present and of the
   documented types, and that every agent has `name` and `sessions`.
 
-  Presence of a *zero-valued* member is not observable in most encodings: after
+  Presence of a _zero-valued_ member is not observable in most encodings: after
   decoding, `"sessions": false` and an absent `sessions` are the same value, and
   so are `0` and an absent integer. A client MUST NOT treat that as an error, and
   MUST fall back to the documented meaning of the zero value (`sessions: false`,
   TTL unknown). The publisher obligation to emit those members is enforced by the
   schema, not by the client.
+
 - **MAN-48.** On a document that fails MAN-47, a client MUST report a manifest
   error and MUST NOT proceed as if it had received a smaller valid manifest.
 - **MAN-49.** A client MUST NOT require any optional field, any particular `rel`,
@@ -424,7 +425,11 @@ A minimal valid manifest (`manifest_version` `1.1`, one stateless agent):
   "protocol": "vireo/1",
   "endpoint": { "name": "acme-plumbing" },
   "agents": [
-    { "name": "support", "description": "Questions about service and coverage", "sessions": false }
+    {
+      "name": "support",
+      "description": "Questions about service and coverage",
+      "sessions": false
+    }
   ]
 }
 ```
@@ -444,12 +449,22 @@ A full manifest:
     { "rel": "site", "href": "https://restaurant.example", "type": "text/html" }
   ],
   "capabilities": {
-    "session": { "new": true, "get": true, "list": true, "close": true, "prune": true },
+    "session": {
+      "new": true,
+      "get": true,
+      "list": true,
+      "close": true,
+      "prune": true
+    },
     "progress": true,
     "cancel": true,
     "max_turn_seconds": 300
   },
-  "limits": { "max_message_bytes": 8388608, "requests_per_minute": 60, "burst": 10 },
+  "limits": {
+    "max_message_bytes": 8388608,
+    "requests_per_minute": 60,
+    "burst": 10
+  },
   "session": { "ttl_seconds": 3600 },
   "agents": [
     {
@@ -459,11 +474,19 @@ A full manifest:
       "sessions": true,
       "start_message": "Hello! Ask me anything about the restaurant.",
       "actions": [
-        { "name": "place_order", "summary": "Place a pickup or delivery order",
-          "input": "items, and either pickup or a delivery address" }
+        {
+          "name": "place_order",
+          "summary": "Place a pickup or delivery order",
+          "input": "items, and either pickup or a delivery address"
+        }
       ],
       "links": [
-        { "rel": "menu", "href": "https://restaurant.example/menu", "label": "Menu", "type": "text/html" }
+        {
+          "rel": "menu",
+          "href": "https://restaurant.example/menu",
+          "label": "Menu",
+          "type": "text/html"
+        }
       ],
       "session": { "ttl_seconds": 86400 }
     },
@@ -481,59 +504,59 @@ A full manifest:
 
 ## 17. Requirement index
 
-| ID | Section | Subject |
-| --- | --- | --- |
-| MAN-1 | 4 | `manifest_version` shape |
-| MAN-2 | 4 | additive change = MINOR |
-| MAN-3 | 4 | ignore unknown members |
-| MAN-4 | 4 | unknown enum value → fallback |
-| MAN-5 | 4 | breaking change = MAJOR |
-| MAN-6 | 4 | required fields present |
-| MAN-7 | 5 | empty `agents` is valid |
-| MAN-8 | 5 | no sensitive material |
-| MAN-9 | 6 | `endpoint.id` opaque and stable |
-| MAN-10 | 6 | `endpoint.name` is display only |
-| MAN-11 | 6 | descriptions are plain text |
-| MAN-12 | 7 | agent `name` uniqueness and charset |
-| MAN-13 | 7 | renaming an agent |
-| MAN-14 | 7 | agent `id` stability |
-| MAN-15 | 7 | `sessions: false` semantics |
-| MAN-16 | 7 | `start_message` is endpoint-produced |
-| MAN-17 | 7 | description style |
-| MAN-18 | 7 | no indistinguishable agents |
-| MAN-19 | 8 | link `href` absolute |
-| MAN-20 | 8 | link `rel` charset |
-| MAN-21 | 8 | conventional `rel` values |
-| MAN-22 | 8 | agent + endpoint links are additive |
-| MAN-23 | 8 | links may rot |
-| MAN-24 | 8.2 | `action.name` charset |
-| MAN-25 | 8.2 | `input`/`output` are hints |
-| MAN-26 | 8.2 | `actions` is not a whitelist |
-| MAN-27 | 8.2 | no unhonourable action |
-| MAN-28 | 9 | advertised capability is honoured |
-| MAN-29 | 9 | `session.new` whenever sessions exist |
-| MAN-30 | 9 | client honours missing capability |
-| MAN-31 | 10 | `max_message_bytes` bound |
-| MAN-32 | 10 | limits advisory, handle `rate_limited` |
-| MAN-33 | 10 | advertise enforced limits |
-| MAN-34 | 10 | per-agent limits override |
-| MAN-35 | 11 | agent `session` overrides endpoint |
-| MAN-36 | 11 | ids are minted, not described |
-| MAN-37 | 11 | `ttl_seconds` positive |
-| MAN-38 | 11 | `sessions` is authoritative |
-| MAN-39 | 12 | RFC 3339 timestamps |
-| MAN-40 | 12 | digest over canonical JSON |
-| MAN-41 | 12 | `signature` reserved |
-| MAN-42 | 12 | freshness fields optional |
-| MAN-43 | 12 | caching bounded by `expires_at` |
-| MAN-44 | 13 | `refs` read as links |
-| MAN-45 | 13 | `commands` read as session ops |
-| MAN-46 | 13 | deprecated members frozen |
-| MAN-47 | 14 | client validation |
-| MAN-48 | 14 | reject, do not half-accept |
-| MAN-49 | 14 | no optional field is required |
-| MAN-50 | 14 | descriptions are not answers |
-| MAN-51 | 15 | listed agents answer |
-| MAN-52 | 15 | capabilities truthful |
-| MAN-53 | 15 | absent `manifest_version` = 1.0 |
-| MAN-54 | 15 | stable output for stable state |
+| ID     | Section | Subject                                |
+| ------ | ------- | -------------------------------------- |
+| MAN-1  | 4       | `manifest_version` shape               |
+| MAN-2  | 4       | additive change = MINOR                |
+| MAN-3  | 4       | ignore unknown members                 |
+| MAN-4  | 4       | unknown enum value → fallback          |
+| MAN-5  | 4       | breaking change = MAJOR                |
+| MAN-6  | 4       | required fields present                |
+| MAN-7  | 5       | empty `agents` is valid                |
+| MAN-8  | 5       | no sensitive material                  |
+| MAN-9  | 6       | `endpoint.id` opaque and stable        |
+| MAN-10 | 6       | `endpoint.name` is display only        |
+| MAN-11 | 6       | descriptions are plain text            |
+| MAN-12 | 7       | agent `name` uniqueness and charset    |
+| MAN-13 | 7       | renaming an agent                      |
+| MAN-14 | 7       | agent `id` stability                   |
+| MAN-15 | 7       | `sessions: false` semantics            |
+| MAN-16 | 7       | `start_message` is endpoint-produced   |
+| MAN-17 | 7       | description style                      |
+| MAN-18 | 7       | no indistinguishable agents            |
+| MAN-19 | 8       | link `href` absolute                   |
+| MAN-20 | 8       | link `rel` charset                     |
+| MAN-21 | 8       | conventional `rel` values              |
+| MAN-22 | 8       | agent + endpoint links are additive    |
+| MAN-23 | 8       | links may rot                          |
+| MAN-24 | 8.2     | `action.name` charset                  |
+| MAN-25 | 8.2     | `input`/`output` are hints             |
+| MAN-26 | 8.2     | `actions` is not a whitelist           |
+| MAN-27 | 8.2     | no unhonourable action                 |
+| MAN-28 | 9       | advertised capability is honoured      |
+| MAN-29 | 9       | `session.new` whenever sessions exist  |
+| MAN-30 | 9       | client honours missing capability      |
+| MAN-31 | 10      | `max_message_bytes` bound              |
+| MAN-32 | 10      | limits advisory, handle `rate_limited` |
+| MAN-33 | 10      | advertise enforced limits              |
+| MAN-34 | 10      | per-agent limits override              |
+| MAN-35 | 11      | agent `session` overrides endpoint     |
+| MAN-36 | 11      | ids are minted, not described          |
+| MAN-37 | 11      | `ttl_seconds` positive                 |
+| MAN-38 | 11      | `sessions` is authoritative            |
+| MAN-39 | 12      | RFC 3339 timestamps                    |
+| MAN-40 | 12      | digest over canonical JSON             |
+| MAN-41 | 12      | `signature` reserved                   |
+| MAN-42 | 12      | freshness fields optional              |
+| MAN-43 | 12      | caching bounded by `expires_at`        |
+| MAN-44 | 13      | `refs` read as links                   |
+| MAN-45 | 13      | `commands` read as session ops         |
+| MAN-46 | 13      | deprecated members frozen              |
+| MAN-47 | 14      | client validation                      |
+| MAN-48 | 14      | reject, do not half-accept             |
+| MAN-49 | 14      | no optional field is required          |
+| MAN-50 | 14      | descriptions are not answers           |
+| MAN-51 | 15      | listed agents answer                   |
+| MAN-52 | 15      | capabilities truthful                  |
+| MAN-53 | 15      | absent `manifest_version` = 1.0        |
+| MAN-54 | 15      | stable output for stable state         |

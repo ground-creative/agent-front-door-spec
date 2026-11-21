@@ -42,7 +42,7 @@ here is what makes the drift check possible.
 
 ## Ideas worth writing
 
-- *Why agents impersonate browsers* — the cost of the wrong front door.
-- *What a manifest is for* — one file, and what it changes.
-- *Cancellation is not rollback* — what a protocol can and cannot promise.
-- *Reading a spec you did not write* — the conformance ladder in practice.
+- _Why agents impersonate browsers_ — the cost of the wrong front door.
+- _What a manifest is for_ — one file, and what it changes.
+- _Cancellation is not rollback_ — what a protocol can and cannot promise.
+- _Reading a spec you did not write_ — the conformance ladder in practice.

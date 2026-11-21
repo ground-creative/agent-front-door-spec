@@ -1,6 +1,6 @@
 # Why DNS SRV, and why not a well-known URL
 
-*Informative.*
+_Informative._
 
 Both approaches answer "given a domain, where is the thing". They answer different
 questions, and the difference matters for how a protocol grows.

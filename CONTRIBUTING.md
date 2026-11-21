@@ -65,13 +65,13 @@ index, and that every relative link resolves. CI runs the same script.
 
 ## Where things go
 
-| You have | It goes in |
-| --- | --- |
-| a change to what implementations must do | `normative/` via a proposal |
-| reasoning, comparison, explanation | `informative/` |
-| a schema change, example, or fixture | `machine/` |
-| a published post | `articles/` |
-| a new implementation | a row in `IMPLEMENTATIONS.md` |
+| You have                                 | It goes in                    |
+| ---------------------------------------- | ----------------------------- |
+| a change to what implementations must do | `normative/` via a proposal   |
+| reasoning, comparison, explanation       | `informative/`                |
+| a schema change, example, or fixture     | `machine/`                    |
+| a published post                         | `articles/`                   |
+| a new implementation                     | a row in `IMPLEMENTATIONS.md` |
 
 ## Commit hygiene
 

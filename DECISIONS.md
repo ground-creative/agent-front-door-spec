@@ -41,7 +41,7 @@ page-scraping integration.
 `capabilities.session`. Both remain legal and must be emitted alongside their
 replacement for one minor release.
 
-**Why.** `refs` cannot say what a link *is*: an agent cannot tell a menu PDF from an
+**Why.** `refs` cannot say what a link _is_: an agent cannot tell a menu PDF from an
 OpenAPI document from a status page, and there is no label. `commands` was a list of
 operations the server might not accept — the exact failure mode `MAN-28` exists to
 forbid. An array of objects is also the only shape that can grow additively.

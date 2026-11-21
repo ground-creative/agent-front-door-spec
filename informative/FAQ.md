@@ -1,6 +1,6 @@
 # FAQ
 
-*Informative.* Answers to what reviewers ask first.
+_Informative._ Answers to what reviewers ask first.
 
 ## Is this a standard?
 

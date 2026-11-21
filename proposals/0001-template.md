@@ -23,7 +23,7 @@ wording where possible.
 
 ## Compatibility
 
-- Does this change what an existing client must do? 
+- Does this change what an existing client must do?
 - Does an existing manifest remain valid?
 - Which `manifest_version` does it belong to, and why?
 

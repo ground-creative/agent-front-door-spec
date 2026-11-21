@@ -3,23 +3,23 @@
 Language-neutral test vectors. An implementation in any language should be able to
 consume these without reading another implementation's source.
 
-| File | What it pins down |
-| --- | --- |
-| `frames.json` | frame encoding and decoding, including error cases |
-| `handshake.json` | the frames of a `negotiate` → `manifest` exchange |
+| File             | What it pins down                                                            |
+| ---------------- | ---------------------------------------------------------------------------- |
+| `frames.json`    | frame encoding and decoding, including error cases                           |
+| `handshake.json` | the frames of a `negotiate` → `manifest` exchange                            |
 | `manifests.json` | documents that must be rejected, must be accepted, and must not be published |
-| `webhook.json` | backend request/response pairs, plain and NDJSON |
+| `webhook.json`   | backend request/response pairs, plain and NDJSON                             |
 
 ## Three lists in `manifests.json`
 
 An obligation is either checkable by a client, or it is not, and pretending
 otherwise produces tests that cannot fail honestly.
 
-| List | Obligation | Who checks it |
-| --- | --- | --- |
-| `cases` | a client MUST reject the document | client, after decoding |
-| `publisher` | a publisher MUST NOT emit the document, but a client either must accept it or cannot distinguish it | JSON Schema only |
-| `accepted` | a client MUST accept the document | client, after decoding |
+| List        | Obligation                                                                                          | Who checks it          |
+| ----------- | --------------------------------------------------------------------------------------------------- | ---------------------- |
+| `cases`     | a client MUST reject the document                                                                   | client, after decoding |
+| `publisher` | a publisher MUST NOT emit the document, but a client either must accept it or cannot distinguish it | JSON Schema only       |
+| `accepted`  | a client MUST accept the document                                                                   | client, after decoding |
 
 The `publisher` list exists because of a real limit of JSON decoding: an absent
 boolean and `false` are the same value, and so are an absent integer and `0`. A
