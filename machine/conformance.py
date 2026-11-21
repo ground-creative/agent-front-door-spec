@@ -172,7 +172,9 @@ def load_schema() -> dict:
 # --------------------------------------------------------------------------
 
 
-def check_transport(host: str, port: int, insecure: bool, server_name: str | None) -> Wire | None:
+def check_transport(
+    host: str, port: int, insecure: bool, server_name: str | None
+) -> Wire | None:
     try:
         wire = Wire(host, port, insecure, server_name)
     except ssl.SSLError as exc:
@@ -189,7 +191,9 @@ def check_transport(host: str, port: int, insecure: bool, server_name: str | Non
     return wire
 
 
-def check_refusals(host: str, port: int, insecure: bool, server_name: str | None) -> None:
+def check_refusals(
+    host: str, port: int, insecure: bool, server_name: str | None
+) -> None:
     """PROTO-8, PROTO-11, PROTO-12 — each on its own connection."""
     cases = [
         (
