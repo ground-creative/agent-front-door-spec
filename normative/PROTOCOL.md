@@ -3,7 +3,7 @@
 **Normative.** Requirement identifiers (`PROTO-n`, `WH-n`) are stable; cite them
 in issues and proposals.
 
-- Spec release: `spec-v0.1`
+- Spec release: `spec-v0.3`
 - Protocol identifier: `vireo/1`
 - See also: [`MANIFEST.md`](MANIFEST.md) (the document delivered at handshake),
   [`CONFORMANCE.md`](CONFORMANCE.md), [`SECURITY.md`](SECURITY.md).

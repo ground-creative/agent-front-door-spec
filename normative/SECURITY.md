@@ -2,7 +2,7 @@
 
 **Normative where it says MUST.** Requirement identifiers (`SEC-n`) are stable.
 
-- Spec release: `spec-v0.1`
+- Spec release: `spec-v0.3`
 
 ---
 

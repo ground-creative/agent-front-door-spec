@@ -3,7 +3,7 @@
 **Normative.** This document defines what it means to claim a conformance level.
 Requirement identifiers (`CONF-n`) are stable.
 
-- Spec release: `spec-v0.1`
+- Spec release: `spec-v0.3`
 
 ---
 
@@ -11,7 +11,7 @@ Requirement identifiers (`CONF-n`) are stable.
 
 A claim names a level and a spec release, for example:
 
-> `vireo 1.4` — daemon — **L3**, `spec-v0.1`
+> `vireo 1.4` — daemon — **L2**, `spec-v0.3`
 
 | Level | Name               | Requirements           |
 | ----- | ------------------ | ---------------------- |
@@ -109,7 +109,7 @@ PASS  MAN-40    digest matches
 PASS  MAN-29    session.new for orders
 FAIL  MAN-28    session.list advertised true but refused
 
-claim: 127.0.0.1:7777 — L2, 1 failure(s), spec-v0.2
+claim: 127.0.0.1:7777 — L2, 1 failure(s), spec-v0.3
 not tested: L3 (progress, cancellation), L4 (retention, restart)
 ```
 

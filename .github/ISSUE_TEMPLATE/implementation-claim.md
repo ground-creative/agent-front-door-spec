@@ -14,7 +14,7 @@ labels: implementations
 ## Claim
 
 - Level: L0 | L1 | L2 | L3 | L4
-- Verified against: `spec-v0.1`
+- Verified against: `spec-v0.3`
 - Requirements not satisfied (CONF-3):
 
 ## How to reproduce the check (CONF-4)

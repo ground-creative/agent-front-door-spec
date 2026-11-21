@@ -141,6 +141,41 @@ def check_links() -> None:
 JSON_FENCE = re.compile(r"```json\n(.*?)```", re.DOTALL)
 
 
+VERSION_LINE = re.compile(r"^- Spec release: `(spec-v[0-9]+\.[0-9]+)`", re.MULTILINE)
+CHANGELOG_HEADING = re.compile(r"^## (spec-v[0-9]+\.[0-9]+)", re.MULTILINE)
+
+
+def check_spec_version_consistency() -> None:
+    """Every normative document must name the newest release.
+
+    A reader opening CONFORMANCE.md and seeing spec-v0.1 while the repository is
+    at spec-v0.3 has no way to tell which one is current. This drift is silent and
+    happens on every release, so it is checked rather than trusted.
+    """
+    changelog = (ROOT / "CHANGELOG.md").read_text()
+    releases = CHANGELOG_HEADING.findall(changelog)
+    if not releases:
+        fail("CHANGELOG.md names no release")
+        return
+    newest = releases[0]
+
+    for name in ("MANIFEST.md", "PROTOCOL.md", "CONFORMANCE.md", "SECURITY.md"):
+        text = (ROOT / "normative" / name).read_text()
+        named = VERSION_LINE.findall(text)
+        if not named:
+            fail(f"normative/{name}: no 'Spec release:' line")
+            continue
+        for version in named:
+            if version != newest:
+                fail(f"normative/{name}: says {version}, but the newest release is {newest}")
+
+    probe = (ROOT / "machine" / "conformance.py").read_text()
+    probe_versions = re.findall(r'SPEC_VERSION = "(spec-v[0-9]+\.[0-9]+)"', probe)
+    for version in probe_versions:
+        if version != newest:
+            fail(f"machine/conformance.py: says {version}, but the newest release is {newest}")
+
+
 def check_inline_json() -> None:
     """Examples inside normative text must still parse.
 
@@ -180,13 +215,14 @@ def main() -> int:
     check_fixture_requirements()
     check_links()
     check_inline_json()
+    check_spec_version_consistency()
 
     for message in failures:
         print(f"FAIL {message}", file=sys.stderr)
     if failures:
         print(f"\n{len(failures)} problem(s)", file=sys.stderr)
         return 1
-    print("ok: schemas, fixtures, requirement IDs and links")
+    print("ok: schemas, fixtures, requirement IDs, links and release version")
     return 0
 
 
