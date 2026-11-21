@@ -86,30 +86,42 @@ L0 is the on-ramp: no daemon, no TLS, no sessions. A business can be here today.
 
 ## 7. Running the check
 
-The checkable artefact is `machine/fixtures/` plus
-`machine/schema/manifest.schema.json`. Three kinds of test:
+The checkable artefacts are `machine/fixtures/`,
+`machine/schema/manifest.schema.json`, and `machine/conformance.py`.
 
-1. **Schema** — validate every example and every server-emitted manifest.
-2. **Frames** — decode the hex fixtures, including truncated and oversize cases,
-   and re-encode them byte-for-byte.
-3. **Transcripts** — replay a handshake, a turn with a partial, and a cancelled
-   turn against a fixture backend, and compare the frames produced.
+`conformance.py` is a **client**: it connects to a running endpoint, performs the
+handshake, validates the manifest, and probes the session operations the manifest
+advertises. It needs the specification and a reachable daemon, nothing else — an
+implementation in any language can be checked without reading another
+implementation's source.
 
-A conformance run produces a list of requirement IDs that passed and failed. That
-list is the claim.
-
-```text
-$ conformance run --role server --endpoint 127.0.0.1:7777 --backend fakeagent
-L2  PROTO-15  pass
-L2  PROTO-16  pass
-L3  PROTO-27  pass
-L3  PROTO-28  FAIL  session turns changed after cancel
-...
-claim: vireo 1.4 — daemon — L3 (1 failure), spec-v0.1
+```bash
+python3 machine/conformance.py --endpoint 127.0.0.1:7777 --insecure
+python3 machine/conformance.py --endpoint agent.example.com:7777
 ```
 
-The reference runner is not normative. Any implementation MAY provide one; two
-implementations passing the same fixtures is stronger evidence than either.
+```text
+PASS  PROTO-1   TLSv1.3, ALPN vireo/1
+PASS  PROTO-8   code=bad_client_id
+PASS  PROTO-13  manifest on stream 0
+PASS  MAN-47    manifest validates against the schema
+PASS  MAN-40    digest matches
+PASS  MAN-29    session.new for orders
+FAIL  MAN-28    session.list advertised true but refused
+
+claim: 127.0.0.1:7777 — L2, 1 failure(s), spec-v0.2
+not tested: L3 (progress, cancellation), L4 (retention, restart)
+```
+
+It exits non-zero on any failure, so it works as a gate in an implementation's CI.
+It deliberately does not probe `session.prune` (destructive), and it reports L3
+and L4 as *not tested* rather than passed: progress, cancellation, retention and
+restart semantics need a backend and state that a probe should not impose on a
+live endpoint.
+
+The fixture tests are the other half: `machine/fixtures/frames.json` etc. are
+language-neutral, so an implementation can consume them directly without the
+runner.
 
 ## 8. Requirement index
 

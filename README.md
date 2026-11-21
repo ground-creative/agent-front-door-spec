@@ -64,6 +64,28 @@ That is L0. It costs one file, and it already tells any agent what you expose
 and what each agent claims to do. Discovery and conversation are additive: when
 a daemon exists, the same manifest arrives inside the connection instead.
 
+## Checking an implementation
+
+`machine/conformance.py` is a client that probes a running endpoint and reports
+which requirements it satisfies:
+
+```bash
+python3 machine/conformance.py --endpoint 127.0.0.1:7777 --insecure
+```
+
+```text
+PASS  PROTO-1   TLSv1.3, ALPN vireo/1
+PASS  PROTO-13  manifest on stream 0
+PASS  MAN-47    manifest validates against the schema
+PASS  MAN-29    session.new for orders
+
+claim: 127.0.0.1:7777 — L2, 0 failure(s), spec-v0.2
+not tested: L3 (progress, cancellation), L4 (retention, restart)
+```
+
+It needs nothing but this repository and a reachable daemon, and it exits
+non-zero on a failure, so it can gate an implementation's CI.
+
 ## Repository map
 
 ```

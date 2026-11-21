@@ -61,7 +61,14 @@ python3 machine/check.py
 
 That validates every example against the schema, checks the fixture lists against
 it, verifies that every requirement ID a fixture cites exists in a normative
-index, and that every relative link resolves. CI runs the same script.
+index, that every relative link resolves, and that every fenced JSON block parses.
+CI runs the same script.
+
+To check a *running implementation* rather than the documents:
+
+```bash
+python3 machine/conformance.py --endpoint 127.0.0.1:7777 --insecure
+```
 
 ## Where things go
 
