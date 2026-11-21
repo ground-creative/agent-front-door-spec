@@ -114,9 +114,9 @@ articles/       published posts, each pinned to a spec tag
 
 Two independent version numbers, deliberately:
 
-- **Spec tag** — `spec-v0.1`, `spec-v0.2`, `spec-v0.3`. A release of this
-  repository. Cited by
-  articles and conformance claims. A tag never moves.
+- **Spec tag** — `spec-v0.1`, `spec-v0.2`, `spec-v0.3`.<!-- spec-version: history -->
+  A release of this repository. Cited by articles and conformance claims. A tag
+  never moves.
 - **`manifest_version`** — a value inside the manifest, e.g. `1.1`. The
   compatibility contract of the document itself. Minor bumps are additive and
   backwards compatible; a client that sees a newer minor ignores what it does not

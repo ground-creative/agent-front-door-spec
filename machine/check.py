@@ -145,12 +145,23 @@ VERSION_LINE = re.compile(r"^- Spec release: `(spec-v[0-9]+\.[0-9]+)`", re.MULTI
 CHANGELOG_HEADING = re.compile(r"^## (spec-v[0-9]+\.[0-9]+)", re.MULTILINE)
 
 
+HISTORY_MARKER = "<!-- spec-version: history -->"
+FENCED = re.compile(r"```.*?```", re.DOTALL)
+ANY_VERSION = re.compile(r"spec-v[0-9]+\.[0-9]+")
+
+
 def check_spec_version_consistency() -> None:
-    """Every normative document must name the newest release.
+    """Every document must name the newest release, outside history.
 
     A reader opening CONFORMANCE.md and seeing spec-v0.1 while the repository is
-    at spec-v0.3 has no way to tell which one is current. This drift is silent and
-    happens on every release, so it is checked rather than trusted.
+    at spec-v0.3 has no way to tell which is current. The drift is silent and
+    reappears on every release, so it is checked rather than trusted.
+
+    Prose may still mention an older tag when the line carries
+    `<!-- spec-version: history -->`, which is what a list of past releases is.
+    Fenced blocks are skipped: they hold illustrative transcripts. A tag with a
+    major of 1 or more is a forward reference to the stable release a draft talks
+    about, not a stale claim, so it is allowed without a marker.
     """
     changelog = (ROOT / "CHANGELOG.md").read_text()
     releases = CHANGELOG_HEADING.findall(changelog)
@@ -159,19 +170,37 @@ def check_spec_version_consistency() -> None:
         return
     newest = releases[0]
 
-    for name in ("MANIFEST.md", "PROTOCOL.md", "CONFORMANCE.md", "SECURITY.md"):
-        text = (ROOT / "normative" / name).read_text()
-        named = VERSION_LINE.findall(text)
-        if not named:
-            fail(f"normative/{name}: no 'Spec release:' line")
+    # History belongs in these files by design.
+    skip = {"CHANGELOG.md", "DECISIONS.md"}
+
+    documents = [
+        ROOT / "README.md",
+        ROOT / "GOVERNANCE.md",
+        ROOT / "CONTRIBUTING.md",
+        ROOT / "IMPLEMENTATIONS.md",
+    ]
+    for folder in ("normative", "informative", "articles", "proposals"):
+        documents.extend(sorted((ROOT / folder).glob("*.md")))
+    documents.extend(sorted((ROOT / ".github").rglob("*.md")))
+
+    for path in documents:
+        if not path.exists() or path.name in skip:
             continue
-        for version in named:
-            if version != newest:
-                fail(f"normative/{name}: says {version}, but the newest release is {newest}")
+        text = FENCED.sub("", path.read_text())
+        for number, line in enumerate(text.splitlines(), start=1):
+            for version in ANY_VERSION.findall(line):
+                if version == newest or HISTORY_MARKER in line:
+                    continue
+                if int(version.split("v")[1].split(".")[0]) >= 1:
+                    continue  # forward reference to the stable release
+                relative = path.relative_to(ROOT)
+                fail(
+                    f"{relative}:{number}: says {version}, but the newest release is "
+                    f"{newest} (mark the line {HISTORY_MARKER} if the older tag is intentional)"
+                )
 
     probe = (ROOT / "machine" / "conformance.py").read_text()
-    probe_versions = re.findall(r'SPEC_VERSION = "(spec-v[0-9]+\.[0-9]+)"', probe)
-    for version in probe_versions:
+    for version in re.findall(r'SPEC_VERSION = "(spec-v[0-9]+\.[0-9]+)"', probe):
         if version != newest:
             fail(f"machine/conformance.py: says {version}, but the newest release is {newest}")
 

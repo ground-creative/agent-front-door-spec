@@ -6,11 +6,11 @@ specification they describe.
 ## Why here
 
 An article and the specification it explains must not drift apart. Pinning each
-article to a spec tag (`spec-v0.1`) and citing requirement IDs means that when the
+article to a spec tag (`spec-v0.3`) and citing requirement IDs means that when the
 specification changes, the affected posts are findable:
 
 ```bash
-grep -rl 'spec-v0.1' articles/
+grep -rl 'spec-v0.3' articles/
 grep -rl 'PROTO-27'   articles/
 ```
 

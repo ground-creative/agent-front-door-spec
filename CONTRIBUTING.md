@@ -61,8 +61,17 @@ python3 machine/check.py
 
 That validates every example against the schema, checks the fixture lists against
 it, verifies that every requirement ID a fixture cites exists in a normative
-index, that every relative link resolves, and that every fenced JSON block parses.
-CI runs the same script.
+index, that every relative link resolves, that every fenced JSON block parses,
+and that every document names the newest release.
+
+If a line genuinely refers to an older tag — a list of past releases, say — mark
+it, or the check will fail on the next release:
+
+```markdown
+- **Spec tag** — `spec-v0.1`, `spec-v0.2`.<!-- spec-version: history -->
+```
+
+`CHANGELOG.md` and `DECISIONS.md` are exempt: recording history is their job.
 
 To check a _running implementation_ rather than the documents:
 
