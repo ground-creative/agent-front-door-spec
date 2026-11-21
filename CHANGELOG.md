@@ -11,7 +11,10 @@ changed and which requirement IDs are affected.
 filter agents without parsing prose:
 
 ```json
-{ "name": "sales-representative", "tags": ["sales", "consultation", "services"] }
+{
+  "name": "sales-representative",
+  "tags": ["sales", "consultation", "services"]
+}
 ```
 
 It is the answer to the question `actions` was trying to answer. One array of

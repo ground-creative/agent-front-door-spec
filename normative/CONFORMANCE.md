@@ -115,7 +115,7 @@ not tested: L3 (progress, cancellation), L4 (retention, restart)
 
 It exits non-zero on any failure, so it works as a gate in an implementation's CI.
 It deliberately does not probe `session.prune` (destructive), and it reports L3
-and L4 as *not tested* rather than passed: progress, cancellation, retention and
+and L4 as _not tested_ rather than passed: progress, cancellation, retention and
 restart semantics need a backend and state that a probe should not impose on a
 live endpoint.
 

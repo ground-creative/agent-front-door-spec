@@ -41,7 +41,9 @@ import uuid
 try:
     import jsonschema
 except ImportError:  # pragma: no cover - documented requirement
-    print("conformance: jsonschema is required (pip install jsonschema)", file=sys.stderr)
+    print(
+        "conformance: jsonschema is required (pip install jsonschema)", file=sys.stderr
+    )
     raise SystemExit(2)
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
@@ -57,7 +59,9 @@ RESULTS: list[tuple[str, str, str]] = []
 
 def record(requirement: str, ok: bool | None, detail: str) -> None:
     """ok True = pass, False = fail, None = not tested."""
-    RESULTS.append((requirement, "PASS" if ok else ("SKIP" if ok is None else "FAIL"), detail))
+    RESULTS.append(
+        (requirement, "PASS" if ok else ("SKIP" if ok is None else "FAIL"), detail)
+    )
 
 
 class Wire:
@@ -81,7 +85,11 @@ class Wire:
             pass
 
     def send(self, stream: int, frame_type: int, payload: dict | None = None) -> None:
-        body = b"" if payload is None else json.dumps(payload, separators=(",", ":")).encode()
+        body = (
+            b""
+            if payload is None
+            else json.dumps(payload, separators=(",", ":")).encode()
+        )
         if len(body) > MAX_PAYLOAD:
             raise ValueError("payload would exceed the frame limit")
         self.sock.sendall(HEADER.pack(stream, frame_type, len(body)) + body)
@@ -106,11 +114,15 @@ class Wire:
         self.send(
             0,
             T_NEGOTIATE,
-            {"protocol": protocol,
-             "client": {"id": client_id, "name": "conformance", "version": "0.1"}},
+            {
+                "protocol": protocol,
+                "client": {"id": client_id, "name": "conformance", "version": "0.1"},
+            },
         )
 
-    def exchange(self, stream: int, frame_type: int, payload: dict) -> tuple[str, dict | None]:
+    def exchange(
+        self, stream: int, frame_type: int, payload: dict
+    ) -> tuple[str, dict | None]:
         """Send one request and collect data/end, or the first error."""
         self.send(stream, frame_type, payload)
         data = None
@@ -169,9 +181,24 @@ def check_transport(host: str, port: int, insecure: bool) -> Wire | None:
 def check_refusals(host: str, port: int, insecure: bool) -> None:
     """PROTO-8, PROTO-11, PROTO-12 — each on its own connection."""
     cases = [
-        ("PROTO-8", "bad_client_id", lambda w: w.negotiate("not-a-client-id"), T_NEGOTIATE),
-        ("PROTO-11", "bad_protocol", lambda w: w.negotiate(new_client_id(), "vireo/99"), T_NEGOTIATE),
-        ("PROTO-12", "invalid_frame", lambda w: w.send(0, T_MESSAGE, {"agent": "x", "message": "hi"}), T_MESSAGE),
+        (
+            "PROTO-8",
+            "bad_client_id",
+            lambda w: w.negotiate("not-a-client-id"),
+            T_NEGOTIATE,
+        ),
+        (
+            "PROTO-11",
+            "bad_protocol",
+            lambda w: w.negotiate(new_client_id(), "vireo/99"),
+            T_NEGOTIATE,
+        ),
+        (
+            "PROTO-12",
+            "invalid_frame",
+            lambda w: w.send(0, T_MESSAGE, {"agent": "x", "message": "hi"}),
+            T_MESSAGE,
+        ),
     ]
     for requirement, want_code, action, _ in cases:
         try:
@@ -183,7 +210,11 @@ def check_refusals(host: str, port: int, insecure: bool) -> None:
             action(wire)
             _, frame_type, body = wire.read()
             if frame_type != T_ERROR:
-                record(requirement, False, f"expected an error frame, got type 0x{frame_type:02x}")
+                record(
+                    requirement,
+                    False,
+                    f"expected an error frame, got type 0x{frame_type:02x}",
+                )
                 continue
             code = (body or {}).get("code")
             record(requirement, code == want_code, f"code={code}")
@@ -202,7 +233,9 @@ def check_handshake(wire: Wire) -> dict | None:
         return None
 
     if frame_type != T_MANIFEST:
-        record("PROTO-13", False, f"first answer is type 0x{frame_type:02x}, want manifest")
+        record(
+            "PROTO-13", False, f"first answer is type 0x{frame_type:02x}, want manifest"
+        )
         return None
     record("PROTO-13", True, f"manifest on stream {stream}")
 
@@ -210,8 +243,15 @@ def check_handshake(wire: Wire) -> dict | None:
     try:
         wire.negotiate(new_client_id())
         _, again_type, again = wire.read()
-        record("PROTO-14", again_type == T_MANIFEST, "re-negotiate answered with the manifest"
-               if again_type == T_MANIFEST else f"re-negotiate answered 0x{again_type:02x}")
+        record(
+            "PROTO-14",
+            again_type == T_MANIFEST,
+            (
+                "re-negotiate answered with the manifest"
+                if again_type == T_MANIFEST
+                else f"re-negotiate answered 0x{again_type:02x}"
+            ),
+        )
     except (OSError, ConnectionError, ValueError) as exc:
         record("PROTO-14", False, f"re-negotiate: {exc}")
 
@@ -240,7 +280,11 @@ def check_manifest(manifest: dict) -> None:
         record("MAN-40", None, "no digest published")
     else:
         want = digest_of(manifest)
-        record("MAN-40", digest == want, "digest matches" if digest == want else f"got {digest}, want {want}")
+        record(
+            "MAN-40",
+            digest == want,
+            "digest matches" if digest == want else f"got {digest}, want {want}",
+        )
 
     agents = manifest.get("agents") or []
     record("MAN-51", True, f"{len(agents)} agent(s) advertised")
@@ -265,7 +309,7 @@ def check_manifest(manifest: dict) -> None:
 
 
 def check_sessions(wire: Wire, manifest: dict) -> None:
-    ops = ((manifest.get("capabilities") or {}).get("session") or {})
+    ops = (manifest.get("capabilities") or {}).get("session") or {}
     conversational = [a for a in (manifest.get("agents") or []) if a.get("sessions")]
     if not conversational:
         for req in ("MAN-28", "MAN-29", "PROTO-37"):
@@ -276,7 +320,11 @@ def check_sessions(wire: Wire, manifest: dict) -> None:
 
     # MAN-29: if an agent declares sessions, session.new must be available.
     if ops.get("new") is False:
-        record("MAN-29", False, "an agent declares sessions but capabilities.session.new is false")
+        record(
+            "MAN-29",
+            False,
+            "an agent declares sessions but capabilities.session.new is false",
+        )
         return
 
     status, body = wire.exchange(2, T_SESSION, {"op": "session.new", "agent": agent})
@@ -307,10 +355,18 @@ def check_sessions(wire: Wire, manifest: dict) -> None:
         status, body = wire.exchange(3, T_SESSION, payload)
         if advertised:
             ok = status == "end"
-            detail = f"session.{op} accepted" if ok else f"session.{op} advertised true but refused"
+            detail = (
+                f"session.{op} accepted"
+                if ok
+                else f"session.{op} advertised true but refused"
+            )
         else:
             ok = status == "error"
-            detail = f"session.{op} refused as advertised" if ok else f"session.{op} advertised false but accepted"
+            detail = (
+                f"session.{op} refused as advertised"
+                if ok
+                else f"session.{op} advertised false but accepted"
+            )
         record("MAN-28", ok, detail)
 
     if ops.get("prune"):
@@ -349,9 +405,15 @@ def report(endpoint: str) -> int:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Probe a vireo/1 endpoint against the specification.")
+    parser = argparse.ArgumentParser(
+        description="Probe a vireo/1 endpoint against the specification."
+    )
     parser.add_argument("--endpoint", required=True, help="host:port of the daemon")
-    parser.add_argument("--insecure", action="store_true", help="skip certificate verification (development only)")
+    parser.add_argument(
+        "--insecure",
+        action="store_true",
+        help="skip certificate verification (development only)",
+    )
     args = parser.parse_args()
 
     host, _, port_text = args.endpoint.rpartition(":")

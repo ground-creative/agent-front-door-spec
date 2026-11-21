@@ -559,8 +559,8 @@ A full manifest:
 | MAN-53 | 15      | absent `manifest_version` = 1.0        |
 | MAN-54 | 15      | stable output for stable state         |
 | MAN-55 | 7.1     | tag charset and uniqueness             |
-| MAN-56 | 7.1     | tags are labels, not promises         |
-| MAN-57 | 7.1     | keep tags few and stable              |
+| MAN-56 | 7.1     | tags are labels, not promises          |
+| MAN-57 | 7.1     | keep tags few and stable               |
 | MAN-58 | 7.1     | tags and description are not either/or |
 
 ## 18. Retired requirements
