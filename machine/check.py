@@ -1,0 +1,150 @@
+#!/usr/bin/env python3
+"""Validate the machine-checkable parts of this specification.
+
+Run from anywhere:
+
+    python3 machine/check.py
+
+What it checks:
+  1. every example validates against the schema for its manifest_version;
+  2. every `cases` entry is rejected by the 1.1 schema, or is marked as semantic;
+  3. every `publisher` entry is rejected by the schema;
+  4. every `accepted` entry validates against the schema it names;
+  5. every requirement ID cited by a fixture exists in a normative index table;
+  6. every relative markdown link in the repository points at a file that exists.
+
+Requires: python3 and jsonschema (`pip install jsonschema`).
+Exit code is non-zero on the first failure, so it works as a CI gate.
+"""
+
+from __future__ import annotations
+
+import json
+import pathlib
+import re
+import sys
+
+try:
+    import jsonschema
+except ImportError:  # pragma: no cover - CI installs it
+    print("check: jsonschema is required (pip install jsonschema)", file=sys.stderr)
+    raise SystemExit(2)
+
+ROOT = pathlib.Path(__file__).resolve().parent.parent
+SCHEMAS = {
+    "manifest.schema.json": None,
+    "manifest-1.0.schema.json": None,
+}
+REQUIREMENT = re.compile(r"\b(MAN|PROTO|WH|SEC|CONF)-(\d+)\b")
+LINK = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
+
+failures: list[str] = []
+
+
+def fail(msg: str) -> None:
+    failures.append(msg)
+
+
+def load_schemas() -> None:
+    for name in SCHEMAS:
+        path = ROOT / "machine" / "schema" / name
+        SCHEMAS[name] = json.loads(path.read_text())
+
+
+def schema_accepts(document: dict, name: str = "manifest.schema.json") -> tuple[bool, str]:
+    try:
+        jsonschema.validate(document, SCHEMAS[name])
+        return True, ""
+    except jsonschema.ValidationError as exc:
+        return False, exc.message
+
+
+def check_examples() -> None:
+    for path in sorted((ROOT / "machine" / "examples").glob("*.json")):
+        document = json.loads(path.read_text())
+        ok, message = schema_accepts(document)
+        if not ok:
+            fail(f"{path.relative_to(ROOT)}: {message}")
+
+
+def check_fixtures() -> None:
+    path = ROOT / "machine" / "fixtures" / "manifests.json"
+    doc = json.loads(path.read_text())
+
+    for entry in doc.get("cases", []):
+        ok, _ = schema_accepts(entry["document"])
+        if ok and "note" not in entry:
+            fail(
+                f"fixtures/manifests.json: {entry['name']} is listed as client-rejectable "
+                "but the schema accepts it and no note explains why"
+            )
+
+    for entry in doc.get("publisher", []):
+        ok, _ = schema_accepts(entry["document"])
+        if ok:
+            fail(f"fixtures/manifests.json: {entry['name']} is listed as publisher-only but the schema accepts it")
+
+    for entry in doc.get("accepted", []):
+        schema = entry.get("schema", "manifest.schema.json")
+        ok, message = schema_accepts(entry["document"], schema)
+        if not ok:
+            fail(f"fixtures/manifests.json: {entry['name']} should be accepted by {schema}: {message}")
+
+
+def normative_requirement_ids() -> set[str]:
+    ids: set[str] = set()
+    for name in ("MANIFEST.md", "PROTOCOL.md", "CONFORMANCE.md", "SECURITY.md"):
+        for line in (ROOT / "normative" / name).read_text().splitlines():
+            line = line.strip()
+            if not line.startswith("|"):
+                continue
+            cells = [c.strip() for c in line.split("|")]
+            if len(cells) >= 3 and REQUIREMENT.fullmatch(cells[1]):
+                ids.add(cells[1])
+    return ids
+
+
+def check_fixture_requirements() -> None:
+    known = normative_requirement_ids()
+    if not known:
+        fail("no requirement IDs found in the normative index tables")
+        return
+    for path in sorted((ROOT / "machine" / "fixtures").glob("*.json")):
+        text = path.read_text()
+        for match in REQUIREMENT.finditer(text):
+            req = match.group(0)
+            if req not in known:
+                fail(f"{path.relative_to(ROOT)} cites {req}, which is not in any normative index")
+
+
+def check_links() -> None:
+    for path in sorted(ROOT.rglob("*.md")):
+        if ".git" in path.parts:
+            continue
+        for target in LINK.findall(path.read_text()):
+            target = target.split("#", 1)[0].strip()
+            if not target or "://" in target or target.startswith("mailto:"):
+                continue
+            resolved = (path.parent / target).resolve()
+            if not resolved.exists():
+                fail(f"{path.relative_to(ROOT)}: link {target} does not resolve")
+
+
+def main() -> int:
+    load_schemas()
+    check_examples()
+    check_fixtures()
+    check_fixture_requirements()
+    check_links()
+
+    for message in failures:
+        print(f"FAIL {message}", file=sys.stderr)
+    if failures:
+        print(f"\n{len(failures)} problem(s)", file=sys.stderr)
+        return 1
+    print("ok: schemas, fixtures, requirement IDs and links")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

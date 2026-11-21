@@ -387,6 +387,13 @@ implementation that also emits their replacement, for one minor release.
 - **MAN-47.** A client MUST validate that the document is a JSON object, that
   `manifest_version`, `protocol`, `endpoint` and `agents` are present and of the
   documented types, and that every agent has `name` and `sessions`.
+
+  Presence of a *zero-valued* member is not observable in most encodings: after
+  decoding, `"sessions": false` and an absent `sessions` are the same value, and
+  so are `0` and an absent integer. A client MUST NOT treat that as an error, and
+  MUST fall back to the documented meaning of the zero value (`sessions: false`,
+  TTL unknown). The publisher obligation to emit those members is enforced by the
+  schema, not by the client.
 - **MAN-48.** On a document that fails MAN-47, a client MUST report a manifest
   error and MUST NOT proceed as if it had received a smaller valid manifest.
 - **MAN-49.** A client MUST NOT require any optional field, any particular `rel`,

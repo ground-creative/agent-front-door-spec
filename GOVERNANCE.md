@@ -20,7 +20,7 @@ welcome.
 
 ## How a change happens
 
-1. **Open a proposal.** Copy [`proposals/0001-template.md`](../proposals/0001-template.md),
+1. **Open a proposal.** Copy [`proposals/0001-template.md`](proposals/0001-template.md),
    number it, open it as a pull request. Do not edit normative text in the same
    pull request as the argument — the argument has to be reviewable on its own.
 2. **Review.** The discussion lives on the proposal pull request. Objections must
@@ -51,8 +51,8 @@ welcome.
 
 Additive changes are cheap and expected. Breaking changes are expensive and need
 a MAJOR bump with a migration note. The rules are normative in
-[`normative/MANIFEST.md`](../normative/MANIFEST.md) §4 and
-[`normative/PROTOCOL.md`](../normative/PROTOCOL.md) §2 — this section only says
+[`normative/MANIFEST.md`](normative/MANIFEST.md) §4 and
+[`normative/PROTOCOL.md`](normative/PROTOCOL.md) §2 — this section only says
 that the process enforces them.
 
 ## Conflict of interest

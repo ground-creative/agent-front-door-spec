@@ -1,15 +1,6 @@
 {
-  "note": "Documents a conforming client MUST reject (MAN-47, MAN-48). Each entry names the requirement it violates.",
+  "note": "Documents that test the manifest rules. Three lists, because three obligations apply. 'cases' MUST be rejected by a conforming client (MAN-47, MAN-48) and are distinguishable after decoding. 'publisher' documents MUST NOT be emitted by a publisher, but a client either MUST accept them (MAN-53) or cannot distinguish them from a valid document after decoding a zero value, so they are schema checks only. 'accepted' documents a client MUST accept.",
   "cases": [
-    {
-      "name": "missing-manifest-version",
-      "requirement": "MAN-1",
-      "document": {
-        "protocol": "vireo/1",
-        "endpoint": { "name": "x" },
-        "agents": []
-      }
-    },
     {
       "name": "manifest-version-not-major-minor",
       "requirement": "MAN-1",
@@ -59,16 +50,6 @@
       }
     },
     {
-      "name": "agent-without-sessions",
-      "requirement": "MAN-47",
-      "document": {
-        "manifest_version": "1.1",
-        "protocol": "vireo/1",
-        "endpoint": { "name": "x" },
-        "agents": [{ "name": "a", "description": "no sessions flag" }]
-      }
-    },
-    {
       "name": "agent-name-with-space",
       "requirement": "MAN-12",
       "document": {
@@ -81,7 +62,7 @@
     {
       "name": "duplicate-agent-name",
       "requirement": "MAN-12",
-      "note": "Semantic: JSON Schema cannot express cross-item uniqueness, so only a validating implementation catches this.",
+      "note": "Semantic: JSON Schema cannot express cross-item uniqueness, but a decoder can.",
       "document": {
         "manifest_version": "1.1",
         "protocol": "vireo/1",
@@ -89,6 +70,26 @@
         "agents": [
           { "name": "a", "sessions": true },
           { "name": "a", "sessions": false }
+        ]
+      }
+    },
+    {
+      "name": "duplicate-action-name",
+      "requirement": "MAN-24",
+      "note": "Semantic: JSON Schema cannot express uniqueness within one agent's actions, but a decoder can.",
+      "document": {
+        "manifest_version": "1.1",
+        "protocol": "vireo/1",
+        "endpoint": { "name": "x" },
+        "agents": [
+          {
+            "name": "a",
+            "sessions": false,
+            "actions": [
+              { "name": "place_order", "summary": "one" },
+              { "name": "place_order", "summary": "two" }
+            ]
+          }
         ]
       }
     },
@@ -133,7 +134,7 @@
     {
       "name": "capabilities-contradict-agents",
       "requirement": "MAN-29",
-      "note": "Semantic, not structural: the schema accepts it, conformance does not.",
+      "note": "Semantic, not structural: JSON Schema cannot express it, but a decoder can.",
       "document": {
         "manifest_version": "1.1",
         "protocol": "vireo/1",
@@ -154,10 +155,34 @@
         "agents": [],
         "digest": "6b1e9c1e8a6d4b2f5e7a0c3d9b8f6a4e2d1c0b9a8f7e6d5c4b3a2918f7e6d5c4"
       }
+    }
+  ],
+  "publisher": [
+    {
+      "name": "publisher-omitted-manifest-version",
+      "requirement": "MAN-1",
+      "note": "A publisher MUST carry manifest_version. A client cannot reject its absence, because MAN-53 defines absence as manifest_version 1.0 and requires accepting it. Checkable by schema only.",
+      "document": {
+        "protocol": "vireo/1",
+        "endpoint": { "name": "x" },
+        "agents": []
+      }
     },
     {
-      "name": "session-ttl-not-positive",
+      "name": "publisher-agent-without-sessions",
+      "requirement": "MAN-47",
+      "note": "A publisher MUST emit sessions. After decoding, an absent boolean is indistinguishable from false in most languages, so a client cannot enforce it. Checkable by schema only.",
+      "document": {
+        "manifest_version": "1.1",
+        "protocol": "vireo/1",
+        "endpoint": { "name": "x" },
+        "agents": [{ "name": "a", "description": "no sessions flag" }]
+      }
+    },
+    {
+      "name": "publisher-session-ttl-zero",
       "requirement": "MAN-37",
+      "note": "A publisher MUST emit a positive ttl_seconds. After decoding, 0 and absent are the same value. Checkable by schema only.",
       "document": {
         "manifest_version": "1.1",
         "protocol": "vireo/1",
