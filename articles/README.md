@@ -90,21 +90,21 @@ Ordered by what a reader needs first, not by what is easiest.
 a reader; a caller without eyes pays for it in tokens and impersonates a browser.
 Cites `PROTO-13`, `MAN-47`, `SEC-6`.
 
-**2. Rented access and owned access** — the strongest framing from the field
-discussions. Access granted by an intermediary is permission that can be withdrawn
+**2. Rented access and owned access** — _written, `0002`_. The strongest framing from
+the field discussions. Access granted by an intermediary is permission that can be withdrawn
 without notice; a domain is an asset the business already holds. Premise: an
 intermediary's revenue depends on the traffic it directs. Cite `PROTO-44`,
 `PROTO-47`.
 
-**3. The fragmentation tax** — why per-integration contracts do not compound. Each
-new business is a new client, a new error contract, a new retry policy. A shared
-contract is the only thing that amortises. Cite `MAN-43`, `MAN-44`, `PROTO-39`.
+**3. The fragmentation tax** — _written, `0003`_. Why per-integration contracts do
+not compound: each new business is a new client, a new error contract, a new retry
+policy. A shared contract is the only thing that amortises. Cite `MAN-43`, `MAN-44`, `PROTO-39`.
 
-**4. What a session buys you** — explicit completion, progress that never counts
-as a turn, and cancellation that admits it is not rollback (`PROTO-19`, `PROTO-20`,
-`PROTO-23`, `PROTO-27`). This is the article only this protocol can write, and it
-answers the strongest objection: discovery moves the cost from *finding* to
-*understanding*.
+**4. What a session buys you** — _written, `0004`_. Explicit completion, progress
+that never counts as a turn, and cancellation that admits it is not rollback
+(`PROTO-19`, `PROTO-20`, `PROTO-23`, `PROTO-27`). This is the article only this protocol can write, and it
+answers the strongest objection: discovery moves the cost from _finding_ to
+_understanding_.
 
 **5. The banner is not the service** — why "AI-ready" badges, `llms.txt` files and
 marketing pages are not a contract, and what would be: a schema, a version, a
@@ -122,7 +122,9 @@ compliance, and how to file an ambiguity.
 **8. A manifest is a document, not an API** — the L0 on-ramp: HTTP is fine for
 delivering metadata and wrong for holding a conversation. Cite `MAN-42`, `MAN-53`.
 
-Start with **2**, **3** and **4**. The first one is written; those three carry the
-argument a reader needs to decide whether to implement anything, and each has a
-premise that can be stated plainly instead of a claim that cannot be verified.
+The first four are drafted (`0001`–`0004`). They carry the argument a reader needs
+to decide whether to implement anything, and each states its premises instead of
+asserting a claim the repository cannot verify.
 
+Next, when a second implementation exists: **5** and **6**, which are about
+trusting a contract rather than wanting one.
