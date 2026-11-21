@@ -25,13 +25,55 @@ something that may no longer be true.
 - If the post describes behaviour the spec has since changed, do not rewrite
   history: add a note at the top saying what changed and when.
 
+## Claims versus premises
+
+The repository is a reference. Anything it asserts should be checkable against it,
+or clearly marked as an assumption. That distinction is what keeps an argument
+alive when the world moves.
+
+**A claim** is something a reader can verify: a requirement, a frame layout, a
+behaviour of the reference implementation, a `dig` answer. These must be true, and
+they cite the artefact that makes them true.
+
+**A premise** is a starting point the argument needs, which this repository cannot
+prove: that intermediaries optimise for their own revenue, that buyers prefer one
+contract over twenty, that a business would rather own its access than rent it.
+Premises are legitimate — an argument without them is just a list — but they must
+be **stated**, not smuggled in as fact.
+
+```markdown
+## Premises
+
+- An intermediary's revenue depends on the traffic it directs, so a layer that
+  removes the traffic competes with the intermediary's income. This is a claim
+  about incentives, not about any one company's decisions.
+- A business that already owns a domain would rather expose its own agents than
+  depend on a directory it does not control.
+```
+
+Three rules that follow:
+
+1. **State incentives, not events.** "An AI layer that answers inside the search
+   box removes the click" is an incentive you can reason about. "Company X removed
+   feature Y because of revenue" is a news claim, and this repository cannot hold
+   it — it may be wrong tomorrow, and a wrong fact in a durable article costs more
+   than the point it scored.
+2. **Write so the argument survives its premise.** If the premise fails, the
+   conclusion should weaken, not collapse. "If access is rented, it can be
+   revoked" stays true whether or not any specific company revokes anything.
+3. **No numbers you cannot regenerate.** Statistics from elsewhere are undated the
+   moment they are copied. Cite a source and a date, or leave the number out.
+
+A premise section is not a disclaimer. It is the honest boundary of the argument,
+and it lets a reader disagree with one assumption without discarding the piece.
+
 ## Front matter
 
 ```yaml
 ---
 title: A front door for agents
 published: 2026-11-21
-spec: spec-v0.1
+spec: spec-v0.3
 requirements: [MAN-1, PROTO-13, PROTO-27, SEC-6]
 canonical: https://example.com/blog/a-front-door-for-agents
 ---
@@ -42,7 +84,45 @@ here is what makes the drift check possible.
 
 ## Ideas worth writing
 
-- _Why agents impersonate browsers_ — the cost of the wrong front door.
-- _What a manifest is for_ — one file, and what it changes.
-- _Cancellation is not rollback_ — what a protocol can and cannot promise.
-- _Reading a spec you did not write_ — the conformance ladder in practice.
+Ordered by what a reader needs first, not by what is easiest.
+
+**1. The wrong front door** — _written, `0001`_. HTTP and HTML are a door built for
+a reader; a caller without eyes pays for it in tokens and impersonates a browser.
+Cites `PROTO-13`, `MAN-47`, `SEC-6`.
+
+**2. Rented access and owned access** — the strongest framing from the field
+discussions. Access granted by an intermediary is permission that can be withdrawn
+without notice; a domain is an asset the business already holds. Premise: an
+intermediary's revenue depends on the traffic it directs. Cite `PROTO-44`,
+`PROTO-47`.
+
+**3. The fragmentation tax** — why per-integration contracts do not compound. Each
+new business is a new client, a new error contract, a new retry policy. A shared
+contract is the only thing that amortises. Cite `MAN-43`, `MAN-44`, `PROTO-39`.
+
+**4. What a session buys you** — explicit completion, progress that never counts
+as a turn, and cancellation that admits it is not rollback (`PROTO-19`, `PROTO-20`,
+`PROTO-23`, `PROTO-27`). This is the article only this protocol can write, and it
+answers the strongest objection: discovery moves the cost from *finding* to
+*understanding*.
+
+**5. The banner is not the service** — why "AI-ready" badges, `llms.txt` files and
+marketing pages are not a contract, and what would be: a schema, a version, a
+conformance level. Cite `MAN-1`, `MAN-28`, `CONF-1`–`CONF-5`.
+
+**6. You are verifying the wrong name** — a real bug from this project's history.
+The client checked the certificate of the host DNS sent it to, not the domain the
+caller asked for, so a DNS answer decided which certificate was acceptable. Short,
+concrete, and it teaches `SEC-9` better than any normative sentence.
+
+**7. Reading a specification you did not write** — the conformance ladder in
+practice: why L0 is a real level, why claiming a level is more useful than claiming
+compliance, and how to file an ambiguity.
+
+**8. A manifest is a document, not an API** — the L0 on-ramp: HTTP is fine for
+delivering metadata and wrong for holding a conversation. Cite `MAN-42`, `MAN-53`.
+
+Start with **2**, **3** and **4**. The first one is written; those three carry the
+argument a reader needs to decide whether to implement anything, and each has a
+premise that can be stated plainly instead of a claim that cannot be verified.
+

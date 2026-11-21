@@ -8,7 +8,7 @@ canonical:
 
 # The wrong front door
 
-*Draft. Pinned to `spec-v0.3`; requirement IDs refer to that release.*
+_Draft. Pinned to `spec-v0.3`; requirement IDs refer to that release._
 
 Ask an assistant whether a plumber covers the north side of your city. Watch what
 it does.
@@ -31,7 +31,7 @@ thing it is looking for lives at `/services/coverage` rather than `/about`.
 
 That is not a complaint about the web. HTML, HTTP, cookies and a page rendered for
 a human are an excellent design for a human. The problem is that the web is the
-*only* door, so everything that is not a human has to squeeze through it.
+_only_ door, so everything that is not a human has to squeeze through it.
 
 When a machine squeezes through a door built for eyes, three costs follow:
 
@@ -74,7 +74,7 @@ endpoint is usually not the website's host, port or protocol, and SRV expresses
 that as a routing fact rather than as a pointer discovered after fetching a
 document.
 
-TLS then answers *who*. There is a detail worth being precise about here: the
+TLS then answers _who_. There is a detail worth being precise about here: the
 client sends the **domain you asked for** as `ServerName`, not the host the SRV
 record pointed at, and the certificate must cover the name you queried
 (`PROTO-47`, `SEC-9`). SRV is routing; it must not be allowed to move which
