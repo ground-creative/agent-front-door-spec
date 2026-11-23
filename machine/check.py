@@ -154,7 +154,7 @@ def check_spec_version_consistency() -> None:
     """Every document must name the newest release, outside history.
 
     A reader opening CONFORMANCE.md and seeing spec-v0.1 while the repository is
-    at spec-v0.3 has no way to tell which is current. The drift is silent and
+    at spec-v0.4 has no way to tell which is current. The drift is silent and
     reappears on every release, so it is checked rather than trusted.
 
     Prose may still mention an older tag when the line carries

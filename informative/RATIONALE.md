@@ -22,7 +22,7 @@ any HTTP request exists**. That is a routing fact, not a pointer discovered afte
 fetching something.
 
 ```dns
-_vireo._tcp.example.com. 300 IN SRV 10 5 7777 agent.example.com.
+_frontdoor._tcp.example.com. 300 IN SRV 10 5 7777 agent.example.com.
 ```
 
 It matters because the agent endpoint usually is not the website. Another host,

@@ -9,7 +9,7 @@
         "path": "/vireo/message",
         "headers": {
           "Content-Type": "application/json",
-          "X-Vireo-Protocol": "vireo/1",
+          "X-Frontdoor-Protocol": "frontdoor/1",
           "X-Vireo-Agent": "orders",
           "X-Vireo-Session": "y113YjxvfPQzaE6ZWhmabl-wnxthBAFJ"
         },

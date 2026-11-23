@@ -8,15 +8,15 @@ legitimate; a silent gap is not.
 
 | Project                                           | Language | Role            | Level          | Against     | Notes                                                                                                                                                                                                                                                 |
 | ------------------------------------------------- | -------- | --------------- | -------------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [vireo](https://github.com/ground-creative/vireo) | Go       | daemon (server) | L2, partial L3 | `spec-v0.3` | Reference implementation. `manifest_version` 1.3, `links`, `tags`, `capabilities`, `limits`, stable `digest`. Passes the frame and manifest fixtures. Advertises `progress`/`cancel` but has no fixture proving them yet, so L3 is claimed partially. |
-| ziwa.ai                                           | —        | deployment      | L2             | `spec-v0.3` | Live endpoint at `vireo.ziwa.ai:7778`, found via `_vireo._tcp.ziwa.ai`. Publicly trusted certificate covering `ziwa.ai`. Verified by `machine/conformance.py` on 2026-11-21: 16 pass, 1 skip (`session.prune`, not probed).                           |
+| [vireo](https://github.com/ground-creative/vireo) | Go       | daemon (server) | L2, partial L3 | `spec-v0.4` | Reference implementation. `manifest_version` 1.3, `links`, `tags`, `capabilities`, `limits`, stable `digest`. Passes the frame and manifest fixtures. Advertises `progress`/`cancel` but has no fixture proving them yet, so L3 is claimed partially. |
+| ziwa.ai                                           | —        | deployment      | L2             | `spec-v0.4` | Live endpoint at `vireo.ziwa.ai:7778`, found via `_frontdoor._tcp.ziwa.ai`. Publicly trusted certificate covering `ziwa.ai`. Verified by `machine/conformance.py` on 2026-11-21: 16 pass, 1 skip (`session.prune`, not probed).                           |
 
 ## Client side
 
 | Project                                                   | Language | Role         | Level | Against     | Notes                                                                                                                                                               |
 | --------------------------------------------------------- | -------- | ------------ | ----- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `vireo-chat` (in vireo)                                   | Go       | client       | L2    | `spec-v0.3` | Verifies certificates by default against the domain queried, not the SRV target (SEC-6, PROTO-47). Validates the manifest on receipt (MAN-47). Passes the fixtures. |
-| [vireo-mcp](https://github.com/ground-creative/vireo-mcp) | Go       | host adapter | L2    | `spec-v0.3` | Same protocol vocabulary and fixtures. **The published 0.6.0 binary predates `tags` and the verification default**; the source is current.                          |
+| `vireo-chat` (in vireo)                                   | Go       | client       | L2    | `spec-v0.4` | Verifies certificates by default against the domain queried, not the SRV target (SEC-6, PROTO-47). Validates the manifest on receipt (MAN-47). Passes the fixtures. |
+| [vireo-mcp](https://github.com/ground-creative/vireo-mcp) | Go       | host adapter | L2    | `spec-v0.4` | Same protocol vocabulary and fixtures. **The published 0.6.0 binary predates `tags` and the verification default**; the source is current.                          |
 
 ## How these were checked
 

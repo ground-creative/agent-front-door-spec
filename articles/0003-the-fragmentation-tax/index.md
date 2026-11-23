@@ -1,14 +1,14 @@
 ---
 title: The fragmentation tax
 published: 2026-11-21
-spec: spec-v0.3
+spec: spec-v0.4
 requirements: [MAN-2, MAN-3, MAN-4, MAN-44, MAN-45, MAN-46, PROTO-6, PROTO-39]
 canonical:
 ---
 
 # The fragmentation tax
 
-_Draft. Pinned to `spec-v0.3`; requirement IDs refer to that release._
+_Draft. Pinned to `spec-v0.4`; requirement IDs refer to that release._
 
 ## Premises
 

@@ -47,7 +47,7 @@ except ImportError:  # pragma: no cover - documented requirement
     raise SystemExit(2)
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-SPEC_VERSION = "spec-v0.3"
+SPEC_VERSION = "spec-v0.4"
 HEADER = struct.Struct(">IBI")
 MAX_PAYLOAD = 8 << 20
 
@@ -79,7 +79,7 @@ class Wire:
         # by hand does not, which makes every valid certificate look untrusted.
         ctx = ssl.create_default_context()
         ctx.minimum_version = ssl.TLSVersion.TLSv1_3
-        ctx.set_alpn_protocols(["vireo/1"])
+        ctx.set_alpn_protocols(["frontdoor/1"])
         if insecure:
             ctx.check_hostname = False
             ctx.verify_mode = ssl.CERT_NONE
@@ -121,7 +121,7 @@ class Wire:
         body = self._exactly(length) if length else b""
         return stream, frame_type, (json.loads(body) if body else None)
 
-    def negotiate(self, client_id: str, protocol: str = "vireo/1") -> None:
+    def negotiate(self, client_id: str, protocol: str = "frontdoor/1") -> None:
         self.send(
             0,
             T_NEGOTIATE,
@@ -186,7 +186,7 @@ def check_transport(
 
     version = wire.sock.version()
     alpn = wire.sock.selected_alpn_protocol()
-    ok = version == "TLSv1.3" and alpn == "vireo/1"
+    ok = version == "TLSv1.3" and alpn == "frontdoor/1"
     record("PROTO-1", ok, f"{version}, ALPN {alpn}")
     return wire
 
@@ -421,7 +421,7 @@ def report(endpoint: str) -> int:
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Probe a vireo/1 endpoint against the specification."
+        description="Probe a frontdoor/1 endpoint against the specification."
     )
     parser.add_argument("--endpoint", required=True, help="host:port of the daemon")
     parser.add_argument(

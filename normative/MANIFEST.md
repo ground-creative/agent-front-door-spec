@@ -3,7 +3,7 @@
 **Normative.** Requirement identifiers (`MAN-n`) are stable; cite them in issues
 and proposals. `MUST`, `MUST NOT`, `SHOULD`, `MAY` are used as in RFC 2119.
 
-- Spec release: `spec-v0.3`
+- Spec release: `spec-v0.4`
 - Document version described here: `manifest_version` `1.3`
 - See also: [`PROTOCOL.md`](PROTOCOL.md) (how the manifest is delivered),
   [`CONFORMANCE.md`](CONFORMANCE.md) (what a valid implementation must do).
@@ -64,7 +64,7 @@ that something is required; it MUST NOT be the mechanism that grants it.
   and MUST NOT rely on a client inferring it.
 
 `manifest_version` is independent of the wire protocol identifier and of the
-spec release tag. A single `vireo/1` connection may carry a `1.0`, `1.1` or `1.2`
+spec release tag. A single `frontdoor/1` connection may carry a `1.0`, `1.1` or `1.2`
 manifest.
 
 While the specification itself is a `0.x` draft, `manifest_version` MAY change in
@@ -80,7 +80,7 @@ shape for the one job `actions` was reaching for (§7.1).
 ```json
 {
   "manifest_version": "1.3",
-  "protocol": "vireo/1",
+  "protocol": "frontdoor/1",
   "endpoint": {},
   "agents": [],
   "links": [],
@@ -97,7 +97,7 @@ shape for the one job `actions` was reaching for (§7.1).
 | Field              | Type              | Req.       | Since | Meaning                                      |
 | ------------------ | ----------------- | ---------- | ----- | -------------------------------------------- |
 | `manifest_version` | string            | MUST       | 1.1   | Document compatibility level (MAN-1)         |
-| `protocol`         | string            | MUST       | 1.0   | Wire protocol identifier, e.g. `vireo/1`     |
+| `protocol`         | string            | MUST       | 1.0   | Wire protocol identifier, e.g. `frontdoor/1`     |
 | `endpoint`         | object            | MUST       | 1.0   | The service itself (§6)                      |
 | `agents`           | array             | MUST       | 1.0   | The agents exposed; MAY be empty (§7)        |
 | `links`            | array             | MAY        | 1.1   | Endpoint-level published references (§8)     |
@@ -430,7 +430,7 @@ A minimal valid manifest (`manifest_version` `1.3`, one stateless agent):
 ```json
 {
   "manifest_version": "1.3",
-  "protocol": "vireo/1",
+  "protocol": "frontdoor/1",
   "endpoint": { "name": "acme-plumbing" },
   "agents": [
     {
@@ -447,7 +447,7 @@ A full manifest:
 ```json
 {
   "manifest_version": "1.3",
-  "protocol": "vireo/1",
+  "protocol": "frontdoor/1",
   "endpoint": {
     "id": "restaurant-prod",
     "name": "restaurant",

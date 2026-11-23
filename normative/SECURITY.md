@@ -2,7 +2,7 @@
 
 **Normative where it says MUST.** Requirement identifiers (`SEC-n`) are stable.
 
-- Spec release: `spec-v0.3`
+- Spec release: `spec-v0.4`
 
 ---
 
@@ -29,7 +29,7 @@ a question that belongs to another.
 
 - **SEC-4.** TLS 1.3 or later MUST be used. There MUST be no plaintext mode and no
   downgrade path.
-- **SEC-5.** ALPN MUST be `vireo/1` for this revision. A server MUST refuse a
+- **SEC-5.** ALPN MUST be `frontdoor/1` for this revision. A server MUST refuse a
   connection that negotiates anything else.
 - **SEC-6.** A client MUST verify the server certificate and MUST send the queried
   domain as `ServerName`. Verification MUST be on by default.

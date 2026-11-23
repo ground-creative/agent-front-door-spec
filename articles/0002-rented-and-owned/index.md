@@ -1,14 +1,14 @@
 ---
 title: Rented access and owned access
 published: 2026-11-21
-spec: spec-v0.3
+spec: spec-v0.4
 requirements: [PROTO-44, PROTO-47, MAN-7, MAN-33, SEC-6]
 canonical:
 ---
 
 # Rented access and owned access
 
-_Draft. Pinned to `spec-v0.3`; requirement IDs refer to that release._
+_Draft. Pinned to `spec-v0.4`; requirement IDs refer to that release._
 
 ## Premises
 
@@ -70,7 +70,7 @@ that nobody else is holding the pen.
 ## The part that is easy to get wrong
 
 The domain is the identity, and the specification is specific about it: the client
-resolves `_vireo._tcp.<domain>`, connects to whatever host and port the record
+resolves `_frontdoor._tcp.<domain>`, connects to whatever host and port the record
 names, and verifies the certificate against **the domain that was queried**, not
 the host DNS sent it to (`PROTO-47`, `SEC-9`).
 
@@ -102,8 +102,8 @@ infrastructure it controls, in a form a program can read.
 Three commands, no trust required:
 
 ```bash
-dig +short SRV _vireo._tcp.ziwa.ai
-openssl s_client -connect vireo.ziwa.ai:7778 -servername ziwa.ai -alpn vireo/1 1 \
+dig +short SRV _frontdoor._tcp.ziwa.ai
+openssl s_client -connect vireo.ziwa.ai:7778 -servername ziwa.ai -alpn frontdoor/1 1 \
   | grep "Verify return code"
 ```
 

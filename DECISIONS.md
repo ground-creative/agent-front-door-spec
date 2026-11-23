@@ -8,6 +8,27 @@ Newest first.
 
 ---
 
+## D-10 — The protocol is not named after its implementation
+
+**Decision.** The wire identifier is `frontdoor/1` and the discovery record is
+`_frontdoor._tcp`. `vireo/1` and `_vireo._tcp` are retired; a client MAY fall back to
+the old record (`PROTO-48`). The implementation keeps its name.
+
+**Why.** The specification's own argument is that one implementation proves nothing and
+that the interesting column is the empty one. Publishing `vireo/1` as the ALPN string
+contradicts that in the one place every client must type: implementing the standard
+looked like implementing Vireo. The name of a standard is part of its interface, and an
+interface that carries a product name is a product.
+
+The same reasoning applies to scope. The protocol addresses any party that controls a
+domain — a business, a person, a studio, a game server — and the identifiers should not
+narrow that to commerce.
+
+**Cost.** Every existing endpoint must publish a new record and offer a new ALPN, or
+clients must use the fallback. Accepted while the specification is a 0.x draft, which is
+exactly what the draft-period rule is for: the change is cheap now and expensive after
+`spec-v1.0`.
+
 ## D-9 — Added `tags`, the shape D-8 said to reach for
 
 **Decision.** `manifest_version` 1.3 adds `agents[].tags`: an array of lowercase

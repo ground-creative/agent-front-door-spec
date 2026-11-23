@@ -1,6 +1,6 @@
 {
   "manifest_version": "1.3",
-  "protocol": "vireo/1",
+  "protocol": "frontdoor/1",
   "endpoint": {
     "id": "restaurant-prod",
     "name": "restaurant",

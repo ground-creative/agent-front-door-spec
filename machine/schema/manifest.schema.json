@@ -15,7 +15,7 @@
     "protocol": {
       "type": "string",
       "minLength": 1,
-      "description": "Wire protocol identifier, e.g. vireo/1"
+      "description": "Wire protocol identifier, e.g. frontdoor/1"
     },
     "endpoint": { "$ref": "#/$defs/endpoint" },
     "agents": {

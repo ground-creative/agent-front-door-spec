@@ -1,7 +1,7 @@
 ---
 title: What a session buys you
 published: 2026-11-21
-spec: spec-v0.3
+spec: spec-v0.4
 requirements:
   [
     PROTO-19,
@@ -20,7 +20,7 @@ canonical:
 
 # What a session buys you
 
-_Draft. Pinned to `spec-v0.3`; requirement IDs refer to that release._
+_Draft. Pinned to `spec-v0.4`; requirement IDs refer to that release._
 
 ## Premises
 

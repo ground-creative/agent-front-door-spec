@@ -31,7 +31,7 @@ welcome.
    readers learn what was already considered.
 4. **Apply.** Normative edits land after the proposal, with requirement IDs updated
    and the changelog bumped.
-5. **Release.** A spec tag (`spec-v0.1`, `spec-v0.2`, `spec-v0.3`) is cut.<!-- spec-version: history -->
+5. **Release.** A spec tag (`spec-v0.1`, `spec-v0.2`, `spec-v0.4`) is cut.<!-- spec-version: history -->
    Tags never move.
 
 ## What needs a proposal

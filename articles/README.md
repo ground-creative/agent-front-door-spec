@@ -6,11 +6,11 @@ specification they describe.
 ## Why here
 
 An article and the specification it explains must not drift apart. Pinning each
-article to a spec tag (`spec-v0.3`) and citing requirement IDs means that when the
+article to a spec tag (`spec-v0.4`) and citing requirement IDs means that when the
 specification changes, the affected posts are findable:
 
 ```bash
-grep -rl 'spec-v0.3' articles/
+grep -rl 'spec-v0.4' articles/
 grep -rl 'PROTO-27'   articles/
 ```
 
@@ -73,7 +73,7 @@ and it lets a reader disagree with one assumption without discarding the piece.
 ---
 title: A front door for agents
 published: 2026-11-21
-spec: spec-v0.3
+spec: spec-v0.4
 requirements: [MAN-1, PROTO-13, PROTO-27, SEC-6]
 canonical: https://example.com/blog/a-front-door-for-agents
 ---

@@ -1,14 +1,14 @@
 ---
 title: The wrong front door
 published: 2026-11-21
-spec: spec-v0.3
+spec: spec-v0.4
 requirements: [MAN-1, MAN-47, PROTO-13, PROTO-27, SEC-6]
 canonical:
 ---
 
 # The wrong front door
 
-_Draft. Pinned to `spec-v0.3`; requirement IDs refer to that release._
+_Draft. Pinned to `spec-v0.4`; requirement IDs refer to that release._
 
 Ask an assistant whether a plumber covers the north side of your city. Watch what
 it does.
@@ -69,7 +69,7 @@ for a different kind of caller:
 - **a session holds the conversation.** Multi-turn, with explicit progress and an
   explicit end.
 
-Discovery is a DNS SRV record — `_vireo._tcp.example.com` — because an agent
+Discovery is a DNS SRV record — `_frontdoor._tcp.example.com` — because an agent
 endpoint is usually not the website's host, port or protocol, and SRV expresses
 that as a routing fact rather than as a pointer discovered after fetching a
 document.
@@ -89,7 +89,7 @@ act on:
 ```json
 {
   "manifest_version": "1.3",
-  "protocol": "vireo/1",
+  "protocol": "frontdoor/1",
   "endpoint": { "name": "acme-plumbing" },
   "links": [{ "rel": "site", "href": "https://acme-plumbing.example" }],
   "agents": [
@@ -155,6 +155,6 @@ What would change that is boring and specific:
 Two implementations that interoperate are the only real measure of whether any of
 this works. Everything else is a claim.
 
-- Specification: [`agent-front-door-spec`](https://github.com/ground-creative/agent-front-door-spec) at `spec-v0.3`
+- Specification: [`agent-front-door-spec`](https://github.com/ground-creative/agent-front-door-spec) at `spec-v0.4`
 - Reference implementation: [`vireo`](https://github.com/ground-creative/vireo)
 - Live endpoint: `connect ziwa.ai`

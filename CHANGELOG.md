@@ -3,6 +3,29 @@
 Spec releases are tagged `spec-vX.Y` and never move. This file records what
 changed and which requirement IDs are affected.
 
+## spec-v0.4 — draft
+
+**Renamed the wire protocol and the discovery record.** `vireo/1` becomes
+`frontdoor/1`; `_vireo._tcp` becomes `_frontdoor._tcp`.
+
+The specification invites independent implementations, and then named the protocol
+on the wire after the first one. Every ALPN negotiation and every SRV lookup would
+have carried a product name, which tells a reader that implementing the specification
+means being Vireo. A standard named after its implementation is a product with a
+document attached.
+
+- ALPN is now `frontdoor/1` (`PROTO-1`).
+- Discovery is now `_frontdoor._tcp`; the previous record is retired but a client
+  MAY fall back to it (`PROTO-44`, `PROTO-48`).
+- The HTTP trace header `X-Vireo-Protocol` becomes `X-Frontdoor-Protocol`.
+
+`manifest_version` stays **1.3**. The `protocol` field is a wire identifier and an
+open string, not a document shape; a manifest that changes only its value is the same
+manifest. A client that validated the old string byte for byte was reading a value set
+that this document never closed (MAN-4).
+
+Earlier drafts are untouched: `CHANGELOG` and `DECISIONS` record what was true then.
+
 ## spec-v0.3 — draft
 
 **Added `tags`.** `manifest_version` goes to **1.3**.

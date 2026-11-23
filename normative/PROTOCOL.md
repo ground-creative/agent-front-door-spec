@@ -3,8 +3,8 @@
 **Normative.** Requirement identifiers (`PROTO-n`, `WH-n`) are stable; cite them
 in issues and proposals.
 
-- Spec release: `spec-v0.3`
-- Protocol identifier: `vireo/1`
+- Spec release: `spec-v0.4`
+- Protocol identifier: `frontdoor/1`
 - See also: [`MANIFEST.md`](MANIFEST.md) (the document delivered at handshake),
   [`CONFORMANCE.md`](CONFORMANCE.md), [`SECURITY.md`](SECURITY.md).
 
@@ -15,10 +15,10 @@ in issues and proposals.
 One port serves both transports:
 
 - **TCP + TLS 1.3**, and **UDP + QUIC**, on the same port;
-- ALPN `vireo/1` selects the protocol;
+- ALPN `frontdoor/1` selects the protocol;
 - every message is a **frame**: a 9-byte header, then a JSON payload.
 
-- **PROTO-1.** A server MUST offer TLS 1.3 or later, and MUST select `vireo/1`
+- **PROTO-1.** A server MUST offer TLS 1.3 or later, and MUST select `frontdoor/1`
   via ALPN. There is no plaintext mode.
 - **PROTO-2.** A server SHOULD serve TCP/TLS and UDP/QUIC on the same port
   number. A client MUST be able to use either; it MAY prefer one.
@@ -66,7 +66,7 @@ The first frame on a connection MUST be `negotiate`:
 
 ```json
 {
-  "protocol": "vireo/1",
+  "protocol": "frontdoor/1",
   "client": {
     "id": "vireo_4f1c8a2e9b7d4c0fa1e2d3b4c5a6f7e8",
     "name": "example-client",
@@ -266,7 +266,7 @@ agent's backend.
 ```
 POST /vireo/message
 Content-Type: application/json
-X-Vireo-Protocol: vireo/1
+X-Frontdoor-Protocol: frontdoor/1
 X-Vireo-Agent: orders
 X-Vireo-Session: y113YjxvfPQzaE6ZWhmabl-wnxthBAFJ
 
@@ -332,7 +332,7 @@ turn:
 A client given a bare domain resolves a service record:
 
 ```
-_vireo._tcp.example.com. 300 IN SRV 10 5 7777 agent.example.com.
+_frontdoor._tcp.example.com. 300 IN SRV 10 5 7777 agent.example.com.
 ```
 
 - **PROTO-44.** A client MUST treat the SRV target and port as the endpoint
@@ -343,10 +343,14 @@ _vireo._tcp.example.com. 300 IN SRV 10 5 7777 agent.example.com.
   `weight`, as DNS defines them.
 - **PROTO-47.** The TLS `ServerName` MUST be the queried domain, and the presented
   certificate MUST be valid for it. See [`SECURITY.md`](SECURITY.md).
+- **PROTO-48.** A client MAY fall back to the retired record `_vireo._tcp` when
+  `_frontdoor._tcp` does not resolve, and MUST treat both as the same service.
 
-`_vireo._tcp` is the identifier this revision publishes. It is not registered with
-IANA. A future revision may publish separate `_tcp` and `_udp` records; a client
-MUST tolerate their absence.
+`_frontdoor._tcp` is the identifier this revision publishes. It is not registered with
+IANA. Earlier drafts of this document published `_vireo._tcp`, named after the reference
+implementation; that was a defect in an open specification and is retired here (D-10).
+A future revision may publish separate `_tcp` and `_udp` records; a client MUST tolerate
+their absence.
 
 ## 11. Requirement index
 
@@ -399,6 +403,7 @@ MUST tolerate their absence.
 | PROTO-45 | 10      | no SRV means no resolution                   |
 | PROTO-46 | 10      | priority and weight honoured                 |
 | PROTO-47 | 10      | ServerName and certificate                   |
+| PROTO-48 | 10      | retired `_vireo._tcp` fallback               |
 | WH-1     | 9       | one backend per turn                         |
 | WH-2     | 9       | request body fields                          |
 | WH-3     | 9       | headers match body                           |
