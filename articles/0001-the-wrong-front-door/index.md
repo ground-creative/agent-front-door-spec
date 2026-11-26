@@ -69,7 +69,7 @@ for a different kind of caller:
 - **a session holds the conversation.** Multi-turn, with explicit progress and an
   explicit end.
 
-Discovery is a DNS SRV record — `_frontdoor._tcp.example.com` — because an agent
+Discovery is a DNS SRV record — `_portico._tcp.example.com` — because an agent
 endpoint is usually not the website's host, port or protocol, and SRV expresses
 that as a routing fact rather than as a pointer discovered after fetching a
 document.
@@ -89,7 +89,7 @@ act on:
 ```json
 {
   "manifest_version": "1.3",
-  "protocol": "frontdoor/1",
+  "protocol": "portico/1",
   "endpoint": { "name": "acme-plumbing" },
   "links": [{ "rel": "site", "href": "https://acme-plumbing.example" }],
   "agents": [

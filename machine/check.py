@@ -263,10 +263,12 @@ def check_retired_identifiers() -> None:
     for path in sorted(ROOT.rglob("*")):
         if not path.is_file() or path.suffix not in {".md", ".json", ".py"}:
             continue
-        if any(part in {".git", "__pycache__", "articles"} for part in path.parts):
+        if any(part in {".git", "__pycache__"} for part in path.parts):
             continue
         if path.name in exempt_files:
             continue
+        # Articles are not exempt. They publish commands a reader will run, so a
+        # stale identifier there is a broken instruction, not a historical note.
         if any(str(path.relative_to(ROOT)).startswith(p) for p in exempt_paths):
             continue
         for number, line in enumerate(path.read_text().splitlines(), start=1):

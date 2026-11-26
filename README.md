@@ -91,14 +91,11 @@ plain language, with the requirement ID that states the obligation. That file is
 enough to write a publisher; you do not need the normative text to produce a valid
 document.
 
-That is the shape. For a real one, with a verified digest and two agents behind a
-live business, see
-[`machine/examples/deployed.ziwa.json`](machine/examples/deployed.ziwa.json) —
-captured from `ziwa.ai` and checked in as an example, so the specification's own
-probe validates the document the world actually receives:
+That is the shape. `machine/examples/manifest.full.json` is a complete one, with every
+optional member present, and the probe checks it:
 
 ```bash
-python3 machine/conformance.py --payload machine/examples/deployed.ziwa.json
+python3 machine/conformance.py --payload machine/examples/manifest.full.json
 ```
 
 The manifest is not a web page and it is not a service description for
