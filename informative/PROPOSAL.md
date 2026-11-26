@@ -48,14 +48,21 @@ with it, one way to say "finished", "still working" or "gave up".
 
 A second door, next to the website, built for a different kind of caller:
 
-- **the domain names it** — the business already owns and maintains that name; no
+- **the domain names it** — the party already owns and maintains that name; no
   directory, marketplace or vendor catalogue decides whether it exists;
 - **a manifest describes it** — a small document saying which agents exist, what
   each claims to do, and where to read more;
 - **a session holds the conversation** — multi-turn, with explicit progress and an
   explicit end, so an agent never has to guess whether an answer is complete.
 
-The business keeps everything that makes it a business: its backend, its models,
+A business is the obvious case, and the one the example above uses, but it is not
+the boundary. The party may be a business, a person, a studio, a local agent on
+someone's own hardware, a game server — anything that controls a domain and
+chooses to answer on it. The symmetry matters: the same daemon runs at either end,
+so a person running an agent at their own domain is a publisher too, and neither
+side of a conversation is special.
+
+Whoever it is keeps everything that makes it what it is: its backend, its models,
 its logic, its data. The protocol standardizes the contract between the two
 sides, not the software behind it.
 
@@ -88,8 +95,8 @@ So the honest split is:
 
 ## Principles
 
-1. **The business stays in control.** It decides which agents exist, what they say,
-   and which backend answers. No model is implied anywhere.
+1. **Whoever owns the endpoint stays in control.** It decides which agents exist,
+   what they say, and which backend answers. No model is implied anywhere.
 2. **Discovery is delegated, not centralized.** DNS already expresses "where is the
    service for this name", with each zone authoritative for its own records. No
    registry has to approve a new participant.

@@ -12,9 +12,9 @@ and proposals. `MUST`, `MUST NOT`, `SHOULD`, `MAY` are used as in RFC 2119.
 
 ## 1. Purpose
 
-A manifest answers one question for a caller that has just reached a business:
+A manifest answers one question for a caller that has just reached an endpoint:
 
-> What does this business expose, what can each exposed agent do, where should I
+> What does this endpoint expose, what can each exposed agent do, where should I
 > look for more, and what must I obey?
 
 It is a **data document**, not a web page. It carries no layout, no script, no
@@ -24,7 +24,7 @@ client must be able to act on it without guessing.
 The manifest is **transport-independent**. This document defines the object. How
 it arrives — inside a protocol handshake, or from a document a deployment
 publishes — is specified elsewhere. What matters here is the object: a caller
-that has just reached a business must be able to read it and act on it without
+that has just reached an endpoint must be able to read it and act on it without
 guessing.
 
 - **MAN-59.** An adapter that connects an agent host to an endpoint MUST make the
@@ -57,13 +57,13 @@ that something is required; it MUST NOT be the mechanism that grants it.
 
 ## 3. Terminology
 
-- **Endpoint** — the service a caller connected to. One business MAY run several
+- **Endpoint** — the service a caller connected to. One party MAY run several
   endpoints.
 - **Agent** — one thing a caller can talk to at that endpoint. An agent is named,
   described, and either conversational or stateless.
 - **Manifest** — the document in this specification.
 - **Caller / client** — anything that reads a manifest.
-- **Publisher / server** — the business, or the deployment acting for it.
+- **Publisher / server** — the party, or the deployment acting for it.
 
 ## 4. Versioning and compatibility
 
@@ -149,7 +149,7 @@ shape for the one job `actions` was reaching for (§7.1).
 | Field         | Type   | Req. | Meaning                                               |
 | ------------- | ------ | ---- | ----------------------------------------------------- |
 | `id`          | string | MAY  | Stable identifier of this endpoint; opaque to clients |
-| `name`        | string | MUST | Display name of the business                          |
+| `name`        | string | MUST | Display name of the endpoint                          |
 | `description` | string | MAY  | One sentence, plain text                              |
 
 - **MAN-9.** `endpoint.id`, when present, MUST be stable across restarts and MUST

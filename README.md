@@ -1,6 +1,6 @@
 # Agent Front Door
 
-**An open specification for a channel built for AI agents, at the business's own
+**An open specification for a channel built for AI agents, at the endpoint's own
 domain, without a directory or marketplace in between.**
 
 > **Status: draft (spec-v0.4), seeking implementers.** Nothing here is ratified.
@@ -11,10 +11,13 @@ domain, without a directory or marketplace in between.**
 
 ## The problem
 
-Every business already has a front door for humans: a domain, a website, HTTP,
-HTML, cookies, forms. That door is built for a reader with eyes. It carries
+Every party that owns a domain already has a front door for humans: a website,
+HTTP, HTML, cookies, forms. That door is built for a reader with eyes. It carries
 navigation, styling and scripts, it assumes a session kept in a browser, and it
-defends itself against automation with bot walls and captchas.
+defends itself against automation with bot walls and captchas. Most often the
+party is a business, and this document uses that case throughout because it is
+the one everybody recognises — but it is not a boundary. The same design serves a
+person, a studio, or an agent running on hardware someone owns.
 
 An AI agent that needs one fact has to walk through that door wearing a human
 costume: fetch pages, parse markup, guess which link matters, and hope the layout
@@ -34,11 +37,11 @@ to say _finished_, _still working_, or _gave up_.
 
 A second door, next to the website, at the address the business already owns.
 
-|                           | for humans                | for agents                                           |
-| ------------------------- | ------------------------- | ---------------------------------------------------- |
-| how it is found           | a URL you type            | `_portico._tcp.<domain>` in the business's own DNS |
-| what arrives first        | an HTML page              | a **manifest**: what this endpoint exposes           |
-| what carries the exchange | forms, cookies, redirects | a **session** with explicit turns, progress and end  |
+|                           | for humans                | for agents                                          |
+| ------------------------- | ------------------------- | --------------------------------------------------- |
+| how it is found           | a URL you type            | `_portico._tcp.<domain>` in the business's own DNS  |
+| what arrives first        | an HTML page              | a **manifest**: what this endpoint exposes          |
+| what carries the exchange | forms, cookies, redirects | a **session** with explicit turns, progress and end |
 
 Nothing is registered anywhere. A domain is already owned, already delegated, and
 already maintained by the business, and each zone is authoritative for its own
