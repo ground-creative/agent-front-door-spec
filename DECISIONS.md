@@ -8,6 +8,43 @@ Newest first.
 
 ---
 
+## D-11 — The static-document on-ramp is withdrawn
+
+**Decision.** The manifest-publisher level (`L0`) and its requirements
+(`CONF-6` – `CONF-10`) are removed at `spec-v0.4`. There is one way a caller
+learns what a business offers: the manifest delivered in the `negotiate` reply.
+The object stays transport-independent and the schema applies unchanged wherever a
+deployment chooses to publish it, but publishing a file is no longer a conformance
+level and no longer the adoption ask.
+
+**Why.** The level could not be checked and could not be found:
+
+- `CONF-8` required a publisher to "publish where a caller can find it, and
+  document that location". No document in this repository ever defined that
+  location — no path, no media type, no filename — so two implementations could
+  each satisfy it while being undiscoverable to the other.
+- `machine/conformance.py` has only ever had an endpoint mode. A level nothing can
+  verify is not a claim about an implementation.
+- `IMPLEMENTATIONS.md` listed its publishers as `—`. Nobody adopted it.
+- It contradicted `D-2`. A file of unknown age in an unknown place is the exact
+  staleness problem the session handshake exists to remove, and publishing a level
+  that reintroduced it gave every reviewer a true objection to the design.
+
+**Cost — stated plainly.** The on-ramp narrows. A business that wanted to
+participate with one file now cannot; participating means answering, which means
+running something. That is a real loss and it is the honest trade: an on-ramp that
+leads to a document nobody can find is not an on-ramp, it is the appearance of one.
+
+**What replaces the ask.** The probe. `machine/conformance.py --payload` checks a
+captured document, and `--endpoint` checks a running implementation requirement by
+requirement. The adoption ask is now "run this and tell us where it fails", which
+is checkable by the person being asked.
+
+**Precedent.** Levels are cumulative from the bottom, so removing the lowest one
+changes nothing for anyone at L1 or above; the reference daemon's claim is
+unchanged. Retiring the identifiers in place rather than renumbering follows `D-8`,
+where `MAN-24` – `MAN-27` were retired and never reused.
+
 ## D-10 — The protocol is not named after its implementation
 
 **Decision.** The wire identifier is `frontdoor/1` and the discovery record is
@@ -95,7 +132,8 @@ seriously, and the fix is cheapest before anyone depends on the old behaviour.
 **Cost.** Local development needs an explicit flag or a locally trusted certificate.
 Accepted.
 
-## D-6 — The manifest is transport-independent
+## D-6 — The manifest is transport-independent  
+*(superseded at spec-v0.4 by D-11)*
 
 **Decision.** `MANIFEST.md` defines the object. `PROTOCOL.md` defines how it arrives
 inside a session. A deployment may publish the same object as a document for L0
@@ -107,6 +145,11 @@ the ecosystem without writing TLS code. It also keeps the "retrieve a document" 
 page-scraping integration.
 
 **Cost.** Two delivery paths to keep consistent. Accepted: they share one schema.
+
+**Superseded.** The document path is withdrawn; see D-11. Keeping the object
+transport-independent is still right and is not what was undone. What was undone is
+the claim that publishing a file somewhere constitutes participation, which no
+document could make checkable.
 
 ## D-5 — `links` replaces `refs`; `commands` is replaced by `capabilities`
 
@@ -125,16 +168,19 @@ forbid. An array of objects is also the only shape that can grow additively.
 ## D-4 — Additive versioning, not a protocol bump
 
 **Decision.** New optional fields arrive under `manifest_version` minor bumps. The
-wire identifier stays `vireo/1`. Breaking changes require a MAJOR and a superseding
-document.
+wire identifier stays `frontdoor/1`. Breaking changes require a MAJOR and a
+superseding document.
 
 **Why.** There is a live deployment. A flag day would break it and would prove the
 opposite of the interoperability claim. Clients that ignore unknown members — which
 `MAN-3` requires — keep working while capabilities grow.
 
+*The wire identifier was `vireo/1` when this was written; D-10 renamed it and the
+decision itself is unchanged.*
+
 ## D-3 — Discovery is DNS SRV, not a well-known URI
 
-**Decision.** A bare domain resolves through `_vireo._tcp.<domain>`.
+**Decision.** A bare domain resolves through `_frontdoor._tcp.<domain>`.
 
 **Why.** A well-known path answers "where is the document". SRV answers "where is
 the service", before any HTTP request exists, and can name another host, port or
@@ -143,6 +189,9 @@ normal case. SIP, XMPP, LDAP and Matrix use SRV for the same reason.
 
 **Cost.** SRV is unfamiliar to some operators and cannot carry the manifest itself.
 Accepted: the manifest arrives inside the connection.
+
+*The record was `_vireo._tcp` when this was written; D-10 renamed it and the
+reasoning above is unchanged.*
 
 ## D-2 — The manifest arrives inside the connection
 

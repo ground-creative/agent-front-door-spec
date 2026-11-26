@@ -32,8 +32,19 @@ records. Discovery through SRV needs nobody's approval, which is the point.
 
 ## Do I need to run a daemon to participate?
 
-No. L0 is a manifest document. You publish one file, validate it against the schema,
-and you have joined. Discovery and conversation are additive later.
+No. A manifest is the document a caller receives when it connects, so publishing
+one means running something that answers. There is no static-file on-ramp: an
+earlier draft defined one and withdrew it, because no document ever defined where
+such a file would live and no client could find it. If you want to participate
+today you run an endpoint, or you point an existing implementation at a backend
+you already have.
+
+What you can do without a daemon is validate the document itself. Capture a
+manifest from any endpoint and check it:
+
+```bash
+python3 machine/conformance.py --payload captured.json
+```
 
 ## Does the daemon see my conversations?
 

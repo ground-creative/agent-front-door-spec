@@ -116,11 +116,12 @@ caller asked for, so a DNS answer decided which certificate was acceptable. Shor
 concrete, and it teaches `SEC-9` better than any normative sentence.
 
 **7. Reading a specification you did not write** — the conformance ladder in
-practice: why L0 is a real level, why claiming a level is more useful than claiming
-compliance, and how to file an ambiguity.
+practice: what a level claim is worth, why a partial claim beats a compliance
+claim, and how to file an ambiguity.
 
-**8. A manifest is a document, not an API** — the L0 on-ramp: HTTP is fine for
-delivering metadata and wrong for holding a conversation. Cite `MAN-42`, `MAN-53`.
+**8. The artifact an agent actually sees** — the manifest arrives inside the
+session, at the moment of use, which is why it cannot go stale the way a published
+file does. Cite `MAN-59`, `MAN-42`.
 
 The first four are drafted (`0001`–`0004`). They carry the argument a reader needs
 to decide whether to implement anything, and each states its premises instead of

@@ -19,6 +19,7 @@ Exit code is non-zero on the first failure, so it works as a CI gate.
 
 from __future__ import annotations
 
+import importlib.util
 import json
 import pathlib
 import re
@@ -94,6 +95,91 @@ def check_fixtures() -> None:
         if not ok:
             fail(
                 f"fixtures/manifests.json: {entry['name']} should be accepted by {schema}: {message}"
+            )
+
+
+def check_digest_fixture() -> None:
+    """The digest fixtures pin MAN-40's canonical form across implementations.
+
+    A probe and a daemon that canonicalise differently report a failure on a
+    correct publisher. These cases carry the digest both must compute, so the
+    Python probe and the Go daemon are checked against the same bytes rather
+    than against each other's assumptions.
+    """
+    path = ROOT / "machine" / "fixtures" / "digest.json"
+    doc = json.loads(path.read_text())
+    cases = doc.get("cases", [])
+    if not cases:
+        fail("fixtures/digest.json: no cases")
+        return
+
+    spec = importlib.util.spec_from_file_location(
+        "conformance", ROOT / "machine" / "conformance.py"
+    )
+    if spec is None or spec.loader is None:
+        fail("machine/conformance.py: cannot be imported")
+        return
+    conformance = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(conformance)
+
+    for case in cases:
+        expected = case.get("digest")
+        if not expected or expected == "PENDING":
+            fail(
+                f"fixtures/digest.json: {case['name']} has no published digest; "
+                "run the digest writer and commit the result"
+            )
+            continue
+        got = conformance.digest_of(case["document"])
+        if got != expected:
+            fail(
+                f"fixtures/digest.json: {case['name']} digest is {got}, "
+                f"want {expected} (MAN-40)"
+            )
+
+
+def check_schema_documents_itself() -> None:
+    """Every property in the schema must explain itself.
+
+    The schema is the file an implementer builds against, so a property whose
+    whole description is a requirement number ("MAN-1") documents nothing: the
+    reader is sent to another document to learn what the member means. This was
+    the state of the whole schema until the requirement was made explicit here.
+
+    Two things are enforced:
+      - every property carries a description long enough to be an explanation;
+      - every requirement ID cited anywhere in the schema exists in a normative
+        index table, so a renamed or retired requirement cannot linger.
+    """
+    path = ROOT / "machine" / "schema" / "manifest.schema.json"
+    schema = json.loads(path.read_text())
+    known = normative_requirement_ids()
+
+    def walk(node: dict, where: str) -> None:
+        for name, member in (node.get("properties") or {}).items():
+            here = f"{where}.{name}" if where else name
+            if not isinstance(member, dict):
+                continue
+            description = member.get("description") or ""
+            # A bare requirement reference is not a description. Forty
+            # characters is the floor below which nothing is explained.
+            if "$ref" not in member and len(description.strip()) < 40:
+                fail(
+                    f"machine/schema: {here} has no real description; a member must "
+                    "say what it means, not only which requirement defines it"
+                )
+            walk(member, here)
+        for name, sub in (node.get("$defs") or {}).items():
+            walk(sub, name)
+
+    walk(schema, "")
+
+    text = path.read_text()
+    for match in REQUIREMENT.finditer(text):
+        if match.group(0) not in known:
+            fail(
+                f"machine/schema: cites {match.group(0)}, which is not in any "
+                "normative index table"
             )
 
 
@@ -244,6 +330,8 @@ def main() -> int:
     check_examples()
     check_fixtures()
     check_fixture_requirements()
+    check_digest_fixture()
+    check_schema_documents_itself()
     check_links()
     check_inline_json()
     check_spec_version_consistency()

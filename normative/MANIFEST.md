@@ -22,9 +22,28 @@ navigation and no marketing copy beyond a one-line description per agent. A
 client must be able to act on it without guessing.
 
 The manifest is **transport-independent**. This document defines the object. How
-it arrives — inside a protocol handshake, from a static file, from a signed
-document — is specified elsewhere. A publisher that only serves a document is
-still a conforming **L0** implementation.
+it arrives — inside a protocol handshake, or from a document a deployment
+publishes — is specified elsewhere. What matters here is the object: a caller
+that has just reached a business must be able to read it and act on it without
+guessing.
+
+- **MAN-59.** An adapter that connects an agent host to an endpoint MUST make the
+  manifest available to the model it serves, and MUST NOT substitute a prose
+  summary for it.
+
+  This is the requirement that makes the rest of this document real. A host
+  adapter sits between a model and a business: it receives the manifest, and in
+  many deployments nothing else ever reads it. If the adapter renders the document
+  into a description of its own, the model acts on the adapter's reading rather
+  than on the business's declaration, and no requirement here can be relied on by
+  the party the manifest was written for.
+
+  "Available" means the document itself, byte-for-byte as the endpoint published
+  it, including members the adapter does not model. An adapter MAY present a
+  summary in addition — a summary is useful, because a model needs orientation
+  before it reads a schema — but the summary MUST NOT be the only form. An adapter
+  SHOULD verify the digest (MAN-40) over the bytes it received and report a
+  mismatch rather than passing an altered document on.
 
 ## 2. Scope and non-goals
 
@@ -562,6 +581,7 @@ A full manifest:
 | MAN-56 | 7.1     | tags are labels, not promises          |
 | MAN-57 | 7.1     | keep tags few and stable               |
 | MAN-58 | 7.1     | tags and description are not either/or |
+| MAN-59 | 1       | adapters surface the document, not a summary |
 
 ## 18. Retired requirements
 

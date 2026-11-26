@@ -1,96 +1,182 @@
 # Agent Front Door
 
-**An open specification for a communication channel built for AI agents, not for
-browsers.**
+**An open specification for a channel built for AI agents, at the business's own
+domain, without a directory or marketplace in between.**
 
-> **Status: draft (spec-v0.4), seeking implementers.** Nothing here has been
-> ratified. The point of publishing it is to find the places where it is wrong
-> before anyone builds production traffic on it. See
-> [`informative/PROPOSAL.md`](informative/PROPOSAL.md).
+> **Status: draft (spec-v0.4), seeking implementers.** Nothing here is ratified.
+> It is published to find where it is wrong before anyone runs production traffic
+> on it. One implementation exists; that is evidence, not adoption.
 
-## The idea in one paragraph
+---
 
-Every business already has a front door for humans: a domain name, a website,
-HTTP, HTML, cookies, forms. That door is built for a reader with eyes — it
-carries navigation, styling and scripts, it assumes a session kept in a browser,
-and it defends itself against automation with bot walls and captchas. An AI agent
-that needs to know whether a business covers the north side has to walk through
-that door wearing a human costume: fetch pages, parse markup, guess which link
-matters, and hope the layout does not change. What is missing is a second door,
-built for a different kind of caller — one that names the business by its own
-domain, publishes a declarative description of what it offers, and then holds an
-actual conversation with explicit beginning, progress and end.
+## The problem
 
-This repository is that second door, written down.
+Every business already has a front door for humans: a domain, a website, HTTP,
+HTML, cookies, forms. That door is built for a reader with eyes. It carries
+navigation, styling and scripts, it assumes a session kept in a browser, and it
+defends itself against automation with bot walls and captchas.
 
-## What is here
+An AI agent that needs one fact has to walk through that door wearing a human
+costume: fetch pages, parse markup, guess which link matters, and hope the layout
+does not change. One answer costs several pages and a parse. When the layout
+changes the integration breaks quietly, and nobody notices until an answer is
+wrong.
 
-| Layer  | Artifact                                                            | Who adopts it              |
-| ------ | ------------------------------------------------------------------- | -------------------------- |
-| L0     | DNS SRV record naming the endpoint                                  | a business with DNS access |
-| **L1** | **the manifest** — a declarative description of endpoint and agents | anyone, no daemon required |
-| L2     | session protocol — framing, handshake, messages, progress, cancel   | daemon authors             |
-| L3     | backend contract — the webhook a business answers on                | backend authors            |
+Custom APIs, GraphQL schemas, OpenAPI documents and MCP servers each solve this
+for one service, built for one assistant, by somebody who decided it was worth the
+work. Nothing carries over to the next business or the next assistant.
 
-The manifest is the adoption hook. A business can publish one before it owns a
-daemon, before it has TLS, before it writes a line of protocol code. The
-conversation channel is what the manifest describes.
+The gap is not capability. It is **a contract**: one way to name an endpoint, one
+way to describe what it exposes, one way to hold a conversation with it, one way
+to say *finished*, *still working*, or *gave up*.
 
-## Conformance levels
+## The proposal
 
-Implementations claim a level; they do not have to implement everything.
+A second door, next to the website, at the address the business already owns.
 
-| Level  | Name               | Requires                                                 | Typical implementer                    |
-| ------ | ------------------ | -------------------------------------------------------- | -------------------------------------- |
-| **L0** | Manifest publisher | publishes a valid manifest document                      | a business, a marketing site           |
-| **L1** | Discovery          | L0 + DNS SRV + TLS 1.3 + ALPN + `negotiate` → `manifest` | a read-only client or a minimal daemon |
-| **L2** | Conversations      | L1 + sessions + `message`/`data`/`end` + webhook         | a business daemon                      |
-| **L3** | Live               | L2 + `partial` progress + `cancel`                       | a production daemon                    |
-| **L4** | Operational        | L3 + advertised limits + persistence + retention         | a hosted deployment                    |
+| | for humans | for agents |
+| --- | --- | --- |
+| how it is found | a URL you type | `_frontdoor._tcp.<domain>` in the business's own DNS |
+| what arrives first | an HTML page | a **manifest**: what this endpoint exposes |
+| what carries the exchange | forms, cookies, redirects | a **session** with explicit turns, progress and end |
 
-Conformance is claimed against a **spec tag**, not against a branch:
-`vireo 1.x — L2, spec-v0.4`. See [`normative/CONFORMANCE.md`](normative/CONFORMANCE.md).
+Nothing is registered anywhere. A domain is already owned, already delegated, and
+already maintained by the business, and each zone is authoritative for its own
+records. Discovery needs nobody's approval — which is the point.
 
-## The 20-minute path
+**The business keeps everything that makes it a business**: its backend, models,
+logic and data. The specification standardises the contract between the two sides,
+not the software behind it, and implies no model, provider, language or agent
+framework.
 
-You do not need any of this repository's machinery to start.
+## What the agent receives
 
-1. Write a manifest. Start from
-   [`machine/examples/manifest.minimal.json`](machine/examples/manifest.minimal.json).
-2. Check it against [`machine/schema/manifest.schema.json`](machine/schema/manifest.schema.json).
-3. Publish it wherever you publish documents, and say so in your docs.
+This is the artifact the whole specification exists to define. When a caller
+opens a session, the first thing it learns is a manifest — a data document, not a
+page, with no layout and no script:
 
-That is L0. It costs one file, and it already tells any agent what you expose
-and what each agent claims to do. Discovery and conversation are additive: when
-a daemon exists, the same manifest arrives inside the connection instead.
+```json
+{
+  "manifest_version": "1.3",
+  "protocol": "frontdoor/1",
+  "endpoint": { "name": "acme-plumbing", "description": "Plumbing and heating" },
+  "capabilities": { "session": { "new": true, "get": true, "close": true },
+                    "progress": true, "cancel": true },
+  "agents": [
+    { "name": "bookings",
+      "description": "Book a visit, change or cancel an appointment",
+      "sessions": true,
+      "start_message": "Which day suits you?" },
+    { "name": "support",
+      "description": "Questions about service, coverage and pricing",
+      "sessions": false }
+  ],
+  "digest": "sha256:…"
+}
+```
 
-## Checking an implementation
+Every member is documented in
+[`machine/schema/manifest.schema.json`](machine/schema/manifest.schema.json), in
+plain language, with the requirement ID that states the obligation. That file is
+enough to write a publisher; you do not need the normative text to produce a valid
+document.
 
-`machine/conformance.py` is a client that probes a running endpoint and reports
-which requirements it satisfies:
+The manifest is not a web page and it is not a service description for
+programmers. It answers four questions for a caller that has just arrived: *what
+does this business expose, what can I do with each thing, where do I look for
+more, and what must I obey.*
+
+## The four normative documents
+
+| Document | Defines | Requirements |
+| --- | --- | --- |
+| [`normative/MANIFEST.md`](normative/MANIFEST.md) | the object above, member by member | `MAN-1` … `MAN-57` |
+| [`normative/PROTOCOL.md`](normative/PROTOCOL.md) | framing, handshake, messages, progress, cancel, sessions, errors, webhook, discovery | `PROTO-1` … `PROTO-48` |
+| [`normative/CONFORMANCE.md`](normative/CONFORMANCE.md) | what a conformance claim means and what each level requires | `CONF-1` … `CONF-21` |
+| [`normative/SECURITY.md`](normative/SECURITY.md) | threat model, TLS rules, identity, what is not protected | `SEC-1` … |
+
+The argument for all of it is in [`informative/PROPOSAL.md`](informative/PROPOSAL.md).
+Why DNS rather than a well-known URL is
+[`informative/RATIONALE.md`](informative/RATIONALE.md). How it compares to MCP,
+A2A, OpenAPI and `llms.txt` is
+[`informative/COMPARISON.md`](informative/COMPARISON.md).
+
+## Check a document or a running endpoint
+
+`machine/conformance.py` is a client written against this specification alone. It
+shares no code with any implementation, which is what makes it evidence rather
+than self-assessment. It has two modes.
+
+**A captured payload** — what an agent was actually shown when it connected:
+
+```bash
+python3 machine/conformance.py --payload payload.json
+```
+
+**A running endpoint** — the full protocol, requirement by requirement:
 
 ```bash
 python3 machine/conformance.py --endpoint 127.0.0.1:7777 --insecure
 ```
 
-```text
-PASS  PROTO-1   TLSv1.3, ALPN frontdoor/1
-PASS  PROTO-13  manifest on stream 0
-PASS  MAN-47    manifest validates against the schema
-PASS  MAN-29    session.new for orders
+It prints `PASS`, `FAIL` or `SKIP` per requirement and exits non-zero on any
+failure, so it gates CI. It reports what it exercised and does not claim a level
+it did not test:
 
-claim: 127.0.0.1:7777 — L2, 0 failure(s), spec-v0.4
-not tested: L3 (progress, cancellation), L4 (retention, restart)
+```text
+claim: 127.0.0.1:7777 — spec-v0.4, 0 failure(s)
+  L1 discovery: verified
+  L2 conversations: PARTIAL (2 not exercised)
+  L3 live: not tested
 ```
 
-It needs nothing but this repository and a reachable daemon, and it exits
-non-zero on a failure, so it can gate an implementation's CI.
+Add `--converse` to send one real message and verify the turn itself
+(`PROTO-19` … `PROTO-22`). It is off by default: a turn reaches the business's
+backend and may cost it a model call, so spending somebody else's money is opt-in.
+
+The probe caught a genuine interop defect in the reference implementation the
+first time it ran with the digest fixture: the daemon hashed a re-serialisation of
+its own struct rather than the document it published, so no client could ever
+reproduce the digest. That is the failure mode this tool exists to find.
+
+## What to build
+
+Everything below is independently useful. None of it requires permission, and the
+specification is at its most valuable when somebody builds one of these without
+reading our source.
+
+| Build | Difficulty | What it proves | Start at |
+| --- | --- | --- | --- |
+| A client in another language (Python, TypeScript, Rust) | small | the wire is implementable from the text alone | `PROTOCOL.md` §1–§4 |
+| A daemon for one real backend | medium | the manifest can describe a business you did not design for | `MANIFEST.md`, `PROTOCOL.md` §9 |
+| A host adapter for a host that is not MCP | medium | the session model is not an MCP artefact | `PROTOCOL.md` §3–§7 |
+| A fixture for an edge case | trivial | an ambiguity is a specification defect, not an implementation bug | `machine/fixtures/` |
+| A host adapter that surfaces the manifest unmodified | trivial | an agent actually sees the contract | `MAN-59` |
+
+If the manifest cannot express something your business really does, **that is the
+most useful thing you can report**. Open an issue with the requirement ID.
+
+## Conformance levels
+
+Levels are cumulative and a claim names the release it was verified against, for
+example `vireo 1.x — L2, spec-v0.4`. Partial claims are legitimate; silent gaps
+are not — a claim must list every requirement it does not satisfy.
+
+| Level | Name | Requires |
+| --- | --- | --- |
+| L1 | Discovery | DNS SRV, TLS 1.3, ALPN, `negotiate` → manifest |
+| L2 | Conversations | L1 + sessions + `message`/`data`/`end` + backend webhook |
+| L3 | Live | L2 + progress + cancellation |
+| L4 | Operational | L3 + advertised limits + persistence + retention |
+
+See [`normative/CONFORMANCE.md`](normative/CONFORMANCE.md) for the requirement
+matrix.
 
 ## Repository map
 
 ```
 normative/      the contract. changes require a proposal.
-  MANIFEST.md     the manifest object, field by field, with requirement IDs
+  MANIFEST.md     the manifest object, member by member, with requirement IDs
   PROTOCOL.md     framing, handshake, sessions, webhook, errors
   CONFORMANCE.md  levels, requirement matrix, how to claim one
   SECURITY.md     threat model, TLS rules, identity, what is not protected
@@ -102,9 +188,11 @@ informative/    reasoning and interpretation. may be rewritten freely.
   FAQ.md          the questions the first reviewers ask
 
 machine/        the checkable parts, versioned with the prose.
-  schema/         JSON Schema for a manifest
-  examples/       a minimal manifest, a full one, a deployed one
-  fixtures/       frame hex, handshakes, valid/invalid manifests, webhook pairs
+  schema/         JSON Schema, every member documented in plain language
+  examples/       a minimal manifest and a full one
+  fixtures/       frame hex, handshakes, valid/invalid manifests, digest cases
+  conformance.py  the independent probe: a payload, or a running endpoint
+  check.py        validates this repository's own documents and fixtures
 
 proposals/      numbered change proposals (see 0001-template.md)
 articles/       published posts, each pinned to a spec tag
@@ -117,28 +205,27 @@ Two independent version numbers, deliberately:
 - **Spec tag** — `spec-v0.1`, `spec-v0.2`, `spec-v0.4`.<!-- spec-version: history -->
   A release of this repository. Cited by articles and conformance claims. A tag
   never moves.
-- **`manifest_version`** — a value inside the manifest, e.g. `1.1`. The
+- **`manifest_version`** — a value inside the manifest, e.g. `1.3`. The
   compatibility contract of the document itself. Minor bumps are additive and
   backwards compatible; a client that sees a newer minor ignores what it does not
   know.
 
-The wire protocol identifier (`frontdoor/1`) is separate again and changes only for
-incompatible framing or semantic changes.
+The wire protocol identifier (`frontdoor/1`) is separate again and changes only
+for incompatible framing or semantic changes.
 
 ## Contributing
 
 Read [`CONTRIBUTING.md`](CONTRIBUTING.md) and
-[`GOVERNANCE.md`](GOVERNANCE.md). The short version: open a numbered proposal,
-cite the requirement ID you want to change, say what an implementation must do
-differently, and say whether it is additive. A well-argued objection is more
-useful at this stage than an implementation that agrees with us.
+[`GOVERNANCE.md`](GOVERNANCE.md). The short version: implement something, then say
+where the text made you guess. A well-argued objection with a requirement ID is
+worth more at this stage than an implementation that agrees with us.
 
 ## Implementations
 
 [`IMPLEMENTATIONS.md`](IMPLEMENTATIONS.md) lists what exists and what level it
 claims. Today: one daemon, one terminal client, one MCP adapter, one deployment.
 Independent implementations are the only real measure of whether any of this
-works — that column is deliberately almost empty.
+works — that column is deliberately almost empty, and filling it is the work.
 
 ## License
 

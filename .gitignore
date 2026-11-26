@@ -1,0 +1,7 @@
+# Python bytecode from machine/check.py and machine/conformance.py
+__pycache__/
+*.py[cod]
+
+# Editor and OS noise
+.DS_Store
+*.swp

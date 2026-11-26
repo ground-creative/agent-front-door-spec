@@ -64,14 +64,22 @@ framework. It requires agreement on a small number of rules.
 
 ### Why not just publish JSON somewhere?
 
-Because a document is half of it. Retrieving a description is a document problem,
-and HTTP is fine for that — this specification allows a business to start there
-(L0) with a static file.
+Because a document is only half of it, and the half a document cannot do is the
+half that matters.
 
-Conversation is not a document problem. Asking a question, being told "still
-working", cancelling, and knowing that a turn has definitively ended are things a
-document cannot express and a page cannot carry. That is what the session channel
-is for, and it is why the protocol exists alongside the manifest.
+A description is a document problem, and earlier drafts of this specification
+treated it as one: publish a manifest file somewhere, and you have joined. That
+was withdrawn, for a reason worth stating. A file has no defined location, so no
+client can find it; a file has no age the reader can trust, so a caller that
+cached it last month is acting on a promise that may have stopped being true;
+and no checker can verify a document that nobody can locate. It also argued
+against the specification's own thesis: that what a caller receives is
+described at the moment of use, inside the session.
+
+Conversation is not a document problem at all. Asking a question, being told
+"still working", cancelling, and knowing that a turn has definitively ended are
+things a document cannot express and a page cannot carry. That is what the
+session channel is for, and it is why the protocol exists alongside the manifest.
 
 So the honest split is:
 
@@ -136,12 +144,15 @@ These are unsettled, and listed so they can be argued with:
 
 ## How to take part
 
-The most useful contributions right now are not more software:
+The most useful contributions right now are not more features:
 
 - **Implement a client in another language** and report where the specification is
   ambiguous. That is a bug report against the spec, not against your code.
-- **Publish a manifest for a real business** at L0. It costs a file and it tells us
-  whether the object is expressive enough.
+- **Point a daemon at a real backend** you already run, and report where the
+  manifest cannot describe something the business actually does. That finding is
+  worth more than a passing implementation.
+- **Run the probe** against what you built, publish the output, and claim the level
+  it actually supports — including the requirements you do not meet.
 - **Argue with this document.** A well-argued objection is more useful at this stage
   than an implementation that agrees with us.
 

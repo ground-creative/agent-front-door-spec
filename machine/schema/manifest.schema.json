@@ -2,166 +2,446 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://agent-front-door.org/schema/manifest-1.3.json",
   "title": "Agent Front Door manifest",
-  "description": "The manifest object described by normative/MANIFEST.md at manifest_version 1.3.",
+  "description": "The document a caller receives when it opens a session with a business at that business's own domain. It answers one question: what does this business expose, what can I do with each thing, where should I look for more, and what must I obey. It is a data document, not a web page: no layout, no script, no navigation, and no marketing beyond one line per agent. Every member is documented here so that an implementer can produce a valid document from this file alone; the numbered requirements in normative/MANIFEST.md state the obligations that go with each member. The document is transport-independent: a business may serve it from a static file or deliver it inside the negotiate handshake, and this schema applies to both.",
   "type": "object",
   "required": ["manifest_version", "protocol", "endpoint", "agents"],
   "additionalProperties": true,
+  "$comment": "additionalProperties is true by design: MAN-3 requires a client to ignore members it does not recognise, which is how this object grows without a flag day. A publisher MUST NOT rely on that to smuggle in a member a client is expected to act on.",
+  "examples": [
+    {
+      "manifest_version": "1.3",
+      "protocol": "frontdoor/1",
+      "endpoint": { "name": "acme-plumbing" },
+      "agents": [
+        {
+          "name": "support",
+          "description": "Questions about service, coverage and pricing",
+          "sessions": false
+        }
+      ]
+    }
+  ],
   "properties": {
     "manifest_version": {
       "type": "string",
       "pattern": "^[0-9]+\\.[0-9]+$",
-      "description": "MAN-1"
+      "description": "The version of this document's shape, as MAJOR.MINOR. This is a compatibility promise to clients, and it is a different number from the specification's release tag: a release tag never moves, while this version grows when members are added. A client reads it to decide which members it may rely on. Absence is legal and means 1.0 (MAN-53); a present value that is not MAJOR.MINOR is invalid.",
+      "examples": ["1.3"],
+      "$comment": "MAN-1, MAN-2, MAN-5, MAN-53"
     },
     "protocol": {
       "type": "string",
       "minLength": 1,
-      "description": "Wire protocol identifier, e.g. frontdoor/1"
+      "description": "The wire protocol this endpoint speaks, as a token such as frontdoor/1. It tells a caller what it may send after the document, and it lets a business advertise that it speaks something newer without changing this schema. Required.",
+      "examples": ["frontdoor/1"],
+      "$comment": "PROTO-11"
     },
-    "endpoint": { "$ref": "#/$defs/endpoint" },
+    "endpoint": {
+      "$ref": "#/$defs/endpoint",
+      "description": "Identity of the service that answered: the place the caller connected to, which is distinct from any agent behind it. One business may run several endpoints."
+    },
     "agents": {
       "type": "array",
-      "description": "MAN-7: may be empty",
-      "items": { "$ref": "#/$defs/agent" }
+      "description": "The things a caller can talk to here. Each entry is one addressable counterparty with its own description, and either holds a conversation or answers a single message. Required, and may be empty: an endpoint that answers but currently exposes nothing is a valid document, not an error, and a caller must read an empty list as 'this endpoint is up and offers nothing right now'.",
+      "items": { "$ref": "#/$defs/agent" },
+      "examples": [
+        [
+          {
+            "name": "orders",
+            "description": "Take food orders: pizzas, sides, drinks",
+            "sessions": true
+          }
+        ]
+      ],
+      "$comment": "MAN-7, MAN-12, MAN-51"
     },
-    "links": { "$ref": "#/$defs/links" },
-    "capabilities": { "$ref": "#/$defs/capabilities" },
-    "limits": { "$ref": "#/$defs/limits" },
-    "session": { "$ref": "#/$defs/session" },
-    "generated_at": { "type": "string", "format": "date-time", "description": "MAN-39" },
-    "expires_at": { "type": "string", "format": "date-time", "description": "MAN-39" },
+    "links": {
+      "$ref": "#/$defs/links",
+      "description": "Documents this business publishes that a caller may want to read. Each carries a relation saying what it is, so a caller can tell a menu from an OpenAPI document from a status page. Replaces the deprecated 'refs' map, which could carry only a key and a URL."
+    },
+    "capabilities": {
+      "$ref": "#/$defs/capabilities",
+      "description": "What this endpoint actually implements beyond the protocol minimum. A capability advertised here must be honoured: true means accepted, false or absent means rejected with a documented error. This is not the same as what the protocol permits."
+    },
+    "limits": {
+      "$ref": "#/$defs/limits",
+      "description": "Operational limits a caller should expect to meet at endpoint level. A limit is a statement of intent, not a guarantee: a caller must still handle a rate_limited error. Absence means unknown, never unlimited."
+    },
+    "session": {
+      "$ref": "#/$defs/session",
+      "description": "Default session policy for agents at this endpoint. An agent may override it; the endpoint value is what applies when an agent does not."
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When this document was produced, as an RFC 3339 timestamp. Optional, and deliberately omitted by a daemon that delivers the manifest inside a handshake: the handshake itself is the freshness, because the document was read at the moment of use. Emit it when the document is published as a standalone file, where there is no connection to date it. It participates in the digest, so a publisher that emits it must keep it stable for unchanged state or the digest changes for no reason.",
+      "examples": ["2026-11-21T09:14:00Z"],
+      "$comment": "MAN-39, MAN-42, MAN-54"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When this document should be considered out of date, as an RFC 3339 timestamp. Optional, and only meaningful for a document published as a standalone file: a manifest delivered inside a session is fresh by construction, and a caller must not treat one received in a handshake as expired because of this member. A caller acting on a standalone document past this time must re-read it before relying on it.",
+      "examples": ["2026-11-22T09:14:00Z"],
+      "$comment": "MAN-39, MAN-42"
+    },
     "digest": {
       "type": "string",
       "pattern": "^sha256:[0-9a-f]{64}$",
-      "description": "MAN-40"
+      "description": "Integrity check over this document: 'sha256:' followed by 64 lowercase hex characters, computed as the SHA-256 of the RFC 8785 (JCS) canonical form of the document with 'digest' and 'signature' removed. It proves the bytes were not altered in transit or in a cache; it does not prove who wrote them, because anyone can compute one. A client must compute it over the bytes it received rather than over a re-encoded copy, or it will disagree with a correct publisher.",
+      "examples": [
+        "sha256:b27d20b3b4648a4de9894e29d2f816bf5c8983df3153d5c82dd20ad9c3273d6f"
+      ],
+      "$comment": "MAN-40"
     },
     "signature": {
-      "description": "MAN-41: reserved; MUST be null in manifest_version 1.1",
-      "type": ["object", "null"]
+      "description": "Reserved for manifest signing, which is not designed yet. It must be present and null at manifest_version 1.1 and above; a client must ignore any object it does not understand rather than failing. Signing is an open question in the specification, and until it is settled a caller has integrity from the digest but not authenticity.",
+      "type": ["object", "null"],
+      "examples": [null],
+      "$comment": "MAN-41"
     },
     "refs": {
       "type": "object",
-      "description": "MAN-44: deprecated, superseded by links",
-      "additionalProperties": { "type": "string" }
+      "description": "Deprecated. A map of short key to URL, superseded by 'links' because a key cannot say what the target is. Still accepted and still emitted alongside 'links' for one release so that existing publishers keep working; a new implementation should emit 'links' and ignore this.",
+      "additionalProperties": { "type": "string", "format": "uri" },
+      "examples": [{ "menu": "https://restaurant.example/menu" }],
+      "$comment": "MAN-44, MAN-46"
     },
     "commands": {
       "type": "array",
-      "description": "MAN-45: deprecated, superseded by capabilities.session",
+      "description": "Deprecated. The session operations this endpoint advertises, as a flat list of strings, superseded by 'capabilities.session' because a list cannot say what is actually accepted without contradiction. Still accepted and emitted for one release; a new implementation should read 'capabilities.session' and ignore this.",
       "items": {
         "type": "string",
-        "enum": ["session.new", "session.get", "session.list", "session.close", "session.prune"]
-      }
+        "enum": [
+          "session.new",
+          "session.get",
+          "session.list",
+          "session.close",
+          "session.prune"
+        ]
+      },
+      "examples": [["session.new", "session.get", "session.close"]],
+      "$comment": "MAN-45, MAN-46"
     }
   },
   "$defs": {
     "endpoint": {
+      "title": "endpoint",
       "type": "object",
       "required": ["name"],
       "additionalProperties": true,
+      "description": "The service that answered. This is the place, not an agent: a business with several offerings still has one endpoint per host and port, and each of its agents is listed separately.",
       "properties": {
-        "id": { "type": "string", "minLength": 1, "description": "MAN-9: opaque, stable" },
-        "name": { "type": "string", "minLength": 1, "description": "MAN-10: display only" },
-        "description": { "type": "string", "description": "MAN-11: plain text" }
-      }
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "A stable, opaque identifier for this endpoint that survives restarts and outlives a change of display name. A caller may keep bookkeeping against it. It is not an address and must not be used to reach the endpoint.",
+          "examples": ["restaurant-prod"],
+          "$comment": "MAN-9"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Display name for the endpoint, shown to a human. It is presentation only: a caller must not use it to address anything, and two different endpoints may share one.",
+          "examples": ["restaurant"],
+          "$comment": "MAN-10"
+        },
+        "description": {
+          "type": "string",
+          "description": "One line of plain text saying what this business does. No markup is assumed renderable, and a caller must not present it as if the business had answered a question with it.",
+          "examples": ["Fresh pizza and table bookings"],
+          "$comment": "MAN-11, MAN-50"
+        }
+      },
+      "examples": [
+        {
+          "id": "restaurant-prod",
+          "name": "restaurant",
+          "description": "Fresh pizza and table bookings"
+        }
+      ]
     },
     "agent": {
+      "title": "agent",
       "type": "object",
       "required": ["name", "sessions"],
       "additionalProperties": true,
+      "description": "One thing a caller can talk to at this endpoint. An agent is either conversational, meaning a session is required and several turns share context, or stateless, meaning each message stands alone. The distinction is the single most important member in this object: it decides whether a caller must open a session before it may send anything.",
       "properties": {
         "name": {
           "type": "string",
           "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
-          "description": "MAN-12"
+          "description": "The address of this agent within the manifest, and the value a caller sends in the 'agent' field of a message. It must start with a letter or digit and may continue with letters, digits, dot, underscore or hyphen, up to 64 characters. It must be unique within the document. Treat it as an address, not a label: changing it breaks every caller that stored it, so a publisher should keep the old name alongside a new one for at least one release.",
+          "examples": ["orders", "reservations"],
+          "$comment": "MAN-12, MAN-13"
         },
-        "id": { "type": "string", "minLength": 1, "description": "MAN-14" },
-        "description": { "type": "string", "description": "MAN-17" },
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "An optional stable identifier for the agent that survives a change of 'name'. A caller that keeps long-lived bookkeeping should prefer this for the record and 'name' for addressing. Unique within the document when present.",
+          "examples": ["agent-orders-v1"],
+          "$comment": "MAN-14"
+        },
+        "description": {
+          "type": "string",
+          "description": "One sentence of plain text saying what this agent does, written as capability rather than marketing. A caller may show it verbatim when a model is choosing between agents, and must not pass it off as an answer from the business. Two agents whose descriptions are indistinguishable make the choice arbitrary, so a publisher should keep them distinct.",
+          "examples": ["Take food orders: pizzas, sides, drinks, pickup or delivery"],
+          "$comment": "MAN-17, MAN-18, MAN-50"
+        },
         "tags": {
           "type": "array",
-          "description": "MAN-55: free-form labels, unique within the agent",
+          "description": "Free-form lowercase labels a program can filter on without asking a model to read prose. Advisory only: not a capability claim, not a whitelist, not a promise about behaviour. Unique within the agent. Keep them few and stable, because renaming one breaks a caller that filters on it.",
           "items": {
             "type": "string",
             "pattern": "^[a-z][a-z0-9._-]{0,63}$"
           },
-          "uniqueItems": true
+          "uniqueItems": true,
+          "examples": [["orders", "delivery", "pickup"]],
+          "$comment": "MAN-55, MAN-56, MAN-57"
         },
-        "sessions": { "type": "boolean", "description": "MAN-15" },
-        "start_message": { "type": "string", "description": "MAN-16" },
-        "links": { "$ref": "#/$defs/links" },
-        "limits": { "$ref": "#/$defs/limits" },
-        "session": { "$ref": "#/$defs/session" },
+        "sessions": {
+          "type": "boolean",
+          "description": "Whether this agent holds a conversation. True means a caller must open a session and send its id with every turn, and turns accumulate into one exchange. False means the agent answers single messages and keeps nothing, and a caller must not send a session id at all. Required, because it decides how the agent is addressed: a client must read it before its first message.",
+          "examples": [true],
+          "$comment": "MAN-15, PROTO-16, PROTO-17"
+        },
+        "start_message": {
+          "type": "string",
+          "description": "A greeting the endpoint produces itself when a conversation with this agent is created. It is not a backend answer, it consumes no turn, and it is not a reply to anything. A caller may show it as the opening line of a conversation, which is why it can make an empty first message meaningful.",
+          "examples": ["Hello! Ask me anything about the restaurant."],
+          "$comment": "MAN-16, PROTO-18"
+        },
+        "links": {
+          "$ref": "#/$defs/links",
+          "description": "Documents specific to this agent rather than to the whole endpoint, such as the menu an ordering agent works from."
+        },
+        "limits": {
+          "$ref": "#/$defs/limits",
+          "description": "Limits that apply to this agent specifically, overriding the endpoint value for any member present. Absence means the endpoint limit applies."
+        },
+        "session": {
+          "$ref": "#/$defs/session",
+          "description": "Session policy for this agent, overriding the endpoint default for any member present. Only meaningful when 'sessions' is true."
+        },
         "refs": {
           "type": "object",
-          "description": "MAN-44: deprecated, superseded by links",
-          "additionalProperties": { "type": "string" }
+          "description": "Deprecated per-agent equivalent of the top-level 'refs' map, superseded by this agent's 'links'. Accepted and emitted for one release for compatibility.",
+          "additionalProperties": { "type": "string", "format": "uri" },
+          "$comment": "MAN-44"
         }
-      }
+      },
+      "examples": [
+        {
+          "name": "orders",
+          "description": "Take food orders: pizzas, sides, drinks, pickup or delivery",
+          "tags": ["orders", "delivery"],
+          "sessions": true,
+          "start_message": "Hello! Ask me anything about the restaurant."
+        },
+        {
+          "name": "status",
+          "description": "Opening hours and current waiting time",
+          "sessions": false
+        }
+      ]
     },
     "links": {
+      "title": "links",
       "type": "array",
-      "items": { "$ref": "#/$defs/link" }
+      "description": "A list of published references. Each carries what it is as well as where it is, so a caller can decide whether to read it without fetching it.",
+      "items": { "$ref": "#/$defs/link" },
+      "examples": [
+        [
+          {
+            "rel": "menu",
+            "href": "https://restaurant.example/menu",
+            "label": "Menu",
+            "type": "text/html"
+          }
+        ]
+      ]
     },
     "link": {
+      "title": "link",
       "type": "object",
       "required": ["rel", "href"],
       "additionalProperties": true,
+      "description": "One published reference: where it is and what it is.",
       "properties": {
         "rel": {
           "type": "string",
           "pattern": "^[a-z][a-z0-9._-]{0,63}$",
-          "description": "MAN-20"
+          "description": "The relation type, a lowercase token naming what the target is, for example 'menu', 'docs', 'status' or 'openapi'. It starts with a letter and may continue with lowercase letters, digits, dot, underscore or hyphen. A client must not require any particular value, because a business chooses its own; an unknown relation means the target is simply not one the client knows how to use.",
+          "examples": ["menu", "docs", "openapi"],
+          "$comment": "MAN-20, MAN-49"
         },
         "href": {
           "type": "string",
           "format": "uri",
           "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:",
-          "description": "MAN-19: absolute URI"
+          "description": "An absolute URI for the reference. It must carry a scheme: a relative path is not a published reference, because a caller has no document it is relative to.",
+          "examples": ["https://restaurant.example/menu"],
+          "$comment": "MAN-19"
         },
-        "label": { "type": "string" },
-        "type": { "type": "string", "description": "Media type, if known" },
-        "description": { "type": "string" }
-      }
+        "label": {
+          "type": "string",
+          "description": "A short human-readable name for the target, for display. Optional: when absent, a client may show the relation instead.",
+          "examples": ["Menu"],
+          "$comment": "MAN-21"
+        },
+        "type": {
+          "type": "string",
+          "description": "The media type of the target when known, such as text/html or application/pdf, so a caller can decide how to read it. Optional and advisory.",
+          "examples": ["text/html"],
+          "$comment": "MAN-22"
+        },
+        "description": {
+          "type": "string",
+          "description": "One line of plain text saying what the target contains. Optional.",
+          "examples": ["Today's menu with prices"],
+          "$comment": "MAN-23"
+        }
+      },
+      "examples": [
+        {
+          "rel": "docs",
+          "href": "https://restaurant.example/docs",
+          "label": "Documentation",
+          "type": "text/html",
+          "description": "How ordering and delivery work"
+        }
+      ]
     },
     "capabilities": {
+      "title": "capabilities",
       "type": "object",
       "additionalProperties": true,
+      "description": "What this endpoint implements beyond the protocol minimum. The rule that makes this member trustworthy: anything advertised true must be accepted, and anything false or absent must be refused with a documented error rather than silently ignored. An endpoint that has not implemented the protocol at all advertises nothing here.",
       "properties": {
         "session": {
           "type": "object",
           "additionalProperties": false,
+          "description": "Which session operations this endpoint accepts. Each is a separate boolean rather than a list so that turning one off cannot silently turn another off, and so the member can grow without ambiguity. These are the authoritative statement of what a caller may do; the deprecated 'commands' list is not.",
           "properties": {
-            "new": { "type": "boolean", "description": "MAN-29" },
-            "get": { "type": "boolean" },
-            "list": { "type": "boolean" },
-            "close": { "type": "boolean" },
-            "prune": { "type": "boolean" }
-          }
+            "new": {
+              "type": "boolean",
+              "description": "Whether a caller may create a session. Must be available for every agent that declares sessions: a conversational agent without session creation is unusable, so advertising false while listing such an agent is a contradiction, not a configuration.",
+              "examples": [true],
+              "$comment": "MAN-29, PROTO-38"
+            },
+            "get": {
+              "type": "boolean",
+              "description": "Whether a caller may read a session envelope by id.",
+              "examples": [true],
+              "$comment": "MAN-28"
+            },
+            "list": {
+              "type": "boolean",
+              "description": "Whether a caller may browse its own sessions with this agent. Turning this off disables browsing only; creating, reading and closing must keep working.",
+              "examples": [true],
+              "$comment": "MAN-28, PROTO-38"
+            },
+            "close": {
+              "type": "boolean",
+              "description": "Whether a caller may close a session, after which it can no longer be resumed.",
+              "examples": [true],
+              "$comment": "MAN-28"
+            },
+            "prune": {
+              "type": "boolean",
+              "description": "Whether a caller may ask the endpoint to delete expired and closed sessions past a retention period. Destructive, so a caller should not call it casually.",
+              "examples": [false],
+              "$comment": "MAN-28"
+            }
+          },
+          "examples": [
+            { "new": true, "get": true, "list": true, "close": true, "prune": false }
+          ]
         },
-        "progress": { "type": "boolean" },
-        "cancel": { "type": "boolean" },
-        "max_turn_seconds": { "type": "integer", "minimum": 1 }
-      }
+        "progress": {
+          "type": "boolean",
+          "description": "Whether this endpoint reports progress inside a turn, so a caller can show that work is still happening before an answer arrives. A server must not send progress when this is absent or false.",
+          "examples": [true],
+          "$comment": "PROTO-26, CONF-21"
+        },
+        "cancel": {
+          "type": "boolean",
+          "description": "Whether a caller may abandon a turn in flight. Cancellation is cooperative and best effort: it stops the wait and asks the backend to stop, and it does not roll back work the backend already committed.",
+          "examples": [true],
+          "$comment": "PROTO-27, PROTO-30, CONF-21"
+        },
+        "max_turn_seconds": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "The longest a single turn is expected to take, in seconds, so a caller can set its own timeout sensibly instead of guessing. Advisory: a turn that exceeds it may still be legitimate, but a caller may reasonably give up.",
+          "examples": [300],
+          "$comment": "MAN-30"
+        }
+      },
+      "examples": [
+        {
+          "session": { "new": true, "get": true, "list": true, "close": true },
+          "progress": true,
+          "cancel": true,
+          "max_turn_seconds": 300
+        }
+      ]
     },
     "limits": {
+      "title": "limits",
       "type": "object",
       "additionalProperties": true,
+      "description": "Advertised operational limits. A limit states intent so a caller can pace itself; it is not a guarantee, and a caller must still handle a rate_limited error. Absence of a member means that limit is unknown, which is never the same as unlimited.",
       "properties": {
         "max_message_bytes": {
           "type": "integer",
           "minimum": 1,
           "maximum": 8388608,
-          "description": "MAN-31: bounded by the protocol frame cap"
+          "description": "The largest message, in bytes, the endpoint will accept. Bounded above by the protocol's 8 MiB frame cap, which is a property of the framing rather than a policy choice.",
+          "examples": [8388608],
+          "$comment": "MAN-31"
         },
-        "requests_per_minute": { "type": "integer", "minimum": 1 },
-        "burst": { "type": "integer", "minimum": 1 },
-        "max_turns": { "type": "integer", "minimum": 1 }
-      }
+        "requests_per_minute": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "How many requests the endpoint will accept per minute before it starts refusing with rate_limited.",
+          "examples": [60],
+          "$comment": "MAN-32"
+        },
+        "burst": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "How many requests may arrive back to back before the per-minute rate applies, so a caller knows how much burst is tolerated.",
+          "examples": [10],
+          "$comment": "MAN-32"
+        },
+        "max_turns": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "The most turns a single session will accept before it must be closed and a new one started.",
+          "examples": [100],
+          "$comment": "MAN-34"
+        }
+      },
+      "examples": [
+        { "max_message_bytes": 8388608, "requests_per_minute": 60, "burst": 10 }
+      ]
     },
     "session": {
+      "title": "session",
       "type": "object",
       "additionalProperties": true,
+      "description": "Session policy. At endpoint level this is a default that each agent may override; at agent level it is that agent's own policy. A session is an envelope of identity and metadata, never conversation content, and the id format is deliberately absent because the server mints ids and a caller must treat them as opaque.",
       "properties": {
-        "ttl_seconds": { "type": "integer", "minimum": 1, "description": "MAN-37" }
-      }
+        "ttl_seconds": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "How long a session stays open without activity before it expires, in seconds. A caller should refresh before this elapses rather than discover the expiry when a turn fails.",
+          "examples": [3600],
+          "$comment": "MAN-35, MAN-37"
+        }
+      },
+      "examples": [{ "ttl_seconds": 3600 }]
     }
   }
 }

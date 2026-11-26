@@ -18,12 +18,19 @@ Open an issue titled `spec: <requirement ID> <what is unclear>` and include:
 Please do not patch the implementation instead. A workaround in your codebase is
 invisible here; a note in an issue is not.
 
-## 2. Publish a manifest
+## 2. Publish a manifest from a real endpoint
 
-L0 conformance costs one file. Start from
-[`machine/examples/manifest.minimal.json`](machine/examples/manifest.minimal.json),
-validate against [`machine/schema/manifest.schema.json`](machine/schema/manifest.schema.json),
-publish it, and add yourself to [`IMPLEMENTATIONS.md`](IMPLEMENTATIONS.md).
+Run a daemon, or point one at a backend you already have, and check the document
+it serves:
+
+```bash
+python3 machine/conformance.py --payload payload.json
+```
+
+Start from [`machine/examples/manifest.minimal.json`](machine/examples/manifest.minimal.json)
+and [`machine/schema/manifest.schema.json`](machine/schema/manifest.schema.json),
+which documents every member in plain language. Then add yourself to
+[`IMPLEMENTATIONS.md`](IMPLEMENTATIONS.md).
 
 If the object cannot express something your business actually does, that is the
 most useful finding you can give us.

@@ -5,6 +5,51 @@ changed and which requirement IDs are affected.
 
 ## spec-v0.4 — draft
 
+**Withdrew the static-document on-ramp.** The manifest-publisher level (`L0`) and
+its requirements `CONF-6` – `CONF-10` are removed. `CONF-8` required a publisher
+to document where its manifest could be found, and no document ever defined that
+location, so the level could not be checked by the specification's own probe or
+found by any client. The identifiers are retired in place and never reused, as
+`MAN-24` – `MAN-27` were in `spec-v0.2`. Levels are cumulative from the bottom,
+so no claim at L1 or above changes. See `D-11`.
+
+- `CONF-6` – `CONF-10` retired; the surviving obligations are `MAN-52` and
+  `MAN-53`, which apply to every publisher regardless of level.
+- `normative/CONFORMANCE.md`: four levels now, L1 – L4.
+- Fixed a pre-existing error in the level table: L2 and L3 named the previous
+  level's requirements, so the table and the requirement index disagreed.
+
+**Documented every manifest member in the schema.** `machine/schema/manifest.schema.json`
+described each property only by requirement number, which meant an implementer
+had to read a second document to learn what a member was for. Every property now
+carries a plain-language description, examples, and the requirement IDs that
+govern it. `machine/check.py` fails if a property's description is only a
+requirement reference, so this cannot regress.
+
+**Added `MAN-59`.** A host adapter that connects an agent host to an endpoint must
+make the manifest available to the model unmodified, rather than substituting a
+prose summary. Without it, the artifact this document defines is read by the
+adapter and never reaches the party it was written for.
+
+**Fixed the digest to be reproducible across implementations.** `MAN-40` defines
+the digest over RFC 8785 canonical JSON. The probe used Python's
+`json.dumps(sort_keys=True)`, which escapes non-ASCII as `\uXXXX` and formats
+floats differently, so it reported a failure on a correct endpoint whose
+manifest carried an accented or non-Latin description. The reference daemon used
+a third form again, and hashed a re-serialisation of its own struct rather than
+the document it published, which inserted members the business never wrote.
+Both now canonicalise per RFC 8785 and hash the bytes the endpoint sent.
+`machine/fixtures/digest.json` pins the expected digests for four documents and
+is checked from both languages.
+
+**Extended the probe.** `machine/conformance.py` gained `--payload` (check a
+captured document), `--converse` (send one real turn, off by default because it
+spends the business's backend), oversize-length and truncated-frame checks
+(`PROTO-4`, `PROTO-5`), documented-error-code checking (`PROTO-41`), and
+cross-client session scoping (`PROTO-33`). It no longer reports a conformance
+level that includes requirements it did not exercise, and it no longer records a
+pass for `MAN-51` without checking it.
+
 **Renamed the wire protocol and the discovery record.** `vireo/1` becomes
 `frontdoor/1`; `_vireo._tcp` becomes `_frontdoor._tcp`.
 

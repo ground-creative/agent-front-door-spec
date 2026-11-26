@@ -54,6 +54,6 @@
   "commands": ["session.new", "session.get", "session.list", "session.close", "session.prune"],
   "generated_at": "2026-11-21T09:14:00Z",
   "expires_at": "2026-11-22T09:14:00Z",
-  "digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "digest": "sha256:b27d20b3b4648a4de9894e29d2f816bf5c8983df3153d5c82dd20ad9c3273d6f",
   "signature": null
 }

@@ -46,11 +46,18 @@ That runs the fixture tests: frame hex round-trips, manifest documents that must
 be accepted and rejected, and a check that every requirement ID cited by a fixture
 exists in the normative text.
 
-## Manifest publishers (L0)
+## What to build next
 
-| Publisher | Manifest | Notes                                                                                                                      |
-| --------- | -------- | -------------------------------------------------------------------------------------------------------------------------- |
-| —         | —        | Be the first. One file, no daemon. See [`machine/examples/manifest.minimal.json`](machine/examples/manifest.minimal.json). |
+The empty column is the point. Each row below is independently useful, needs
+nobody's permission, and is most valuable when built without reading our source.
+
+| Artifact | Difficulty | What it proves | Start at |
+| --- | --- | --- | --- |
+| A client in another language | small | the wire is implementable from the text alone | `normative/PROTOCOL.md` §1–§4 |
+| A daemon for one real backend | medium | the manifest can describe a business nobody designed it for | `normative/MANIFEST.md`, `PROTOCOL.md` §9 |
+| A host adapter for a host that is not MCP | medium | the session model is not an MCP artefact | `normative/PROTOCOL.md` §3–§7 |
+| A host adapter that surfaces the manifest unmodified | trivial | an agent actually sees the contract (`MAN-59`) | `normative/MANIFEST.md` §1 |
+| A fixture for an edge case | trivial | an ambiguity is a spec defect | `machine/fixtures/` |
 
 ## Adding yourself
 
@@ -64,5 +71,9 @@ Open a pull request with a row. Include:
 - how a third party reproduces the check (CONF-4), even if it is only "run
   `go test ./...`".
 
-If you are unsure what level you reach, start at L0: a valid manifest you actually
-publish. That is a real contribution, and it is the level that grows the ecosystem.
+If you are unsure what level you reach, run the probe and believe its output. It
+reports what it exercised, per level, and never claims a level it did not test:
+
+```bash
+python3 machine/conformance.py --endpoint your.host:7777
+```
