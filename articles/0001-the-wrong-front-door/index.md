@@ -144,8 +144,9 @@ specification says so in its own words.
 
 What would change that is boring and specific:
 
-1. **Publish a manifest** for a business you run. One file, no daemon. It exercises
-   the part of the contract businesses actually care about, and it costs an hour.
+1. **Run an endpoint on a domain you control.** A daemon and a backend, which is
+   more than one file and that is the point: participating means answering. The
+   probe tells you requirement by requirement what you got right.
 2. **Write a client in another language.** Not a port of the reference client — an
    implementation from the document. Every place you had to guess is a defect in
    the specification, and worth an issue that cites the requirement ID.

@@ -192,10 +192,11 @@ page-scraping integration.
 
 **Cost.** Two delivery paths to keep consistent. Accepted: they share one schema.
 
-**Superseded.** The document path is withdrawn; see D-11. Keeping the object
-transport-independent is still right and is not what was undone. What was undone is
-the claim that publishing a file somewhere constitutes participation, which no
-document could make checkable.
+**Superseded — and withdrawn, not just revised.** The document path is gone; see D-11.
+Do not read this entry as still permitting a deployment to serve a standalone file. No
+location for one was ever defined, nothing could check it, and every document that still
+described it produced the same wrong answer from every reader: that a manifest lives at a
+URL. There is one delivery path, the `manifest` frame that answers `negotiate`.
 
 ## D-5 — `links` replaces `refs`; `commands` is replaced by `capabilities`
 

@@ -56,6 +56,8 @@ worth anything, so a document-fetch path would eventually need a second step
 anyway. Starting with the routing record means there is one way to find the
 endpoint and one way to talk to it, and no second host to keep consistent.
 
-Because the manifest itself is transport-independent
-([D-6](../DECISIONS.md)), a deployment that wants a document path can publish the
-same object without changing this decision. Discovery is the only thing SRV owns.
+One delivery path is the whole of it. `spec-v0.4` withdrawn the standalone-document
+path that `D-6` had allowed, because no location for such a file was ever defined
+and nothing could check it. The object stays transport-independent as a definition;
+the delivery does not. Discovery is the only thing SRV owns, and the handshake is
+the only thing that carries the manifest.

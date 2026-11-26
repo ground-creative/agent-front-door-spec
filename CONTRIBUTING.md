@@ -5,9 +5,9 @@ they help.
 
 ## 1. Implement something and report where it hurt
 
-The most valuable contribution is a client, a daemon, or a manifest publisher
-written without reading the reference implementation's source. When something is
-unclear, that is a defect in the specification, and it is worth an issue.
+The most valuable contribution is a client or a daemon written without reading the
+reference implementation's source. When something is unclear, that is a defect in the
+specification, and it is worth an issue.
 
 Open an issue titled `spec: <requirement ID> <what is unclear>` and include:
 
@@ -18,13 +18,14 @@ Open an issue titled `spec: <requirement ID> <what is unclear>` and include:
 Please do not patch the implementation instead. A workaround in your codebase is
 invisible here; a note in an issue is not.
 
-## 2. Publish a manifest from a real endpoint
+## 2. Run an endpoint and check the manifest it serves
 
 Run a daemon, or point one at a backend you already have, and check the document
-it serves:
+it serves on connect:
 
 ```bash
-python3 machine/conformance.py --payload payload.json
+python3 machine/conformance.py --endpoint your.host:7777
+python3 machine/conformance.py --payload captured.json
 ```
 
 Start from [`machine/examples/manifest.minimal.json`](machine/examples/manifest.minimal.json)

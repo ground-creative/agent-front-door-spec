@@ -21,11 +21,13 @@ It is a **data document**, not a web page. It carries no layout, no script, no
 navigation and no marketing copy beyond a one-line description per agent. A
 client must be able to act on it without guessing.
 
-The manifest is **transport-independent**. This document defines the object. How
-it arrives — inside a protocol handshake, or from a document a deployment
-publishes — is specified elsewhere. What matters here is the object: a caller
-that has just reached an endpoint must be able to read it and act on it without
-guessing.
+The manifest object is **transport-independent**: this document defines the object and
+says nothing about the bytes that carry it. There is one delivery path in this release —
+the `manifest` frame that answers `negotiate`, specified in [`PROTOCOL.md`](PROTOCOL.md)
+§3. Earlier drafts also allowed a deployment to serve the object as a standalone file;
+that path was withdrawn (see [`CONFORMANCE.md`](CONFORMANCE.md)) because no location for
+such a file was ever defined and nothing could check it. **A caller never fetches a
+manifest from a URL. It connects, and the manifest is what arrives first.**
 
 - **MAN-59.** An adapter that connects an agent host to an endpoint MUST make the
   manifest available to the model it serves, and MUST NOT substitute a prose

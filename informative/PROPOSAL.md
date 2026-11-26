@@ -59,7 +59,7 @@ A business is the obvious case, and the one the example above uses, but it is no
 the boundary. The party may be a business, a person, a studio, a local agent on
 someone's own hardware, a game server — anything that controls a domain and
 chooses to answer on it. The symmetry matters: the same daemon runs at either end,
-so a person running an agent at their own domain is a publisher too, and neither
+so a person running an agent at their own domain runs an endpoint too, and neither
 side of a conversation is special.
 
 Whoever it is keeps everything that makes it what it is: its backend, its models,
