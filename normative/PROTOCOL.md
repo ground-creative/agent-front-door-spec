@@ -4,7 +4,7 @@
 in issues and proposals.
 
 - Spec release: `spec-v0.4`
-- Protocol identifier: `frontdoor/1`
+- Protocol identifier: `portico/1`
 - See also: [`MANIFEST.md`](MANIFEST.md) (the document delivered at handshake),
   [`CONFORMANCE.md`](CONFORMANCE.md), [`SECURITY.md`](SECURITY.md).
 
@@ -15,11 +15,19 @@ in issues and proposals.
 One port serves both transports:
 
 - **TCP + TLS 1.3**, and **UDP + QUIC**, on the same port;
-- ALPN `frontdoor/1` selects the protocol;
+- ALPN `portico/1` selects the protocol;
 - every message is a **frame**: a 9-byte header, then a JSON payload.
 
-- **PROTO-1.** A server MUST offer TLS 1.3 or later, and MUST select `frontdoor/1`
+- **PROTO-1.** A server MUST offer TLS 1.3 or later, and MUST select `portico/1`
   via ALPN. There is no plaintext mode.
+- **PROTO-49.** A client SHOULD offer every wire identifier the draft has used,
+  newest first, so that a server which has not been redeployed still completes
+  the handshake. A server SHOULD accept those identifiers for a deprecation
+  window and MUST NOT require the newest one from a peer during it. This is the
+  ALPN equivalent of `PROTO-48`: a rename is a change of token, not a flag day.
+  The identifiers that must be accepted are `portico/1`, `frontdoor/1` and <!-- identifier: retired -->
+  `vireo/1`; the last two are retired and a server MAY stop honouring them at the <!-- identifier: retired -->
+  release after next.
 - **PROTO-2.** A server SHOULD serve TCP/TLS and UDP/QUIC on the same port
   number. A client MUST be able to use either; it MAY prefer one.
 - **PROTO-3.** Frames are self-delimiting. A reader MUST consume exactly one
@@ -66,7 +74,7 @@ The first frame on a connection MUST be `negotiate`:
 
 ```json
 {
-  "protocol": "frontdoor/1",
+  "protocol": "portico/1",
   "client": {
     "id": "vireo_4f1c8a2e9b7d4c0fa1e2d3b4c5a6f7e8",
     "name": "example-client",
@@ -266,9 +274,9 @@ agent's backend.
 ```
 POST /vireo/message
 Content-Type: application/json
-X-Frontdoor-Protocol: frontdoor/1
-X-Vireo-Agent: orders
-X-Vireo-Session: y113YjxvfPQzaE6ZWhmabl-wnxthBAFJ
+X-Portico-Protocol: portico/1
+X-Portico-Agent: orders
+X-Portico-Session: y113YjxvfPQzaE6ZWhmabl-wnxthBAFJ
 
 { "agent": "orders",
   "session_id": "y113YjxvfPQzaE6ZWhmabl-wnxthBAFJ",
@@ -279,7 +287,7 @@ X-Vireo-Session: y113YjxvfPQzaE6ZWhmabl-wnxthBAFJ
   agent's configured transport).
 - **WH-2.** The request body MUST contain `agent`, `session_id` (when present) and
   `message`.
-- **WH-3.** `X-Vireo-Agent` and `X-Vireo-Session` MUST match the body.
+- **WH-3.** `X-Portico-Agent` and `X-Portico-Session` MUST match the body.
 - **WH-4.** A 2xx response MUST be read as JSON
   `{reply, session?}`; a bare JSON string MUST be accepted as `reply`.
 - **WH-5.** A non-2xx response MUST surface to the caller as `upstream_error`.
@@ -332,7 +340,7 @@ turn:
 A client given a bare domain resolves a service record:
 
 ```
-_frontdoor._tcp.example.com. 300 IN SRV 10 5 7777 agent.example.com.
+_portico._tcp.example.com. 300 IN SRV 10 5 7777 agent.example.com.
 ```
 
 - **PROTO-44.** A client MUST treat the SRV target and port as the endpoint
@@ -343,10 +351,12 @@ _frontdoor._tcp.example.com. 300 IN SRV 10 5 7777 agent.example.com.
   `weight`, as DNS defines them.
 - **PROTO-47.** The TLS `ServerName` MUST be the queried domain, and the presented
   certificate MUST be valid for it. See [`SECURITY.md`](SECURITY.md).
-- **PROTO-48.** A client MAY fall back to the retired record `_vireo._tcp` when
-  `_frontdoor._tcp` does not resolve, and MUST treat both as the same service.
+- **PROTO-48.** A client MAY fall back to the retired records `_frontdoor._tcp` <!-- identifier: retired -->
+  and `_vireo._tcp` when `_portico._tcp` does not resolve, and MUST treat all of <!-- identifier: retired -->
+  them as the same service. It SHOULD report which record answered, so that an
+  operator can see an unmigrated deployment rather than a silent fallback.
 
-`_frontdoor._tcp` is the identifier this revision publishes. It is not registered with
+`_portico._tcp` is the identifier this revision publishes. It is not registered with
 IANA. Earlier drafts of this document published `_vireo._tcp`, named after the reference
 implementation; that was a defect in an open specification and is retired here (D-10).
 A future revision may publish separate `_tcp` and `_udp` records; a client MUST tolerate
@@ -403,7 +413,8 @@ their absence.
 | PROTO-45 | 10      | no SRV means no resolution                   |
 | PROTO-46 | 10      | priority and weight honoured                 |
 | PROTO-47 | 10      | ServerName and certificate                   |
-| PROTO-48 | 10      | retired `_vireo._tcp` fallback               |
+| PROTO-48 | 10      | retired SRV record fallback                  |
+| PROTO-49 | 1       | ALPN identifier compatibility                |
 | WH-1     | 9       | one backend per turn                         |
 | WH-2     | 9       | request body fields                          |
 | WH-3     | 9       | headers match body                           |

@@ -8,6 +8,51 @@ Newest first.
 
 ---
 
+## D-12 — The wire identifier is `portico/1`
+
+**Decision.** The protocol is `portico/1`, discovery is `_portico._tcp`, and the
+webhook headers are `X-Portico-*`. The project keeps its name: this repository is
+still the Agent Front Door specification, and the argument is still the front-door
+argument. What changes is the token a stranger has to type.
+
+**Why `portico` and not the two names before it.**
+
+`vireo/1` put the implementation's name in the standard's most public string, and
+`D-10` retired it for that reason. `frontdoor/1` fixed the implementation problem
+but replaced a name with the title of the proposal: it reads as a campaign, not as
+a protocol identifier, and it cannot be said in a config file without sounding
+like a product.
+
+`portico` is the architectural word for the thing: a porch at a building's
+entrance, the covered way in. It is the project's own metaphor said properly, it
+names no implementation, and it commits to no kind of participant — which matters,
+because the protocol is for any party that controls a domain, not only a
+business.
+
+**Why now.** `spec-v0.4` is still an unreleased draft, so no tag describes the old
+string and the change costs no migration. After `spec-v1.0` this would be a MAJOR
+with a superseding document.
+
+**The rename is one search, and the last one was half-done.** `frontdoor/1`
+reached the ALPN string and the SRV record but not the webhook headers, which kept
+`X-Vireo-Agent` and `X-Vireo-Session`. Nothing failed, because nothing checked. So
+this decision carries a mechanism: `machine/check.py` fails when a retired
+identifier appears outside a file that records history, or a line that marks
+itself `<!-- identifier: retired -->`. A partial rename is now a build failure
+rather than a discovery made weeks later.
+
+**Compatibility.** Clients offer every identifier the draft has used, newest
+first, and a daemon accepts all of them for the deprecation window. A daemon that
+has not been redeployed is still reachable, and a client that has not been rebuilt
+is still served. That is what `PROTO-48` is for; this generalises it to ALPN and
+to the negotiate frame.
+
+**Cost.** The identifier appears in prose, fixtures, configs and two
+implementations, and a rename is a search. Accepted once, now, with a check that
+makes missing part of it loud.
+
+---
+
 ## D-11 — The static-document on-ramp is withdrawn
 
 **Decision.** The manifest-publisher level (`L0`) and its requirements

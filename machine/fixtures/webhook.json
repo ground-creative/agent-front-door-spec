@@ -9,9 +9,9 @@
         "path": "/vireo/message",
         "headers": {
           "Content-Type": "application/json",
-          "X-Frontdoor-Protocol": "frontdoor/1",
-          "X-Vireo-Agent": "orders",
-          "X-Vireo-Session": "y113YjxvfPQzaE6ZWhmabl-wnxthBAFJ"
+          "X-Portico-Protocol": "portico/1",
+          "X-Portico-Agent": "orders",
+          "X-Portico-Session": "y113YjxvfPQzaE6ZWhmabl-wnxthBAFJ"
         },
         "body": {
           "agent": "orders",

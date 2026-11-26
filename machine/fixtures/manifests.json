@@ -6,7 +6,7 @@
       "requirement": "MAN-1",
       "document": {
         "manifest_version": "1",
-        "protocol": "frontdoor/1",
+        "protocol": "portico/1",
         "endpoint": {
           "name": "x"
         },
@@ -18,7 +18,7 @@
       "requirement": "MAN-47",
       "document": {
         "manifest_version": "1.1",
-        "protocol": "frontdoor/1",
+        "protocol": "portico/1",
         "agents": []
       }
     },
@@ -27,7 +27,7 @@
       "requirement": "MAN-47",
       "document": {
         "manifest_version": "1.1",
-        "protocol": "frontdoor/1",
+        "protocol": "portico/1",
         "endpoint": {
           "id": "x"
         },
@@ -39,7 +39,7 @@
       "requirement": "MAN-47",
       "document": {
         "manifest_version": "1.1",
-        "protocol": "frontdoor/1",
+        "protocol": "portico/1",
         "endpoint": {
           "name": "x"
         }
@@ -50,7 +50,7 @@
       "requirement": "MAN-47",
       "document": {
         "manifest_version": "1.1",
-        "protocol": "frontdoor/1",
+        "protocol": "portico/1",
         "endpoint": {
           "name": "x"
         },
@@ -67,7 +67,7 @@
       "requirement": "MAN-12",
       "document": {
         "manifest_version": "1.1",
-        "protocol": "frontdoor/1",
+        "protocol": "portico/1",
         "endpoint": {
           "name": "x"
         },
@@ -85,7 +85,7 @@
       "note": "Semantic: JSON Schema cannot express cross-item uniqueness, but a decoder can.",
       "document": {
         "manifest_version": "1.1",
-        "protocol": "frontdoor/1",
+        "protocol": "portico/1",
         "endpoint": {
           "name": "x"
         },
@@ -106,7 +106,7 @@
       "requirement": "MAN-19",
       "document": {
         "manifest_version": "1.1",
-        "protocol": "frontdoor/1",
+        "protocol": "portico/1",
         "endpoint": {
           "name": "x"
         },
@@ -124,7 +124,7 @@
       "requirement": "MAN-20",
       "document": {
         "manifest_version": "1.1",
-        "protocol": "frontdoor/1",
+        "protocol": "portico/1",
         "endpoint": {
           "name": "x"
         },
@@ -143,7 +143,7 @@
       "note": "Semantic, not structural: JSON Schema cannot express it, but a decoder can.",
       "document": {
         "manifest_version": "1.1",
-        "protocol": "frontdoor/1",
+        "protocol": "portico/1",
         "endpoint": {
           "name": "x"
         },
@@ -167,7 +167,7 @@
       "requirement": "MAN-40",
       "document": {
         "manifest_version": "1.1",
-        "protocol": "frontdoor/1",
+        "protocol": "portico/1",
         "endpoint": {
           "name": "x"
         },
@@ -180,7 +180,7 @@
       "requirement": "MAN-55",
       "document": {
         "manifest_version": "1.3",
-        "protocol": "frontdoor/1",
+        "protocol": "portico/1",
         "endpoint": {
           "name": "x"
         },
@@ -201,7 +201,7 @@
       "note": "Semantic: JSON Schema cannot express uniqueness within one agent's tags, but a decoder can.",
       "document": {
         "manifest_version": "1.3",
-        "protocol": "frontdoor/1",
+        "protocol": "portico/1",
         "endpoint": {
           "name": "x"
         },
@@ -224,7 +224,7 @@
       "requirement": "MAN-1",
       "note": "A publisher MUST carry manifest_version. A client cannot reject its absence, because MAN-53 defines absence as manifest_version 1.0 and requires accepting it. Checkable by schema only.",
       "document": {
-        "protocol": "frontdoor/1",
+        "protocol": "portico/1",
         "endpoint": {
           "name": "x"
         },
@@ -237,7 +237,7 @@
       "note": "A publisher MUST emit sessions. After decoding, an absent boolean is indistinguishable from false in most languages, so a client cannot enforce it. Checkable by schema only.",
       "document": {
         "manifest_version": "1.1",
-        "protocol": "frontdoor/1",
+        "protocol": "portico/1",
         "endpoint": {
           "name": "x"
         },
@@ -255,7 +255,7 @@
       "note": "A publisher MUST emit a positive ttl_seconds. After decoding, 0 and absent are the same value. Checkable by schema only.",
       "document": {
         "manifest_version": "1.1",
-        "protocol": "frontdoor/1",
+        "protocol": "portico/1",
         "endpoint": {
           "name": "x"
         },
@@ -273,7 +273,7 @@
       "schema": "manifest-1.0.schema.json",
       "note": "Absence of manifest_version MUST be read as 1.0, not rejected. Validate this one against the 1.0 schema, not the 1.1 schema.",
       "document": {
-        "protocol": "frontdoor/1",
+        "protocol": "portico/1",
         "endpoint": {
           "name": "x"
         },
@@ -304,7 +304,7 @@
       "requirement": "MAN-7",
       "document": {
         "manifest_version": "1.1",
-        "protocol": "frontdoor/1",
+        "protocol": "portico/1",
         "endpoint": {
           "name": "x"
         },
@@ -316,7 +316,7 @@
       "requirement": "MAN-3",
       "document": {
         "manifest_version": "1.1",
-        "protocol": "frontdoor/1",
+        "protocol": "portico/1",
         "endpoint": {
           "name": "x",
           "future_field": {
@@ -341,7 +341,7 @@
       "requirement": "MAN-44",
       "document": {
         "manifest_version": "1.1",
-        "protocol": "frontdoor/1",
+        "protocol": "portico/1",
         "endpoint": {
           "name": "x"
         },
@@ -357,7 +357,7 @@
       "requirement": "MAN-56",
       "document": {
         "manifest_version": "1.3",
-        "protocol": "frontdoor/1",
+        "protocol": "portico/1",
         "endpoint": {
           "name": "x"
         },

@@ -38,7 +38,7 @@ field is the complete frame, so a test can compare bytes rather than parse.
   "stream_id": 0,
   "type": "negotiate",
   "type_code": 16,
-  "payload": "{\"protocol\":\"frontdoor/1\"}",
+  "payload": "{\"protocol\":\"portico/1\"}",
   "hex": "00000000100000001a7b2270726f746f636f6c223a2266726f6e74646f6f722f31227d"
 }
 ```

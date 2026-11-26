@@ -1,5 +1,5 @@
 {
-  "protocol": "frontdoor/1",
+  "protocol": "portico/1",
   "note": "Frame type codes from normative/PROTOCOL.md section 2. Hex is authoritative.",
   "cases": [
     {
@@ -8,7 +8,7 @@
       "stream_id": 0,
       "type": "negotiate",
       "type_code": 16,
-      "payload": "{\"protocol\":\"frontdoor/1\"}",
+      "payload": "{\"protocol\":\"portico/1\"}",
       "hex": "00000000100000001a7b2270726f746f636f6c223a2266726f6e74646f6f722f31227d",
       "expect": "accept"
     },

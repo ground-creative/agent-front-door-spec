@@ -1,17 +1,32 @@
 {
   "manifest_version": "1.3",
-  "protocol": "frontdoor/1",
+  "protocol": "portico/1",
   "endpoint": {
     "id": "restaurant-prod",
     "name": "restaurant",
     "description": "Fresh pizza and table bookings"
   },
   "links": [
-    { "rel": "site", "href": "https://restaurant.example/", "label": "Website", "type": "text/html" },
-    { "rel": "status", "href": "https://status.restaurant.example/", "type": "text/html" }
+    {
+      "rel": "site",
+      "href": "https://restaurant.example/",
+      "label": "Website",
+      "type": "text/html"
+    },
+    {
+      "rel": "status",
+      "href": "https://status.restaurant.example/",
+      "type": "text/html"
+    }
   ],
   "capabilities": {
-    "session": { "new": true, "get": true, "list": true, "close": true, "prune": true },
+    "session": {
+      "new": true,
+      "get": true,
+      "list": true,
+      "close": true,
+      "prune": true
+    },
     "progress": true,
     "cancel": true,
     "max_turn_seconds": 300
@@ -21,25 +36,41 @@
     "requests_per_minute": 60,
     "burst": 10
   },
-  "session": { "ttl_seconds": 3600 },
+  "session": {
+    "ttl_seconds": 3600
+  },
   "agents": [
     {
       "id": "orders",
       "name": "orders",
       "description": "Take food orders: pizzas, sides, drinks, pickup or delivery",
-      "tags": ["orders", "delivery", "pickup"],
+      "tags": [
+        "orders",
+        "delivery",
+        "pickup"
+      ],
       "sessions": true,
       "start_message": "Hello! Ask me anything about the restaurant.",
       "links": [
-        { "rel": "menu", "href": "https://restaurant.example/menu", "label": "Menu", "type": "text/html" }
+        {
+          "rel": "menu",
+          "href": "https://restaurant.example/menu",
+          "label": "Menu",
+          "type": "text/html"
+        }
       ],
-      "session": { "ttl_seconds": 86400 }
+      "session": {
+        "ttl_seconds": 86400
+      }
     },
     {
       "name": "reservations",
       "description": "Check availability, book a table and cancel a booking",
       "sessions": true,
-      "limits": { "requests_per_minute": 20, "burst": 3 }
+      "limits": {
+        "requests_per_minute": 20,
+        "burst": 3
+      }
     },
     {
       "name": "status",
@@ -51,9 +82,15 @@
     "menu": "https://restaurant.example/menu",
     "docs": "https://restaurant.example/docs"
   },
-  "commands": ["session.new", "session.get", "session.list", "session.close", "session.prune"],
+  "commands": [
+    "session.new",
+    "session.get",
+    "session.list",
+    "session.close",
+    "session.prune"
+  ],
   "generated_at": "2026-11-21T09:14:00Z",
   "expires_at": "2026-11-22T09:14:00Z",
-  "digest": "sha256:b27d20b3b4648a4de9894e29d2f816bf5c8983df3153d5c82dd20ad9c3273d6f",
+  "digest": "sha256:7ed1909b23edb6218a911e5a29bbeb75042cb70fdcfc442e8ffe11ae01ca2ed8",
   "signature": null
 }

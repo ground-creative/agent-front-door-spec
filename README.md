@@ -36,7 +36,7 @@ A second door, next to the website, at the address the business already owns.
 
 |                           | for humans                | for agents                                           |
 | ------------------------- | ------------------------- | ---------------------------------------------------- |
-| how it is found           | a URL you type            | `_frontdoor._tcp.<domain>` in the business's own DNS |
+| how it is found           | a URL you type            | `_portico._tcp.<domain>` in the business's own DNS |
 | what arrives first        | an HTML page              | a **manifest**: what this endpoint exposes           |
 | what carries the exchange | forms, cookies, redirects | a **session** with explicit turns, progress and end  |
 
@@ -58,7 +58,7 @@ page, with no layout and no script:
 ```json
 {
   "manifest_version": "1.3",
-  "protocol": "frontdoor/1",
+  "protocol": "portico/1",
   "endpoint": {
     "name": "acme-plumbing",
     "description": "Plumbing and heating"
@@ -230,7 +230,7 @@ Two independent version numbers, deliberately:
   backwards compatible; a client that sees a newer minor ignores what it does not
   know.
 
-The wire protocol identifier (`frontdoor/1`) is separate again and changes only
+The wire protocol identifier (`portico/1`) is separate again and changes only
 for incompatible framing or semantic changes.
 
 ## Contributing

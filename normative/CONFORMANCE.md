@@ -119,7 +119,7 @@ python3 machine/conformance.py --endpoint agent.example.com:7777
 ```
 
 ```text
-PASS  PROTO-1   TLSv1.3, ALPN frontdoor/1
+PASS  PROTO-1   TLSv1.3, ALPN portico/1
 PASS  PROTO-8   code=bad_client_id
 PASS  PROTO-13  manifest on stream 0
 PASS  MAN-47    manifest validates against the schema

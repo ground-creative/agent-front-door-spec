@@ -236,6 +236,48 @@ FENCED = re.compile(r"```.*?```", re.DOTALL)
 ANY_VERSION = re.compile(r"spec-v[0-9]+\.[0-9]+")
 
 
+def check_retired_identifiers() -> None:
+    """No retired wire identifier may survive outside a record of history.
+
+    The wire identifier was renamed twice during the draft, and the first rename
+    landed only halfway: the ALPN string took the new name while the webhook
+    headers kept the old one, so a protocol carried two naming schemes and the
+    implementation's name stayed inside the standard's own contract.
+
+    That happened because a rename is a search across prose, code and fixtures,
+    and nothing failed when part of it was missed. This does.
+
+    A line carrying ``<!-- identifier: retired -->`` is exempt, for the places
+    where naming an old identifier is the point — a changelog, a decision record,
+    a migration note, or the compatibility list itself.
+    """
+    # This list is the definition of what is retired, so it names the old
+    # identifiers on purpose.
+    retired = ("frontdoor/1", "_frontdoor._tcp", "X-Frontdoor-", "X-Vireo-", "vireo/1")  # <!-- identifier: retired -->
+    exempt_files = {"CHANGELOG.md", "DECISIONS.md"}
+    marker = "<!-- identifier: retired -->"
+    # The files where an old name must appear, because they implement or
+    # document the compatibility window itself.
+    exempt_paths = {"machine/schema"}
+
+    for path in sorted(ROOT.rglob("*")):
+        if not path.is_file() or path.suffix not in {".md", ".json", ".py"}:
+            continue
+        if any(part in {".git", "__pycache__", "articles"} for part in path.parts):
+            continue
+        if path.name in exempt_files:
+            continue
+        if any(str(path.relative_to(ROOT)).startswith(p) for p in exempt_paths):
+            continue
+        for number, line in enumerate(path.read_text().splitlines(), start=1):
+            for name in retired:
+                if name in line and marker not in line:
+                    fail(
+                        f"{path.relative_to(ROOT)}:{number}: retired identifier {name!r} "
+                        f"survived the rename (mark the line {marker} if it is intentional)"
+                    )
+
+
 def check_spec_version_consistency() -> None:
     """Every document must name the newest release, outside history.
 
@@ -332,6 +374,7 @@ def main() -> int:
     check_fixture_requirements()
     check_digest_fixture()
     check_schema_documents_itself()
+    check_retired_identifiers()
     check_links()
     check_inline_json()
     check_spec_version_consistency()

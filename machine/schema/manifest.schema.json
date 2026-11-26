@@ -10,7 +10,7 @@
   "examples": [
     {
       "manifest_version": "1.3",
-      "protocol": "frontdoor/1",
+      "protocol": "portico/1",
       "endpoint": { "name": "acme-plumbing" },
       "agents": [
         {
@@ -32,8 +32,8 @@
     "protocol": {
       "type": "string",
       "minLength": 1,
-      "description": "The wire protocol this endpoint speaks, as a token such as frontdoor/1. It tells a caller what it may send after the document, and it lets a business advertise that it speaks something newer without changing this schema. Required.",
-      "examples": ["frontdoor/1"],
+      "description": "The wire protocol this endpoint speaks, as a token such as portico/1. It tells a caller what it may send after the document, and it lets a business advertise that it speaks something newer without changing this schema. Required.",
+      "examples": ["portico/1"],
       "$comment": "PROTO-11"
     },
     "endpoint": {

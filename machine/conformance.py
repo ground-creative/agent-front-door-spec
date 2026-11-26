@@ -55,7 +55,13 @@ MAX_PAYLOAD = 8 << 20
 # MESSAGE is the single turn sent by --converse. It is deliberately trivial and
 # carries a marker the probe can look for in the session envelope, so PROTO-36
 # (an envelope never holds message text) is checkable rather than assumed.
-MESSAGE = "frontdoor conformance probe: 7f3a9c"
+MESSAGE = "portico conformance probe: 7f3a9c"
+
+# ALPN_NAMES is what the probe offers, newest first. The wire identifier was
+# renamed twice during the draft, and a daemon that has not been redeployed
+# still speaks an older string; offering all of them is what lets the probe
+# measure an unmigrated deployment instead of failing at the TLS layer (PROTO-49).
+ALPN_NAMES = ["portico/1", "frontdoor/1", "vireo/1"]  # <!-- identifier: retired -->
 
 T_MESSAGE, T_DATA, T_END, T_PARTIAL, T_ERROR = 0x01, 0x02, 0x03, 0x04, 0x05
 T_NEGOTIATE, T_MANIFEST, T_SESSION = 0x10, 0x11, 0x12
@@ -85,7 +91,7 @@ class Wire:
         # by hand does not, which makes every valid certificate look untrusted.
         ctx = ssl.create_default_context()
         ctx.minimum_version = ssl.TLSVersion.TLSv1_3
-        ctx.set_alpn_protocols(["frontdoor/1"])
+        ctx.set_alpn_protocols(ALPN_NAMES)
         if insecure:
             ctx.check_hostname = False
             ctx.verify_mode = ssl.CERT_NONE
@@ -129,7 +135,7 @@ class Wire:
         self.last_raw = body
         return stream, frame_type, (json.loads(body) if body else None)
 
-    def negotiate(self, client_id: str, protocol: str = "frontdoor/1") -> None:
+    def negotiate(self, client_id: str, protocol: str = ALPN_NAMES[0]) -> None:
         self.send(
             0,
             T_NEGOTIATE,
@@ -292,8 +298,21 @@ def check_transport(
 
     version = wire.sock.version()
     alpn = wire.sock.selected_alpn_protocol()
-    ok = version == "TLSv1.3" and alpn == "frontdoor/1"
+    ok = version == "TLSv1.3" and alpn in ALPN_NAMES
     record("PROTO-1", ok, f"{version}, ALPN {alpn}")
+    # PROTO-49: the newest identifier is preferred, but an older one is a
+    # conforming answer during the deprecation window. Which one answered is
+    # information an operator needs, so it is reported either way.
+    if alpn:
+        record(
+            "PROTO-49",
+            True,
+            "daemon selected the current identifier"
+            if alpn == ALPN_NAMES[0]
+            else f"daemon selected retired {alpn!r}; redeploy to serve {ALPN_NAMES[0]}",
+        )
+    else:
+        record("PROTO-49", None, "no ALPN selected")
     return wire
 
 
@@ -950,7 +969,7 @@ def run_payload(source: str) -> int:
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Probe a frontdoor/1 endpoint against the specification, "
+        description="Probe a portico/1 endpoint against the specification, "
         "or check a captured manifest document."
     )
     parser.add_argument(

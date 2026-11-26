@@ -5,6 +5,26 @@ changed and which requirement IDs are affected.
 
 ## spec-v0.4 — draft
 
+**The wire identifier is `portico/1`.** `frontdoor/1` becomes `portico/1`;
+`_frontdoor._tcp` becomes `_portico._tcp`; the webhook headers become
+`X-Portico-Protocol`, `X-Portico-Agent` and `X-Portico-Session`.
+
+Two problems with the previous name. `frontdoor` is the title of the proposal,
+not an identifier — a wire token should not read as a slogan. And it still said
+`vireo` in the webhook headers, which `spec-v0.4` renamed for the ALPN string and
+the SRV record but not for the backend contract, so the protocol carried two
+naming schemes at once and the implementation's name stayed inside the standard's
+own contract.
+
+- ALPN and the `protocol` member are `portico/1` (`PROTO-1`).
+- Discovery is `_portico._tcp`. `_frontdoor._tcp` and `_vireo._tcp` remain legal
+  fallbacks for one release (`PROTO-44`, `PROTO-48`).
+- Webhook headers are `X-Portico-*` (`WH-3`).
+- Clients offer every name the draft has used (`PROTO-1`), and a daemon accepts
+  them all for the deprecation window, so a rename is not a flag day.
+- `machine/check.py` now fails when a retired identifier appears outside a record
+  of history, which is the failure the previous rename demonstrated.
+
 **Withdrew the static-document on-ramp.** The manifest-publisher level (`L0`) and
 its requirements `CONF-6` – `CONF-10` are removed. `CONF-8` required a publisher
 to document where its manifest could be found, and no document ever defined that
