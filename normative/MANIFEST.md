@@ -116,7 +116,7 @@ shape for the one job `actions` was reaching for (§7.1).
 | Field              | Type              | Req.       | Since | Meaning                                      |
 | ------------------ | ----------------- | ---------- | ----- | -------------------------------------------- |
 | `manifest_version` | string            | MUST       | 1.1   | Document compatibility level (MAN-1)         |
-| `protocol`         | string            | MUST       | 1.0   | Wire protocol identifier, e.g. `frontdoor/1`     |
+| `protocol`         | string            | MUST       | 1.0   | Wire protocol identifier, e.g. `frontdoor/1` |
 | `endpoint`         | object            | MUST       | 1.0   | The service itself (§6)                      |
 | `agents`           | array             | MUST       | 1.0   | The agents exposed; MAY be empty (§7)        |
 | `links`            | array             | MAY        | 1.1   | Endpoint-level published references (§8)     |
@@ -525,62 +525,62 @@ A full manifest:
 
 ## 17. Requirement index
 
-| ID     | Section | Subject                                |
-| ------ | ------- | -------------------------------------- |
-| MAN-1  | 4       | `manifest_version` shape               |
-| MAN-2  | 4       | additive change = MINOR                |
-| MAN-3  | 4       | ignore unknown members                 |
-| MAN-4  | 4       | unknown enum value → fallback          |
-| MAN-5  | 4       | breaking change = MAJOR                |
-| MAN-6  | 4       | required fields present                |
-| MAN-7  | 5       | empty `agents` is valid                |
-| MAN-8  | 5       | no sensitive material                  |
-| MAN-9  | 6       | `endpoint.id` opaque and stable        |
-| MAN-10 | 6       | `endpoint.name` is display only        |
-| MAN-11 | 6       | descriptions are plain text            |
-| MAN-12 | 7       | agent `name` uniqueness and charset    |
-| MAN-13 | 7       | renaming an agent                      |
-| MAN-14 | 7       | agent `id` stability                   |
-| MAN-15 | 7       | `sessions: false` semantics            |
-| MAN-16 | 7       | `start_message` is endpoint-produced   |
-| MAN-17 | 7       | description style                      |
-| MAN-18 | 7       | no indistinguishable agents            |
-| MAN-19 | 8       | link `href` absolute                   |
-| MAN-20 | 8       | link `rel` charset                     |
-| MAN-21 | 8       | conventional `rel` values              |
-| MAN-22 | 8       | agent + endpoint links are additive    |
-| MAN-23 | 8       | links may rot                          |
-| MAN-28 | 9       | advertised capability is honoured      |
-| MAN-29 | 9       | `session.new` whenever sessions exist  |
-| MAN-30 | 9       | client honours missing capability      |
-| MAN-31 | 10      | `max_message_bytes` bound              |
-| MAN-32 | 10      | limits advisory, handle `rate_limited` |
-| MAN-33 | 10      | advertise enforced limits              |
-| MAN-34 | 10      | per-agent limits override              |
-| MAN-35 | 11      | agent `session` overrides endpoint     |
-| MAN-36 | 11      | ids are minted, not described          |
-| MAN-37 | 11      | `ttl_seconds` positive                 |
-| MAN-38 | 11      | `sessions` is authoritative            |
-| MAN-39 | 12      | RFC 3339 timestamps                    |
-| MAN-40 | 12      | digest over canonical JSON             |
-| MAN-41 | 12      | `signature` reserved                   |
-| MAN-42 | 12      | freshness fields optional              |
-| MAN-43 | 12      | caching bounded by `expires_at`        |
-| MAN-44 | 13      | `refs` read as links                   |
-| MAN-45 | 13      | `commands` read as session ops         |
-| MAN-46 | 13      | deprecated members frozen              |
-| MAN-47 | 14      | client validation                      |
-| MAN-48 | 14      | reject, do not half-accept             |
-| MAN-49 | 14      | no optional field is required          |
-| MAN-50 | 14      | descriptions are not answers           |
-| MAN-51 | 15      | listed agents answer                   |
-| MAN-52 | 15      | capabilities truthful                  |
-| MAN-53 | 15      | absent `manifest_version` = 1.0        |
-| MAN-54 | 15      | stable output for stable state         |
-| MAN-55 | 7.1     | tag charset and uniqueness             |
-| MAN-56 | 7.1     | tags are labels, not promises          |
-| MAN-57 | 7.1     | keep tags few and stable               |
-| MAN-58 | 7.1     | tags and description are not either/or |
+| ID     | Section | Subject                                      |
+| ------ | ------- | -------------------------------------------- |
+| MAN-1  | 4       | `manifest_version` shape                     |
+| MAN-2  | 4       | additive change = MINOR                      |
+| MAN-3  | 4       | ignore unknown members                       |
+| MAN-4  | 4       | unknown enum value → fallback                |
+| MAN-5  | 4       | breaking change = MAJOR                      |
+| MAN-6  | 4       | required fields present                      |
+| MAN-7  | 5       | empty `agents` is valid                      |
+| MAN-8  | 5       | no sensitive material                        |
+| MAN-9  | 6       | `endpoint.id` opaque and stable              |
+| MAN-10 | 6       | `endpoint.name` is display only              |
+| MAN-11 | 6       | descriptions are plain text                  |
+| MAN-12 | 7       | agent `name` uniqueness and charset          |
+| MAN-13 | 7       | renaming an agent                            |
+| MAN-14 | 7       | agent `id` stability                         |
+| MAN-15 | 7       | `sessions: false` semantics                  |
+| MAN-16 | 7       | `start_message` is endpoint-produced         |
+| MAN-17 | 7       | description style                            |
+| MAN-18 | 7       | no indistinguishable agents                  |
+| MAN-19 | 8       | link `href` absolute                         |
+| MAN-20 | 8       | link `rel` charset                           |
+| MAN-21 | 8       | conventional `rel` values                    |
+| MAN-22 | 8       | agent + endpoint links are additive          |
+| MAN-23 | 8       | links may rot                                |
+| MAN-28 | 9       | advertised capability is honoured            |
+| MAN-29 | 9       | `session.new` whenever sessions exist        |
+| MAN-30 | 9       | client honours missing capability            |
+| MAN-31 | 10      | `max_message_bytes` bound                    |
+| MAN-32 | 10      | limits advisory, handle `rate_limited`       |
+| MAN-33 | 10      | advertise enforced limits                    |
+| MAN-34 | 10      | per-agent limits override                    |
+| MAN-35 | 11      | agent `session` overrides endpoint           |
+| MAN-36 | 11      | ids are minted, not described                |
+| MAN-37 | 11      | `ttl_seconds` positive                       |
+| MAN-38 | 11      | `sessions` is authoritative                  |
+| MAN-39 | 12      | RFC 3339 timestamps                          |
+| MAN-40 | 12      | digest over canonical JSON                   |
+| MAN-41 | 12      | `signature` reserved                         |
+| MAN-42 | 12      | freshness fields optional                    |
+| MAN-43 | 12      | caching bounded by `expires_at`              |
+| MAN-44 | 13      | `refs` read as links                         |
+| MAN-45 | 13      | `commands` read as session ops               |
+| MAN-46 | 13      | deprecated members frozen                    |
+| MAN-47 | 14      | client validation                            |
+| MAN-48 | 14      | reject, do not half-accept                   |
+| MAN-49 | 14      | no optional field is required                |
+| MAN-50 | 14      | descriptions are not answers                 |
+| MAN-51 | 15      | listed agents answer                         |
+| MAN-52 | 15      | capabilities truthful                        |
+| MAN-53 | 15      | absent `manifest_version` = 1.0              |
+| MAN-54 | 15      | stable output for stable state               |
+| MAN-55 | 7.1     | tag charset and uniqueness                   |
+| MAN-56 | 7.1     | tags are labels, not promises                |
+| MAN-57 | 7.1     | keep tags few and stable                     |
+| MAN-58 | 7.1     | tags and description are not either/or       |
 | MAN-59 | 1       | adapters surface the document, not a summary |
 
 ## 18. Retired requirements

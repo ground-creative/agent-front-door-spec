@@ -1,0 +1,95 @@
+{
+  "manifest_version": "1.3",
+  "protocol": "frontdoor/1",
+  "endpoint": {
+    "id": "ziwa",
+    "name": "ziwa.ai",
+    "description": "Custom software, AI, automation, infrastructure and connected systems built around the way your business actually works."
+  },
+  "links": [
+    {
+      "rel": "site",
+      "href": "https://ziwa.ai",
+      "label": "Ziwa",
+      "type": "text/html"
+    },
+    {
+      "rel": "docs",
+      "href": "https://api.ziwa.ai/docs/api/v1",
+      "label": "API docs",
+      "type": "text/html"
+    }
+  ],
+  "capabilities": {
+    "session": {
+      "new": true,
+      "get": true,
+      "list": true,
+      "close": true,
+      "prune": true
+    },
+    "progress": true,
+    "cancel": true,
+    "max_turn_seconds": 315
+  },
+  "limits": {
+    "max_message_bytes": 8388608,
+    "requests_per_minute": 60,
+    "burst": 10
+  },
+  "session": {
+    "ttl_seconds": 3600,
+    "list_enabled": true
+  },
+  "agents": [
+    {
+      "name": "sales-representative",
+      "description": "Chat with Martin, our Solutions Advisor, about our IT services, tech stack, or booking a consultation.",
+      "tags": [
+        "sales",
+        "consultation",
+        "services"
+      ],
+      "sessions": true,
+      "start_message": "Hi, I'm Martin! Have questions about our IT services or want to discuss a project? Let's chat.",
+      "limits": {
+        "requests_per_minute": 30,
+        "burst": 5
+      },
+      "session": {
+        "ttl_seconds": 3600
+      }
+    },
+    {
+      "name": "vireo-representative",
+      "description": "Discuss Vireo, its architecture, design decisions and AI agent interoperability.",
+      "tags": [
+        "vireo",
+        "protocol",
+        "interoperability"
+      ],
+      "sessions": true,
+      "start_message": "Hi! I'm Vireo's AI representative. What would you like to discuss?",
+      "limits": {
+        "requests_per_minute": 60,
+        "burst": 10
+      },
+      "session": {
+        "ttl_seconds": 3600
+      }
+    }
+  ],
+  "commands": [
+    "session.close",
+    "session.get",
+    "session.list",
+    "session.new",
+    "session.prune"
+  ],
+  "refs": {
+    "docs": "https://api.ziwa.ai/docs/api/v1",
+    "site": "https://ziwa.ai"
+  },
+  "digest": "sha256:94d4a78c8001f2aa5df74f4cada0410f366b0abedbdaf7e7cff78998489ff6e8",
+  "signature": null
+}

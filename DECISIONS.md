@@ -132,8 +132,9 @@ seriously, and the fix is cheapest before anyone depends on the old behaviour.
 **Cost.** Local development needs an explicit flag or a locally trusted certificate.
 Accepted.
 
-## D-6 — The manifest is transport-independent  
-*(superseded at spec-v0.4 by D-11)*
+## D-6 — The manifest is transport-independent
+
+_(superseded at spec-v0.4 by D-11)_
 
 **Decision.** `MANIFEST.md` defines the object. `PROTOCOL.md` defines how it arrives
 inside a session. A deployment may publish the same object as a document for L0
@@ -175,8 +176,8 @@ superseding document.
 opposite of the interoperability claim. Clients that ignore unknown members — which
 `MAN-3` requires — keep working while capabilities grow.
 
-*The wire identifier was `vireo/1` when this was written; D-10 renamed it and the
-decision itself is unchanged.*
+_The wire identifier was `vireo/1` when this was written; D-10 renamed it and the
+decision itself is unchanged._
 
 ## D-3 — Discovery is DNS SRV, not a well-known URI
 
@@ -190,8 +191,8 @@ normal case. SIP, XMPP, LDAP and Matrix use SRV for the same reason.
 **Cost.** SRV is unfamiliar to some operators and cannot carry the manifest itself.
 Accepted: the manifest arrives inside the connection.
 
-*The record was `_vireo._tcp` when this was written; D-10 renamed it and the
-reasoning above is unchanged.*
+_The record was `_vireo._tcp` when this was written; D-10 renamed it and the
+reasoning above is unchanged._
 
 ## D-2 — The manifest arrives inside the connection
 

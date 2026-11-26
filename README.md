@@ -28,17 +28,17 @@ work. Nothing carries over to the next business or the next assistant.
 
 The gap is not capability. It is **a contract**: one way to name an endpoint, one
 way to describe what it exposes, one way to hold a conversation with it, one way
-to say *finished*, *still working*, or *gave up*.
+to say _finished_, _still working_, or _gave up_.
 
 ## The proposal
 
 A second door, next to the website, at the address the business already owns.
 
-| | for humans | for agents |
-| --- | --- | --- |
-| how it is found | a URL you type | `_frontdoor._tcp.<domain>` in the business's own DNS |
-| what arrives first | an HTML page | a **manifest**: what this endpoint exposes |
-| what carries the exchange | forms, cookies, redirects | a **session** with explicit turns, progress and end |
+|                           | for humans                | for agents                                           |
+| ------------------------- | ------------------------- | ---------------------------------------------------- |
+| how it is found           | a URL you type            | `_frontdoor._tcp.<domain>` in the business's own DNS |
+| what arrives first        | an HTML page              | a **manifest**: what this endpoint exposes           |
+| what carries the exchange | forms, cookies, redirects | a **session** with explicit turns, progress and end  |
 
 Nothing is registered anywhere. A domain is already owned, already delegated, and
 already maintained by the business, and each zone is authoritative for its own
@@ -59,17 +59,27 @@ page, with no layout and no script:
 {
   "manifest_version": "1.3",
   "protocol": "frontdoor/1",
-  "endpoint": { "name": "acme-plumbing", "description": "Plumbing and heating" },
-  "capabilities": { "session": { "new": true, "get": true, "close": true },
-                    "progress": true, "cancel": true },
+  "endpoint": {
+    "name": "acme-plumbing",
+    "description": "Plumbing and heating"
+  },
+  "capabilities": {
+    "session": { "new": true, "get": true, "close": true },
+    "progress": true,
+    "cancel": true
+  },
   "agents": [
-    { "name": "bookings",
+    {
+      "name": "bookings",
       "description": "Book a visit, change or cancel an appointment",
       "sessions": true,
-      "start_message": "Which day suits you?" },
-    { "name": "support",
+      "start_message": "Which day suits you?"
+    },
+    {
+      "name": "support",
       "description": "Questions about service, coverage and pricing",
-      "sessions": false }
+      "sessions": false
+    }
   ],
   "digest": "sha256:…"
 }
@@ -81,19 +91,29 @@ plain language, with the requirement ID that states the obligation. That file is
 enough to write a publisher; you do not need the normative text to produce a valid
 document.
 
+That is the shape. For a real one, with a verified digest and two agents behind a
+live business, see
+[`machine/examples/deployed.ziwa.json`](machine/examples/deployed.ziwa.json) —
+captured from `ziwa.ai` and checked in as an example, so the specification's own
+probe validates the document the world actually receives:
+
+```bash
+python3 machine/conformance.py --payload machine/examples/deployed.ziwa.json
+```
+
 The manifest is not a web page and it is not a service description for
-programmers. It answers four questions for a caller that has just arrived: *what
+programmers. It answers four questions for a caller that has just arrived: _what
 does this business expose, what can I do with each thing, where do I look for
-more, and what must I obey.*
+more, and what must I obey._
 
 ## The four normative documents
 
-| Document | Defines | Requirements |
-| --- | --- | --- |
-| [`normative/MANIFEST.md`](normative/MANIFEST.md) | the object above, member by member | `MAN-1` … `MAN-57` |
-| [`normative/PROTOCOL.md`](normative/PROTOCOL.md) | framing, handshake, messages, progress, cancel, sessions, errors, webhook, discovery | `PROTO-1` … `PROTO-48` |
-| [`normative/CONFORMANCE.md`](normative/CONFORMANCE.md) | what a conformance claim means and what each level requires | `CONF-1` … `CONF-21` |
-| [`normative/SECURITY.md`](normative/SECURITY.md) | threat model, TLS rules, identity, what is not protected | `SEC-1` … |
+| Document                                               | Defines                                                                              | Requirements           |
+| ------------------------------------------------------ | ------------------------------------------------------------------------------------ | ---------------------- |
+| [`normative/MANIFEST.md`](normative/MANIFEST.md)       | the object above, member by member                                                   | `MAN-1` … `MAN-57`     |
+| [`normative/PROTOCOL.md`](normative/PROTOCOL.md)       | framing, handshake, messages, progress, cancel, sessions, errors, webhook, discovery | `PROTO-1` … `PROTO-48` |
+| [`normative/CONFORMANCE.md`](normative/CONFORMANCE.md) | what a conformance claim means and what each level requires                          | `CONF-1` … `CONF-21`   |
+| [`normative/SECURITY.md`](normative/SECURITY.md)       | threat model, TLS rules, identity, what is not protected                             | `SEC-1` …              |
 
 The argument for all of it is in [`informative/PROPOSAL.md`](informative/PROPOSAL.md).
 Why DNS rather than a well-known URL is
@@ -145,13 +165,13 @@ Everything below is independently useful. None of it requires permission, and th
 specification is at its most valuable when somebody builds one of these without
 reading our source.
 
-| Build | Difficulty | What it proves | Start at |
-| --- | --- | --- | --- |
-| A client in another language (Python, TypeScript, Rust) | small | the wire is implementable from the text alone | `PROTOCOL.md` §1–§4 |
-| A daemon for one real backend | medium | the manifest can describe a business you did not design for | `MANIFEST.md`, `PROTOCOL.md` §9 |
-| A host adapter for a host that is not MCP | medium | the session model is not an MCP artefact | `PROTOCOL.md` §3–§7 |
-| A fixture for an edge case | trivial | an ambiguity is a specification defect, not an implementation bug | `machine/fixtures/` |
-| A host adapter that surfaces the manifest unmodified | trivial | an agent actually sees the contract | `MAN-59` |
+| Build                                                   | Difficulty | What it proves                                                    | Start at                        |
+| ------------------------------------------------------- | ---------- | ----------------------------------------------------------------- | ------------------------------- |
+| A client in another language (Python, TypeScript, Rust) | small      | the wire is implementable from the text alone                     | `PROTOCOL.md` §1–§4             |
+| A daemon for one real backend                           | medium     | the manifest can describe a business you did not design for       | `MANIFEST.md`, `PROTOCOL.md` §9 |
+| A host adapter for a host that is not MCP               | medium     | the session model is not an MCP artefact                          | `PROTOCOL.md` §3–§7             |
+| A fixture for an edge case                              | trivial    | an ambiguity is a specification defect, not an implementation bug | `machine/fixtures/`             |
+| A host adapter that surfaces the manifest unmodified    | trivial    | an agent actually sees the contract                               | `MAN-59`                        |
 
 If the manifest cannot express something your business really does, **that is the
 most useful thing you can report**. Open an issue with the requirement ID.
@@ -162,12 +182,12 @@ Levels are cumulative and a claim names the release it was verified against, for
 example `vireo 1.x — L2, spec-v0.4`. Partial claims are legitimate; silent gaps
 are not — a claim must list every requirement it does not satisfy.
 
-| Level | Name | Requires |
-| --- | --- | --- |
-| L1 | Discovery | DNS SRV, TLS 1.3, ALPN, `negotiate` → manifest |
-| L2 | Conversations | L1 + sessions + `message`/`data`/`end` + backend webhook |
-| L3 | Live | L2 + progress + cancellation |
-| L4 | Operational | L3 + advertised limits + persistence + retention |
+| Level | Name          | Requires                                                 |
+| ----- | ------------- | -------------------------------------------------------- |
+| L1    | Discovery     | DNS SRV, TLS 1.3, ALPN, `negotiate` → manifest           |
+| L2    | Conversations | L1 + sessions + `message`/`data`/`end` + backend webhook |
+| L3    | Live          | L2 + progress + cancellation                             |
+| L4    | Operational   | L3 + advertised limits + persistence + retention         |
 
 See [`normative/CONFORMANCE.md`](normative/CONFORMANCE.md) for the requirement
 matrix.

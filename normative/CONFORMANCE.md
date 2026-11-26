@@ -13,12 +13,12 @@ A claim names a level and a spec release, for example:
 
 > `vireo 1.4` — daemon — **L2**, `spec-v0.4`
 
-| Level | Name               | Requirements                  |
-| ----- | ------------------ | ----------------------------- |
-| L1    | Discovery          | CONF-1 – CONF-5, CONF-11 – CONF-15 |
-| L2    | Conversations      | L1 + CONF-16 – CONF-18        |
-| L3    | Live               | L2 + CONF-19 – CONF-21        |
-| L4    | Operational        | L3 + CONF-22 – CONF-25        |
+| Level | Name          | Requirements                       |
+| ----- | ------------- | ---------------------------------- |
+| L1    | Discovery     | CONF-1 – CONF-5, CONF-11 – CONF-15 |
+| L2    | Conversations | L1 + CONF-16 – CONF-18             |
+| L3    | Live          | L2 + CONF-19 – CONF-21             |
+| L4    | Operational   | L3 + CONF-22 – CONF-25             |
 
 Levels are cumulative. A client and a server claim the same ladder, with the
 role-specific rows below. `CONF-1` – `CONF-5` apply to every claim at every
@@ -54,17 +54,17 @@ level: they say how a claim is stated, not what is implemented.
 
 ## 2. L1 — discovery
 
-- **CONF-6.** *(retired at spec-v0.4 — was "emits a document that validates
-  against the manifest schema", part of the withdrawn manifest-publisher level)*
-- **CONF-7.** *(retired at spec-v0.4 — was "satisfies every MUST in MANIFEST.md
-  that applies to publishing")*
-- **CONF-8.** *(retired at spec-v0.4 — was "publishes where a caller can find it,
-  and documents that location"; no location was ever defined)*
-- **CONF-9.** *(retired at spec-v0.4 — was "keeps capabilities truthful even when
+- **CONF-6.** _(retired at spec-v0.4 — was "emits a document that validates
+  against the manifest schema", part of the withdrawn manifest-publisher level)_
+- **CONF-7.** _(retired at spec-v0.4 — was "satisfies every MUST in MANIFEST.md
+  that applies to publishing")_
+- **CONF-8.** _(retired at spec-v0.4 — was "publishes where a caller can find it,
+  and documents that location"; no location was ever defined)_
+- **CONF-9.** _(retired at spec-v0.4 — was "keeps capabilities truthful even when
   it implements no protocol"; the requirement survives as MAN-52, which every
-  publisher must satisfy regardless of level)*
-- **CONF-10.** *(retired at spec-v0.4 — was "declares manifest_version"; the
-  requirement survives as MAN-53)*
+  publisher must satisfy regardless of level)_
+- **CONF-10.** _(retired at spec-v0.4 — was "declares manifest_version"; the
+  requirement survives as MAN-53)_
 
 - **CONF-11.** Satisfies `PROTO-1` – `PROTO-14` and `PROTO-44` – `PROTO-47`.
 - **CONF-12.** A server: publishes the SRV record and answers `negotiate` with a
@@ -143,30 +143,30 @@ runner.
 
 ## 7. Requirement index
 
-| ID      | Section | Subject                                  |
-| ------- | ------- | ---------------------------------------- |
-| CONF-1  | 1       | state the role                           |
-| CONF-2  | 1       | name the spec release                    |
-| CONF-3  | 1       | list unmet requirements                  |
-| CONF-4  | 1       | reproducible check                       |
-| CONF-5  | 1       | stale claims marked                      |
+| ID      | Section | Subject                                   |
+| ------- | ------- | ----------------------------------------- |
+| CONF-1  | 1       | state the role                            |
+| CONF-2  | 1       | name the spec release                     |
+| CONF-3  | 1       | list unmet requirements                   |
+| CONF-4  | 1       | reproducible check                        |
+| CONF-5  | 1       | stale claims marked                       |
 | CONF-6  | —       | retired at spec-v0.4 (manifest publisher) |
 | CONF-7  | —       | retired at spec-v0.4 (manifest publisher) |
 | CONF-8  | —       | retired at spec-v0.4 (manifest publisher) |
-| CONF-9  | —       | retired at spec-v0.4; see MAN-52         |
-| CONF-10 | —       | retired at spec-v0.4; see MAN-53         |
-| CONF-11 | 2       | L1 protocol requirements                 |
-| CONF-12 | 2       | discovery, both roles                    |
-| CONF-13 | 2       | reject malformed manifest                |
-| CONF-14 | 2       | verify by default                        |
-| CONF-15 | 2       | unknown frame tolerated                  |
-| CONF-16 | 3       | L2 protocol requirements                 |
-| CONF-17 | 3       | sessions and routing, both roles         |
-| CONF-18 | 3       | content-free envelopes                   |
-| CONF-19 | 4       | L3 protocol requirements                 |
-| CONF-20 | 4       | partial and cancel, both roles           |
-| CONF-21 | 4       | advertises only implemented capabilities |
-| CONF-22 | 5       | advertises enforced limits               |
-| CONF-23 | 5       | rate limit error                         |
-| CONF-24 | 5       | bounded sessions and retention           |
-| CONF-25 | 5       | restart semantics documented             |
+| CONF-9  | —       | retired at spec-v0.4; see MAN-52          |
+| CONF-10 | —       | retired at spec-v0.4; see MAN-53          |
+| CONF-11 | 2       | L1 protocol requirements                  |
+| CONF-12 | 2       | discovery, both roles                     |
+| CONF-13 | 2       | reject malformed manifest                 |
+| CONF-14 | 2       | verify by default                         |
+| CONF-15 | 2       | unknown frame tolerated                   |
+| CONF-16 | 3       | L2 protocol requirements                  |
+| CONF-17 | 3       | sessions and routing, both roles          |
+| CONF-18 | 3       | content-free envelopes                    |
+| CONF-19 | 4       | L3 protocol requirements                  |
+| CONF-20 | 4       | partial and cancel, both roles            |
+| CONF-21 | 4       | advertises only implemented capabilities  |
+| CONF-22 | 5       | advertises enforced limits                |
+| CONF-23 | 5       | rate limit error                          |
+| CONF-24 | 5       | bounded sessions and retention            |
+| CONF-25 | 5       | restart semantics documented              |
