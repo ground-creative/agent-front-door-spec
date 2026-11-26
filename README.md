@@ -27,7 +27,7 @@ wrong.
 
 Custom APIs, GraphQL schemas, OpenAPI documents and MCP servers each solve this
 for one service, built for one assistant, by somebody who decided it was worth the
-work. Nothing carries over to the next business or the next assistant.
+work. Nothing carries over to the next party or the next assistant.
 
 The gap is not capability. It is **a contract**: one way to name an endpoint, one
 way to describe what it exposes, one way to hold a conversation with it, one way
@@ -35,22 +35,23 @@ to say _finished_, _still working_, or _gave up_.
 
 ## The proposal
 
-A second door, next to the website, at the address the business already owns.
+A second door, next to the website, at the address the party already owns.
 
-|                           | for humans                | for agents                                          |
-| ------------------------- | ------------------------- | --------------------------------------------------- |
-| how it is found           | a URL you type            | `_portico._tcp.<domain>` in the business's own DNS  |
-| what arrives first        | an HTML page              | a **manifest**: what this endpoint exposes          |
+|                           | for humans                | for agents                                         |
+| ------------------------- | ------------------------- | -------------------------------------------------- |
+| how it is found           | a URL you type            | `_portico._tcp.<domain>` in the party's own DNS     |
+| what arrives first        | an HTML page              | a **manifest**: what this endpoint exposes         |
 | what carries the exchange | forms, cookies, redirects | a **session** with explicit turns, progress and end |
 
 Nothing is registered anywhere. A domain is already owned, already delegated, and
-already maintained by the business, and each zone is authoritative for its own
+already maintained by whoever holds it, and each zone is authoritative for its own
 records. Discovery needs nobody's approval — which is the point.
 
-**The business keeps everything that makes it a business**: its backend, models,
-logic and data. The specification standardises the contract between the two sides,
-not the software behind it, and implies no model, provider, language or agent
-framework.
+**The party keeps everything that makes it what it is**: its backend, models,
+logic and data. A business is the commonest case and the one the examples use, but
+the protocol serves anything that controls a domain and chooses to answer on it. The
+specification standardises the contract between the two sides, not the software
+behind it, and implies no model, provider, language or agent framework.
 
 ## What the agent receives
 
@@ -103,7 +104,7 @@ python3 machine/conformance.py --payload machine/examples/manifest.full.json
 
 The manifest is not a web page and it is not a service description for
 programmers. It answers four questions for a caller that has just arrived: _what
-does this business expose, what can I do with each thing, where do I look for
+does this endpoint expose, what can I do with each thing, where do I look for
 more, and what must I obey._
 
 ## The four normative documents
@@ -151,7 +152,7 @@ claim: 127.0.0.1:7777 — spec-v0.4, 0 failure(s)
 ```
 
 Add `--converse` to send one real message and verify the turn itself
-(`PROTO-19` … `PROTO-22`). It is off by default: a turn reaches the business's
+(`PROTO-19` … `PROTO-22`). It is off by default: a turn reaches the party's
 backend and may cost it a model call, so spending somebody else's money is opt-in.
 
 The probe caught a genuine interop defect in the reference implementation the
@@ -168,12 +169,12 @@ reading our source.
 | Build                                                   | Difficulty | What it proves                                                    | Start at                        |
 | ------------------------------------------------------- | ---------- | ----------------------------------------------------------------- | ------------------------------- |
 | A client in another language (Python, TypeScript, Rust) | small      | the wire is implementable from the text alone                     | `PROTOCOL.md` §1–§4             |
-| A daemon for one real backend                           | medium     | the manifest can describe a business you did not design for       | `MANIFEST.md`, `PROTOCOL.md` §9 |
+| A daemon for one real backend                           | medium     | the manifest can describe an endpoint you did not design for      | `MANIFEST.md`, `PROTOCOL.md` §9 |
 | A host adapter for a host that is not MCP               | medium     | the session model is not an MCP artefact                          | `PROTOCOL.md` §3–§7             |
 | A fixture for an edge case                              | trivial    | an ambiguity is a specification defect, not an implementation bug | `machine/fixtures/`             |
 | A host adapter that surfaces the manifest unmodified    | trivial    | an agent actually sees the contract                               | `MAN-59`                        |
 
-If the manifest cannot express something your business really does, **that is the
+If the manifest cannot express something your endpoint really does, **that is the
 most useful thing you can report**. Open an issue with the requirement ID.
 
 ## Conformance levels

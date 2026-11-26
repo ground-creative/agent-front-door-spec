@@ -33,7 +33,7 @@ and [`machine/schema/manifest.schema.json`](machine/schema/manifest.schema.json)
 which documents every member in plain language. Then add yourself to
 [`IMPLEMENTATIONS.md`](IMPLEMENTATIONS.md).
 
-If the object cannot express something your business actually does, that is the
+If the object cannot express something your endpoint actually does, that is the
 most useful finding you can give us.
 
 ## 3. Review a proposal

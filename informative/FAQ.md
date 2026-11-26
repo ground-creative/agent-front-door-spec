@@ -12,7 +12,7 @@ intent to hand that over to implementers.
 ## Why not just use MCP?
 
 MCP connects a host to a tool server that someone already configured. It does not
-answer which businesses exist for a domain, how to reach one that is not the
+answer which endpoints exist for a domain, how to reach one that is not the
 website, or how a conversation with turns is held and ended.
 
 If your host speaks MCP, this specification reaches it through an adapter. If your
@@ -27,7 +27,7 @@ manifest's `link` at one if you have it — that is what the `openapi` rel is fo
 ## Why DNS and not a directory?
 
 A directory decides who exists. A domain is already owned, already delegated, and
-already maintained by the business, with each zone authoritative for its own
+already maintained by the party, with each zone authoritative for its own
 records. Discovery through SRV needs nobody's approval, which is the point.
 
 ## Do I need to run a daemon to participate?
@@ -62,7 +62,7 @@ and is an integrity check, not authentication — anyone can compute one.
 
 The specification requires it (SEC-6). Earlier reference clients defaulted to
 skipping verification for local development, which is exactly the defect this draft
-fixes: with verification off the traffic is encrypted but the business is not
+fixes: with verification off the traffic is encrypted but the party is not
 identified, and an attacker on the path can impersonate the endpoint.
 
 ## What about authentication and authorization?

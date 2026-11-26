@@ -54,7 +54,7 @@ nobody's permission, and is most valuable when built without reading our source.
 | Artifact                                             | Difficulty | What it proves                                              | Start at                                  |
 | ---------------------------------------------------- | ---------- | ----------------------------------------------------------- | ----------------------------------------- |
 | A client in another language                         | small      | the wire is implementable from the text alone               | `normative/PROTOCOL.md` §1–§4             |
-| A daemon for one real backend                        | medium     | the manifest can describe a business nobody designed it for | `normative/MANIFEST.md`, `PROTOCOL.md` §9 |
+| A daemon for one real backend                        | medium     | the manifest can describe an endpoint nobody designed it for | `normative/MANIFEST.md`, `PROTOCOL.md` §9 |
 | A host adapter for a host that is not MCP            | medium     | the session model is not an MCP artefact                    | `normative/PROTOCOL.md` §3–§7             |
 | A host adapter that surfaces the manifest unmodified | trivial    | an agent actually sees the contract (`MAN-59`)              | `normative/MANIFEST.md` §1                |
 | A fixture for an edge case                           | trivial    | an ambiguity is a spec defect                               | `machine/fixtures/`                       |
